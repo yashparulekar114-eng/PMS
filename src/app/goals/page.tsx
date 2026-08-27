@@ -543,26 +543,26 @@ export default function GoalsPage() {
                       Weightage (%) <span className="text-rose-500">*</span>
                     </label>
                     <span className="text-[11px] text-indigo-600 font-semibold">
-                      Max: {remainingWeightage}%
+                      Max: {remainingToMax}%
                     </span>
                   </div>
                   <input
                     type="number"
                     required
                     min={1}
-                    max={remainingWeightage}
+                    max={remainingToMax}
                     value={weightage}
                     onChange={(e) => {
                       setWeightage(e.target.value);
-                      if (Number(e.target.value) > remainingWeightage) {
+                      if (Number(e.target.value) > remainingToMax) {
                         setFormError(
-                          `Weightage cannot exceed the remaining available weightage of ${remainingWeightage}%.`
+                          `Weightage cannot exceed the remaining available capacity of ${remainingToMax}%.`
                         );
                       } else {
                         setFormError(null);
                       }
                     }}
-                    placeholder={`Max ${remainingWeightage}`}
+                    placeholder={`Max ${remainingToMax}`}
                     className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none text-slate-900"
                   />
                 </div>
