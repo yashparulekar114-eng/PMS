@@ -1,0 +1,132 @@
+"use client";
+
+import React, { useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/lib/auth/user-context";
+import { Shield, KeyRound, ArrowRight, UserCheck, AlertCircle } from "lucide-react";
+
+export default function SignInPage() {
+  const router = useRouter();
+  const { switchUser, simulateUnregisteredUser } = useAuth();
+  const [customEmail, setCustomEmail] = useState("");
+  const [errorMsg, setErrorMsg] = useState("");
+
+  const handleCustomLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!customEmail) return;
+    await switchUser(customEmail);
+    router.push("/dashboard");
+  };
+
+  const handleRoleSelect = async (email: string) => {
+    await switchUser(email);
+    router.push("/dashboard");
+  };
+
+  const handleUnregistered = () => {
+    simulateUnregisteredUser();
+    router.push("/dashboard");
+  };
+
+  return (
+    <div className="max-w-md mx-auto my-8 p-8 bg-white border border-slate-200 rounded-2xl shadow-sm space-y-6">
+      <div className="text-center space-y-2">
+        <div className="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center mx-auto">
+          <KeyRound className="w-6 h-6" />
+        </div>
+        <h1 className="text-2xl font-bold text-slate-900">Sign In to AI PMS</h1>
+        <p className="text-xs text-slate-500">
+          Clerk Authentication & Role-Aware Identity Bridge
+        </p>
+      </div>
+
+      {/* Quick Role Selection for Grading / Demo */}
+      <div className="space-y-3">
+        <label className="text-xs font-semibold uppercase tracking-wider text-slate-500 block">
+          Quick Sign In by Role
+        </label>
+
+        <button
+          onClick={() => handleRoleSelect("admin@company.com")}
+          className="w-full flex items-center justify-between p-3 rounded-xl border border-purple-200 bg-purple-50/50 hover:bg-purple-50 text-left transition-all"
+        >
+          <div>
+            <div className="text-sm font-semibold text-purple-900">Praveen Dalal</div>
+            <div className="text-xs text-purple-700">HR Director (HR Admin Role)</div>
+          </div>
+          <ArrowRight className="w-4 h-4 text-purple-500" />
+        </button>
+
+        <button
+          onClick={() => handleRoleSelect("manager@company.com")}
+          className="w-full flex items-center justify-between p-3 rounded-xl border border-blue-200 bg-blue-50/50 hover:bg-blue-50 text-left transition-all"
+        >
+          <div>
+            <div className="text-sm font-semibold text-blue-900">Mehmood Sayed</div>
+            <div className="text-xs text-blue-700">Engineering Lead (Manager Role)</div>
+          </div>
+          <ArrowRight className="w-4 h-4 text-blue-500" />
+        </button>
+
+        <button
+          onClick={() => handleRoleSelect("aarya@company.com")}
+          className="w-full flex items-center justify-between p-3 rounded-xl border border-emerald-200 bg-emerald-50/50 hover:bg-emerald-50 text-left transition-all"
+        >
+          <div>
+            <div className="text-sm font-semibold text-emerald-900">Aarya Shirodkar</div>
+            <div className="text-xs text-emerald-700">Senior Full-Stack Engineer (Employee Role)</div>
+          </div>
+          <ArrowRight className="w-4 h-4 text-emerald-500" />
+        </button>
+
+        <button
+          onClick={() => handleRoleSelect("uraj@company.com")}
+          className="w-full flex items-center justify-between p-3 rounded-xl border border-emerald-200 bg-emerald-50/50 hover:bg-emerald-50 text-left transition-all"
+        >
+          <div>
+            <div className="text-sm font-semibold text-emerald-900">Uraj Madkaikar</div>
+            <div className="text-xs text-emerald-700">Frontend Developer (Employee Role)</div>
+          </div>
+          <ArrowRight className="w-4 h-4 text-emerald-500" />
+        </button>
+      </div>
+
+      <div className="relative flex py-2 items-center">
+        <div className="flex-grow border-t border-slate-200"></div>
+        <span className="flex-shrink mx-4 text-xs text-slate-400 uppercase">Or sign in with custom email</span>
+        <div className="flex-grow border-t border-slate-200"></div>
+      </div>
+
+      <form onSubmit={handleCustomLogin} className="space-y-4">
+        <div>
+          <label className="block text-xs font-medium text-slate-700 mb-1">Email Address</label>
+          <input
+            type="email"
+            value={customEmail}
+            onChange={(e) => setCustomEmail(e.target.value)}
+            placeholder="e.g. employee@company.com"
+            className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          />
+        </div>
+        <button
+          type="submit"
+          className="w-full py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-lg text-sm font-medium transition-colors"
+        >
+          Sign In
+        </button>
+      </form>
+
+      {/* Unregistered user test */}
+      <div className="pt-2 border-t border-slate-100 text-center">
+        <button
+          onClick={handleUnregistered}
+          className="text-xs text-amber-700 hover:text-amber-800 hover:underline inline-flex items-center gap-1"
+        >
+          <AlertCircle className="w-3.5 h-3.5" />
+          Test unregistered account fallback screen
+        </button>
+      </div>
+    </div>
+  );
+}
