@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { supabase, isSupabaseConfigured } from "@/lib/supabase/client";
 import { dataStore } from "@/lib/data-store";
+import Link from "next/link";
 import {
   Users,
   UserCheck,
@@ -10,6 +11,7 @@ import {
   XCircle,
   RefreshCw,
   AlertCircle,
+  Network,
 } from "lucide-react";
 
 // TypeScript interface for the Supabase employees table row
@@ -103,14 +105,23 @@ export default function AdminEmployeesPage() {
           </p>
         </div>
 
-        <button
-          onClick={fetchEmployees}
-          disabled={loading}
-          className="inline-flex items-center gap-2 px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-sm font-medium transition-colors disabled:opacity-50"
-        >
-          <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
-          Refresh
-        </button>
+        <div className="flex items-center gap-3">
+          <Link
+            href="/admin/org-chart"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded-xl text-sm font-semibold border border-indigo-200 transition-colors shadow-2xs"
+          >
+            <Network className="w-4 h-4 text-indigo-600" />
+            <span>View Org Tree</span>
+          </Link>
+          <button
+            onClick={fetchEmployees}
+            disabled={loading}
+            className="inline-flex items-center gap-2 px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-sm font-medium transition-colors disabled:opacity-50"
+          >
+            <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
+            Refresh
+          </button>
+        </div>
       </div>
 
       {/* Error Message */}

@@ -17,6 +17,7 @@ import {
   X,
   Sparkles,
   AlertCircle,
+  Network,
 } from "lucide-react";
 
 export const AppNavbar = () => {
@@ -52,6 +53,12 @@ export const AppNavbar = () => {
       href: "/team",
       icon: Users,
       roles: ["manager", "hr_admin"],
+    },
+    {
+      label: "Org Structure",
+      href: "/admin/org-chart",
+      icon: Network,
+      roles: ["hr_admin"],
     },
     {
       label: "Employees",
