@@ -16,18 +16,6 @@ const INITIAL_EMPLOYEES: Employee[] = [
     "is_active": true
   },
   {
-    "id": "00000000-0000-0000-0000-000000000005",
-    "full_name": "Praveen Dalal (HR)",
-    "email": "hr@company.com",
-    "designation": "HR Director",
-    "department": "Human Resources",
-    "date_of_joining": "2021-04-15",
-    "manager_id": null,
-    "manager_name": null,
-    "role": "hr_admin",
-    "is_active": true
-  },
-  {
     "id": "00000000-0000-0000-0000-000000000006",
     "full_name": "Yash Parulekar",
     "email": "yash@company.com",
@@ -414,39 +402,6 @@ const INITIAL_GOALS: Goal[] = [
   {
     "id": "20000000-0000-0000-0000-000000000003",
     "employee_id": "00000000-0000-0000-0000-000000000001",
-    "cycle_id": "10000000-0000-0000-0000-000000000001",
-    "title": "Employee Learning & Leadership Development",
-    "description": "Roll out modern engineering and management training workshops across all departments.",
-    "weightage": 25,
-    "target_date": "2027-02-28",
-    "status": "approved",
-    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
-  },
-  {
-    "id": "20000000-0000-0000-0000-000000000004",
-    "employee_id": "00000000-0000-0000-0000-000000000005",
-    "cycle_id": "10000000-0000-0000-0000-000000000001",
-    "title": "Enterprise Talent Acquisition & Retention",
-    "description": "Optimize hiring pipelines to achieve under 30-day time-to-hire with 95% retention rate.",
-    "weightage": 35,
-    "target_date": "2026-11-30",
-    "status": "approved",
-    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
-  },
-  {
-    "id": "20000000-0000-0000-0000-000000000005",
-    "employee_id": "00000000-0000-0000-0000-000000000005",
-    "cycle_id": "10000000-0000-0000-0000-000000000001",
-    "title": "Standardize Global PMS Review Calibration",
-    "description": "Implement normalized rating rubrics and complete 100% of executive calibrations on schedule.",
-    "weightage": 30,
-    "target_date": "2026-10-15",
-    "status": "approved",
-    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
-  },
-  {
-    "id": "20000000-0000-0000-0000-000000000006",
-    "employee_id": "00000000-0000-0000-0000-000000000005",
     "cycle_id": "10000000-0000-0000-0000-000000000001",
     "title": "Employee Learning & Leadership Development",
     "description": "Roll out modern engineering and management training workshops across all departments.",
@@ -1428,18 +1383,6 @@ const INITIAL_REVIEWS: Review[] = [
     "reviewed_at": "2026-06-28T14:30:00Z"
   },
   {
-    "id": "30000000-0000-0000-0000-000000000002",
-    "employee_id": "00000000-0000-0000-0000-000000000005",
-    "manager_id": null,
-    "cycle_id": "10000000-0000-0000-0000-000000000001",
-    "status": "completed",
-    "overall_self_rating": 4,
-    "overall_manager_rating": 4,
-    "manager_summary": "Praveen has delivered outstanding leadership in standardizing the PMS appraisal workflow and driving organizational talent management initiatives.",
-    "submitted_at": "2026-06-25T10:00:00Z",
-    "reviewed_at": "2026-06-28T14:30:00Z"
-  },
-  {
     "id": "30000000-0000-0000-0000-000000000003",
     "employee_id": "00000000-0000-0000-0000-000000000006",
     "manager_id": "00000000-0000-0000-0000-000000000001",
@@ -1812,33 +1755,6 @@ const INITIAL_GOAL_RATINGS: GoalRating[] = [
     "id": "40000000-0000-0000-0000-000000000003",
     "review_id": "30000000-0000-0000-0000-000000000001",
     "goal_id": "20000000-0000-0000-0000-000000000003",
-    "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
-    "self_rating": 4,
-    "manager_comment": "Meets high performance standards on this objective.",
-    "manager_rating": 4
-  },
-  {
-    "id": "40000000-0000-0000-0000-000000000004",
-    "review_id": "30000000-0000-0000-0000-000000000002",
-    "goal_id": "20000000-0000-0000-0000-000000000004",
-    "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
-    "self_rating": 4,
-    "manager_comment": "Meets high performance standards on this objective.",
-    "manager_rating": 4
-  },
-  {
-    "id": "40000000-0000-0000-0000-000000000005",
-    "review_id": "30000000-0000-0000-0000-000000000002",
-    "goal_id": "20000000-0000-0000-0000-000000000005",
-    "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
-    "self_rating": 4,
-    "manager_comment": "Meets high performance standards on this objective.",
-    "manager_rating": 4
-  },
-  {
-    "id": "40000000-0000-0000-0000-000000000006",
-    "review_id": "30000000-0000-0000-0000-000000000002",
-    "goal_id": "20000000-0000-0000-0000-000000000006",
     "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
     "self_rating": 4,
     "manager_comment": "Meets high performance standards on this objective.",
