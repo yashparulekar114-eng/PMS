@@ -21,6 +21,7 @@ import {
   Building2,
   Printer,
   Download,
+  Target,
 } from "lucide-react";
 
 // TypeScript interfaces
@@ -535,14 +536,23 @@ export default function TeamPage() {
           </p>
         </div>
 
-        <button
-          onClick={fetchTeamData}
-          disabled={loading}
-          className="inline-flex items-center gap-2 px-3.5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-sm font-medium transition-colors disabled:opacity-50"
-        >
-          <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
-          Refresh Roster
-        </button>
+        <div className="flex items-center gap-3">
+          <Link
+            href="/team/goals"
+            className="inline-flex items-center gap-2 px-3.5 py-2.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded-xl text-sm font-semibold border border-indigo-200 transition-colors shadow-2xs"
+          >
+            <Target className="w-4 h-4 text-indigo-600" />
+            <span>Approve Goals</span>
+          </Link>
+          <button
+            onClick={fetchTeamData}
+            disabled={loading}
+            className="inline-flex items-center gap-2 px-3.5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-sm font-medium transition-colors disabled:opacity-50"
+          >
+            <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
+            Refresh Roster
+          </button>
+        </div>
       </div>
 
       {/* Metrics & Filter Tabs */}

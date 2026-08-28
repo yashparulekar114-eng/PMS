@@ -391,7 +391,15 @@ export default function AdminDashboardPage() {
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
+          <Link
+            href="/admin/reports"
+            className="inline-flex items-center gap-2 px-3.5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-sm font-medium transition-colors"
+          >
+            <FileCheck2 className="w-4 h-4 text-indigo-600" />
+            <span>Cycle Reports</span>
+          </Link>
+
           <button
             onClick={fetchDashboardData}
             disabled={loading}
