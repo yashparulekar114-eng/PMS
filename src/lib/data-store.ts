@@ -1,73 +1,380 @@
 import { supabase, isSupabaseConfigured } from "./supabase/client";
 import { Employee, ReviewCycle, Goal, Review, GoalRating } from "@/types";
 
-// Initial Demo Seed Data
+// Initial Demo Seed Data - 30 Employees Roster
 const INITIAL_EMPLOYEES: Employee[] = [
   {
-    id: "00000000-0000-0000-0000-000000000001",
-    clerk_user_id: null,
-    full_name: "Praveen Dalal",
-    email: "admin@company.com",
-    designation: "HR Director",
-    department: "Human Resources",
-    date_of_joining: "2022-01-15",
-    manager_id: null,
-    manager_name: null,
-    role: "hr_admin",
-    is_active: true,
+    "id": "00000000-0000-0000-0000-000000000001",
+    "full_name": "Praveen Dalal",
+    "email": "admin@company.com",
+    "designation": "HR Director",
+    "department": "Human Resources",
+    "date_of_joining": "2021-04-15",
+    "manager_id": null,
+    "manager_name": null,
+    "role": "hr_admin",
+    "is_active": true
   },
   {
-    id: "00000000-0000-0000-0000-000000000005",
-    clerk_user_id: null,
-    full_name: "Praveen Dalal (HR)",
-    email: "hr@company.com",
-    designation: "HR Director",
-    department: "Human Resources",
-    date_of_joining: "2022-01-15",
-    manager_id: null,
-    manager_name: null,
-    role: "hr_admin",
-    is_active: true,
+    "id": "00000000-0000-0000-0000-000000000005",
+    "full_name": "Praveen Dalal (HR)",
+    "email": "hr@company.com",
+    "designation": "HR Director",
+    "department": "Human Resources",
+    "date_of_joining": "2021-04-15",
+    "manager_id": null,
+    "manager_name": null,
+    "role": "hr_admin",
+    "is_active": true
   },
   {
-    id: "00000000-0000-0000-0000-000000000002",
-    clerk_user_id: null,
-    full_name: "Mehmood Sayed",
-    email: "manager@company.com",
-    designation: "Engineering Lead",
-    department: "Engineering",
-    date_of_joining: "2022-03-01",
-    manager_id: "00000000-0000-0000-0000-000000000001",
-    manager_name: "Praveen Dalal",
-    role: "manager",
-    is_active: true,
+    "id": "00000000-0000-0000-0000-000000000006",
+    "full_name": "Yash Parulekar",
+    "email": "yash@company.com",
+    "designation": "VP of Technology & Engineering",
+    "department": "Engineering",
+    "date_of_joining": "2021-06-01",
+    "manager_id": "00000000-0000-0000-0000-000000000001",
+    "manager_name": "Praveen Dalal",
+    "role": "manager",
+    "is_active": true
   },
   {
-    id: "00000000-0000-0000-0000-000000000003",
-    clerk_user_id: null,
-    full_name: "Aarya Shirodkar",
-    email: "aarya@company.com",
-    designation: "Senior Full-Stack Engineer",
-    department: "Engineering",
-    date_of_joining: "2023-06-10",
-    manager_id: "00000000-0000-0000-0000-000000000002",
-    manager_name: "Mehmood Sayed",
-    role: "employee",
-    is_active: true,
+    "id": "00000000-0000-0000-0000-000000000007",
+    "full_name": "Ananya Sharma",
+    "email": "ananya@company.com",
+    "designation": "Senior HR Business Partner",
+    "department": "Human Resources",
+    "date_of_joining": "2022-02-10",
+    "manager_id": "00000000-0000-0000-0000-000000000001",
+    "manager_name": "Praveen Dalal",
+    "role": "employee",
+    "is_active": true
   },
   {
-    id: "00000000-0000-0000-0000-000000000004",
-    clerk_user_id: null,
-    full_name: "Uraj Madkaikar",
-    email: "uraj@company.com",
-    designation: "Frontend Developer",
-    department: "Engineering",
-    date_of_joining: "2024-01-08",
-    manager_id: "00000000-0000-0000-0000-000000000002",
-    manager_name: "Mehmood Sayed",
-    role: "employee",
-    is_active: true,
+    "id": "00000000-0000-0000-0000-000000000008",
+    "full_name": "Kunal Varma",
+    "email": "kunal@company.com",
+    "designation": "Talent Acquisition Lead",
+    "department": "Human Resources",
+    "date_of_joining": "2022-05-15",
+    "manager_id": "00000000-0000-0000-0000-000000000001",
+    "manager_name": "Praveen Dalal",
+    "role": "employee",
+    "is_active": true
   },
+  {
+    "id": "00000000-0000-0000-0000-000000000009",
+    "full_name": "Deepika Joshi",
+    "email": "deepika@company.com",
+    "designation": "HR Operations Manager",
+    "department": "Human Resources",
+    "date_of_joining": "2022-08-01",
+    "manager_id": "00000000-0000-0000-0000-000000000001",
+    "manager_name": "Praveen Dalal",
+    "role": "manager",
+    "is_active": true
+  },
+  {
+    "id": "00000000-0000-0000-0000-000000000010",
+    "full_name": "Rohan Mehta",
+    "email": "rohan@company.com",
+    "designation": "People Analytics Specialist",
+    "department": "Human Resources",
+    "date_of_joining": "2023-01-15",
+    "manager_id": "00000000-0000-0000-0000-000000000009",
+    "manager_name": "Deepika Joshi",
+    "role": "employee",
+    "is_active": true
+  },
+  {
+    "id": "00000000-0000-0000-0000-000000000002",
+    "full_name": "Mehmood Sayed",
+    "email": "manager@company.com",
+    "designation": "Engineering Lead",
+    "department": "Engineering",
+    "date_of_joining": "2022-03-01",
+    "manager_id": "00000000-0000-0000-0000-000000000006",
+    "manager_name": "Yash Parulekar",
+    "role": "manager",
+    "is_active": true
+  },
+  {
+    "id": "00000000-0000-0000-0000-000000000003",
+    "full_name": "Aarya Shirodkar",
+    "email": "aarya@company.com",
+    "designation": "Senior Full-Stack Engineer",
+    "department": "Engineering",
+    "date_of_joining": "2023-06-10",
+    "manager_id": "00000000-0000-0000-0000-000000000002",
+    "manager_name": "Mehmood Sayed",
+    "role": "manager",
+    "is_active": true
+  },
+  {
+    "id": "00000000-0000-0000-0000-000000000004",
+    "full_name": "Uraj Madkaikar",
+    "email": "uraj@company.com",
+    "designation": "Frontend Developer",
+    "department": "Engineering",
+    "date_of_joining": "2024-01-08",
+    "manager_id": "00000000-0000-0000-0000-000000000002",
+    "manager_name": "Mehmood Sayed",
+    "role": "employee",
+    "is_active": true
+  },
+  {
+    "id": "00000000-0000-0000-0000-000000000011",
+    "full_name": "Sneha Patil",
+    "email": "sneha@company.com",
+    "designation": "Senior Backend Engineer",
+    "department": "Engineering",
+    "date_of_joining": "2022-11-20",
+    "manager_id": "00000000-0000-0000-0000-000000000002",
+    "manager_name": "Mehmood Sayed",
+    "role": "employee",
+    "is_active": true
+  },
+  {
+    "id": "00000000-0000-0000-0000-000000000012",
+    "full_name": "Vikram Desai",
+    "email": "vikram@company.com",
+    "designation": "Lead DevOps & Cloud Architect",
+    "department": "Engineering",
+    "date_of_joining": "2022-07-15",
+    "manager_id": "00000000-0000-0000-0000-000000000002",
+    "manager_name": "Mehmood Sayed",
+    "role": "employee",
+    "is_active": true
+  },
+  {
+    "id": "00000000-0000-0000-0000-000000000013",
+    "full_name": "Tanvi Sawant",
+    "email": "tanvi@company.com",
+    "designation": "Software Engineer II",
+    "department": "Engineering",
+    "date_of_joining": "2023-04-01",
+    "manager_id": "00000000-0000-0000-0000-000000000002",
+    "manager_name": "Mehmood Sayed",
+    "role": "employee",
+    "is_active": true
+  },
+  {
+    "id": "00000000-0000-0000-0000-000000000014",
+    "full_name": "Aditya Kamat",
+    "email": "aditya@company.com",
+    "designation": "Associate Full-Stack Developer",
+    "department": "Engineering",
+    "date_of_joining": "2024-02-15",
+    "manager_id": "00000000-0000-0000-0000-000000000003",
+    "manager_name": "Aarya Shirodkar",
+    "role": "employee",
+    "is_active": true
+  },
+  {
+    "id": "00000000-0000-0000-0000-000000000015",
+    "full_name": "Gauri Naik",
+    "email": "gauri@company.com",
+    "designation": "QA Automation Lead",
+    "department": "Engineering",
+    "date_of_joining": "2023-02-01",
+    "manager_id": "00000000-0000-0000-0000-000000000002",
+    "manager_name": "Mehmood Sayed",
+    "role": "employee",
+    "is_active": true
+  },
+  {
+    "id": "00000000-0000-0000-0000-000000000016",
+    "full_name": "Rohit Deshmukh",
+    "email": "rohit@company.com",
+    "designation": "Mobile Engineering Manager",
+    "department": "Engineering",
+    "date_of_joining": "2022-04-10",
+    "manager_id": "00000000-0000-0000-0000-000000000006",
+    "manager_name": "Yash Parulekar",
+    "role": "manager",
+    "is_active": true
+  },
+  {
+    "id": "00000000-0000-0000-0000-000000000017",
+    "full_name": "Pooja Kulkarni",
+    "email": "pooja@company.com",
+    "designation": "Lead iOS Engineer",
+    "department": "Engineering",
+    "date_of_joining": "2022-09-01",
+    "manager_id": "00000000-0000-0000-0000-000000000016",
+    "manager_name": "Rohit Deshmukh",
+    "role": "employee",
+    "is_active": true
+  },
+  {
+    "id": "00000000-0000-0000-0000-000000000018",
+    "full_name": "Siddharth Rane",
+    "email": "siddharth@company.com",
+    "designation": "Senior Android Engineer",
+    "department": "Engineering",
+    "date_of_joining": "2023-03-15",
+    "manager_id": "00000000-0000-0000-0000-000000000016",
+    "manager_name": "Rohit Deshmukh",
+    "role": "employee",
+    "is_active": true
+  },
+  {
+    "id": "00000000-0000-0000-0000-000000000019",
+    "full_name": "Neha Borkar",
+    "email": "neha@company.com",
+    "designation": "React Native Developer",
+    "department": "Engineering",
+    "date_of_joining": "2023-07-20",
+    "manager_id": "00000000-0000-0000-0000-000000000016",
+    "manager_name": "Rohit Deshmukh",
+    "role": "employee",
+    "is_active": true
+  },
+  {
+    "id": "00000000-0000-0000-0000-000000000020",
+    "full_name": "Sanket Gaonkar",
+    "email": "sanket@company.com",
+    "designation": "Frontend UI Specialist",
+    "department": "Engineering",
+    "date_of_joining": "2023-11-01",
+    "manager_id": "00000000-0000-0000-0000-000000000016",
+    "manager_name": "Rohit Deshmukh",
+    "role": "employee",
+    "is_active": true
+  },
+  {
+    "id": "00000000-0000-0000-0000-000000000021",
+    "full_name": "Rhea Fernandes",
+    "email": "rhea@company.com",
+    "designation": "Mobile QA Specialist",
+    "department": "Engineering",
+    "date_of_joining": "2024-03-01",
+    "manager_id": "00000000-0000-0000-0000-000000000016",
+    "manager_name": "Rohit Deshmukh",
+    "role": "employee",
+    "is_active": true
+  },
+  {
+    "id": "00000000-0000-0000-0000-000000000022",
+    "full_name": "Natasha D'Souza",
+    "email": "natasha@company.com",
+    "designation": "Principal Product Manager",
+    "department": "Product",
+    "date_of_joining": "2022-01-10",
+    "manager_id": "00000000-0000-0000-0000-000000000006",
+    "manager_name": "Yash Parulekar",
+    "role": "manager",
+    "is_active": true
+  },
+  {
+    "id": "00000000-0000-0000-0000-000000000023",
+    "full_name": "Varun Prabhu",
+    "email": "varun@company.com",
+    "designation": "Lead Product Designer",
+    "department": "Design",
+    "date_of_joining": "2022-06-15",
+    "manager_id": "00000000-0000-0000-0000-000000000022",
+    "manager_name": "Natasha D'Souza",
+    "role": "manager",
+    "is_active": true
+  },
+  {
+    "id": "00000000-0000-0000-0000-000000000024",
+    "full_name": "Maitreyi Chari",
+    "email": "maitreyi@company.com",
+    "designation": "UI & Visual Designer",
+    "department": "Design",
+    "date_of_joining": "2023-05-10",
+    "manager_id": "00000000-0000-0000-0000-000000000023",
+    "manager_name": "Varun Prabhu",
+    "role": "employee",
+    "is_active": true
+  },
+  {
+    "id": "00000000-0000-0000-0000-000000000025",
+    "full_name": "Amit Saraf",
+    "email": "amit@company.com",
+    "designation": "Senior Data & BI Analyst",
+    "department": "Product",
+    "date_of_joining": "2023-08-01",
+    "manager_id": "00000000-0000-0000-0000-000000000022",
+    "manager_name": "Natasha D'Souza",
+    "role": "employee",
+    "is_active": true
+  },
+  {
+    "id": "00000000-0000-0000-0000-000000000026",
+    "full_name": "Shruti Hegde",
+    "email": "shruti@company.com",
+    "designation": "Associate Product Manager",
+    "department": "Product",
+    "date_of_joining": "2024-01-15",
+    "manager_id": "00000000-0000-0000-0000-000000000022",
+    "manager_name": "Natasha D'Souza",
+    "role": "employee",
+    "is_active": true
+  },
+  {
+    "id": "00000000-0000-0000-0000-000000000027",
+    "full_name": "Sameer Merchant",
+    "email": "sameer@company.com",
+    "designation": "Head of Customer Success",
+    "department": "Operations",
+    "date_of_joining": "2022-05-01",
+    "manager_id": "00000000-0000-0000-0000-000000000001",
+    "manager_name": "Praveen Dalal",
+    "role": "manager",
+    "is_active": true
+  },
+  {
+    "id": "00000000-0000-0000-0000-000000000028",
+    "full_name": "Kavita Shenoy",
+    "email": "kavita@company.com",
+    "designation": "Senior Enterprise CSM",
+    "department": "Operations",
+    "date_of_joining": "2022-10-15",
+    "manager_id": "00000000-0000-0000-0000-000000000027",
+    "manager_name": "Sameer Merchant",
+    "role": "employee",
+    "is_active": true
+  },
+  {
+    "id": "00000000-0000-0000-0000-000000000029",
+    "full_name": "Prathamesh Shinde",
+    "email": "prathamesh@company.com",
+    "designation": "Lead Solutions Architect",
+    "department": "Operations",
+    "date_of_joining": "2023-02-20",
+    "manager_id": "00000000-0000-0000-0000-000000000027",
+    "manager_name": "Sameer Merchant",
+    "role": "employee",
+    "is_active": true
+  },
+  {
+    "id": "00000000-0000-0000-0000-000000000030",
+    "full_name": "Zoya Khan",
+    "email": "zoya@company.com",
+    "designation": "Customer Operations Specialist",
+    "department": "Operations",
+    "date_of_joining": "2023-09-01",
+    "manager_id": "00000000-0000-0000-0000-000000000027",
+    "manager_name": "Sameer Merchant",
+    "role": "employee",
+    "is_active": true
+  },
+  {
+    "id": "00000000-0000-0000-0000-000000000031",
+    "full_name": "Rahul Gadekar",
+    "email": "rahul@company.com",
+    "designation": "Implementation Consultant",
+    "department": "Operations",
+    "date_of_joining": "2024-02-01",
+    "manager_id": "00000000-0000-0000-0000-000000000027",
+    "manager_name": "Sameer Merchant",
+    "role": "employee",
+    "is_active": true
+  }
 ];
 
 const INITIAL_CYCLES: ReviewCycle[] = [
@@ -82,319 +389,2289 @@ const INITIAL_CYCLES: ReviewCycle[] = [
 ];
 
 const INITIAL_GOALS: Goal[] = [
-  // Aarya Shirodkar's Goals (Total = 85%)
   {
-    id: "20000000-0000-0000-0000-000000000001",
-    employee_id: "00000000-0000-0000-0000-000000000003",
-    cycle_id: "10000000-0000-0000-0000-000000000001",
-    title: "Migrate Core API Services to Microservices",
-    description: "Decompose monolithic billing & notifications into scalable independent services.",
-    weightage: 35,
-    target_date: "2026-11-30",
-    status: "approved",
-    manager_comment: "Approved. Essential for platform reliability.",
+    "id": "20000000-0000-0000-0000-000000000001",
+    "employee_id": "00000000-0000-0000-0000-000000000001",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "Enterprise Talent Acquisition & Retention",
+    "description": "Optimize hiring pipelines to achieve under 30-day time-to-hire with 95% retention rate.",
+    "weightage": 35,
+    "target_date": "2026-11-30",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
   },
   {
-    id: "20000000-0000-0000-0000-000000000002",
-    employee_id: "00000000-0000-0000-0000-000000000003",
-    cycle_id: "10000000-0000-0000-0000-000000000001",
-    title: "Automate CI/CD & Elevate Test Coverage to 85%",
-    description: "Implement automated Playwright test suites and GitHub Actions deployment workflows.",
-    weightage: 25,
-    target_date: "2026-10-15",
-    status: "approved",
-    manager_comment: "Approved.",
+    "id": "20000000-0000-0000-0000-000000000002",
+    "employee_id": "00000000-0000-0000-0000-000000000001",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "Standardize Global PMS Review Calibration",
+    "description": "Implement normalized rating rubrics and complete 100% of executive calibrations on schedule.",
+    "weightage": 30,
+    "target_date": "2026-10-15",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
   },
   {
-    id: "20000000-0000-0000-0000-000000000003",
-    employee_id: "00000000-0000-0000-0000-000000000003",
-    cycle_id: "10000000-0000-0000-0000-000000000001",
-    title: "Technical Mentorship of Junior Engineers",
-    description: "Lead weekly architectural sessions and conduct structured code reviews for 2 juniors.",
-    weightage: 25,
-    target_date: "2027-02-28",
-    status: "approved",
-    manager_comment: "Approved.",
-  },
-  // Uraj Madkaikar's Goals (Total = 85%)
-  {
-    id: "20000000-0000-0000-0000-000000000004",
-    employee_id: "00000000-0000-0000-0000-000000000004",
-    cycle_id: "10000000-0000-0000-0000-000000000001",
-    title: "Design & Deliver Modern Tailwind UI Component Library",
-    description: "Build accessible, highly responsive design system with 25+ reusable dashboard widgets.",
-    weightage: 45,
-    target_date: "2026-11-15",
-    status: "approved",
-    manager_comment: "Great focus on frontend consistency and UX.",
+    "id": "20000000-0000-0000-0000-000000000003",
+    "employee_id": "00000000-0000-0000-0000-000000000001",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "Employee Learning & Leadership Development",
+    "description": "Roll out modern engineering and management training workshops across all departments.",
+    "weightage": 25,
+    "target_date": "2027-02-28",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
   },
   {
-    id: "20000000-0000-0000-0000-000000000005",
-    employee_id: "00000000-0000-0000-0000-000000000004",
-    cycle_id: "10000000-0000-0000-0000-000000000001",
-    title: "Optimize Frontend Web Performance & Core Web Vitals",
-    description: "Achieve sub-1.2s Largest Contentful Paint and 95+ Google Lighthouse performance score.",
-    weightage: 40,
-    target_date: "2026-12-31",
-    status: "approved",
-    manager_comment: "Crucial for customer retention and responsiveness.",
-  },
-  // Mehmood Sayed's Goals (Manager - Total = 85%)
-  {
-    id: "20000000-0000-0000-0000-000000000006",
-    employee_id: "00000000-0000-0000-0000-000000000002",
-    cycle_id: "10000000-0000-0000-0000-000000000001",
-    title: "Engineering Delivery Velocity & Sprint Predictability",
-    description: "Maintain 95%+ sprint commitment predictability and reduce average bug resolution turnaround by 30%.",
-    weightage: 35,
-    target_date: "2026-12-15",
-    status: "approved",
-    manager_comment: "Approved. Critical for product roadmaps.",
+    "id": "20000000-0000-0000-0000-000000000004",
+    "employee_id": "00000000-0000-0000-0000-000000000005",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "Enterprise Talent Acquisition & Retention",
+    "description": "Optimize hiring pipelines to achieve under 30-day time-to-hire with 95% retention rate.",
+    "weightage": 35,
+    "target_date": "2026-11-30",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
   },
   {
-    id: "20000000-0000-0000-0000-000000000007",
-    employee_id: "00000000-0000-0000-0000-000000000002",
-    cycle_id: "10000000-0000-0000-0000-000000000001",
-    title: "Cloud Infrastructure Cost & Reliability Optimization",
-    description: "Optimize AWS cloud architectures to reduce monthly infrastructure run rate by 20% while maintaining 99.99% uptime.",
-    weightage: 25,
-    target_date: "2027-01-31",
-    status: "approved",
-    manager_comment: "Approved. Key financial efficiency target.",
+    "id": "20000000-0000-0000-0000-000000000005",
+    "employee_id": "00000000-0000-0000-0000-000000000005",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "Standardize Global PMS Review Calibration",
+    "description": "Implement normalized rating rubrics and complete 100% of executive calibrations on schedule.",
+    "weightage": 30,
+    "target_date": "2026-10-15",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
   },
   {
-    id: "20000000-0000-0000-0000-000000000008",
-    employee_id: "00000000-0000-0000-0000-000000000002",
-    cycle_id: "10000000-0000-0000-0000-000000000001",
-    title: "Engineering Talent Hiring & Team Retention",
-    description: "Hire 4 senior engineers, organize internal tech seminars, and maintain zero voluntary attrition across core squads.",
-    weightage: 25,
-    target_date: "2027-03-31",
-    status: "approved",
-    manager_comment: "Approved. Team scaling is top priority.",
-  },
-  // Praveen Dalal's Goals (HR Admin - Total = 85%)
-  {
-    id: "20000000-0000-0000-0000-000000000009",
-    employee_id: "00000000-0000-0000-0000-000000000001",
-    cycle_id: "10000000-0000-0000-0000-000000000001",
-    title: "Organization Performance Management Cycle Execution",
-    description: "Orchestrate end-to-end performance appraisals with 100% completion across all 200 organization employees.",
-    weightage: 45,
-    target_date: "2026-11-30",
-    status: "approved",
-    manager_comment: "Approved.",
+    "id": "20000000-0000-0000-0000-000000000006",
+    "employee_id": "00000000-0000-0000-0000-000000000005",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "Employee Learning & Leadership Development",
+    "description": "Roll out modern engineering and management training workshops across all departments.",
+    "weightage": 25,
+    "target_date": "2027-02-28",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
   },
   {
-    id: "20000000-0000-0000-0000-000000000010",
-    employee_id: "00000000-0000-0000-0000-000000000001",
-    cycle_id: "10000000-0000-0000-0000-000000000001",
-    title: "Leadership Succession & Talent Calibration Framework",
-    description: "Conduct leadership reviews, implement salary calibration bands, and create career ladders across departments.",
-    weightage: 40,
-    target_date: "2027-02-28",
-    status: "approved",
-    manager_comment: "Approved.",
+    "id": "20000000-0000-0000-0000-000000000007",
+    "employee_id": "00000000-0000-0000-0000-000000000006",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "Microservices Architecture & Platform Scalability",
+    "description": "Modernize monolithic modules to high-throughput containerized microservices.",
+    "weightage": 35,
+    "target_date": "2026-11-30",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
   },
   {
-    id: "20000000-0000-0000-0000-000000000011",
-    employee_id: "00000000-0000-0000-0000-000000000005",
-    cycle_id: "10000000-0000-0000-0000-000000000001",
-    title: "Organization Performance Management Cycle Execution",
-    description: "Orchestrate end-to-end performance appraisals with 100% completion across all 200 organization employees.",
-    weightage: 45,
-    target_date: "2026-11-30",
-    status: "approved",
-    manager_comment: "Approved.",
+    "id": "20000000-0000-0000-0000-000000000008",
+    "employee_id": "00000000-0000-0000-0000-000000000006",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "CI/CD Pipeline Automation & Quality Assurance",
+    "description": "Enhance Playwright end-to-end automated testing to achieve 90%+ code coverage.",
+    "weightage": 25,
+    "target_date": "2026-10-15",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
   },
   {
-    id: "20000000-0000-0000-0000-000000000012",
-    employee_id: "00000000-0000-0000-0000-000000000005",
-    cycle_id: "10000000-0000-0000-0000-000000000001",
-    title: "Leadership Succession & Talent Calibration Framework",
-    description: "Conduct leadership reviews, implement salary calibration bands, and create career ladders across departments.",
-    weightage: 40,
-    target_date: "2027-02-28",
-    status: "approved",
-    manager_comment: "Approved.",
+    "id": "20000000-0000-0000-0000-000000000009",
+    "employee_id": "00000000-0000-0000-0000-000000000006",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "Technical Mentorship & Squad Onboarding",
+    "description": "Lead brown-bag architectural sessions and mentor junior software engineers.",
+    "weightage": 25,
+    "target_date": "2027-02-28",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
   },
+  {
+    "id": "20000000-0000-0000-0000-000000000010",
+    "employee_id": "00000000-0000-0000-0000-000000000007",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "Enterprise Talent Acquisition & Retention",
+    "description": "Optimize hiring pipelines to achieve under 30-day time-to-hire with 95% retention rate.",
+    "weightage": 35,
+    "target_date": "2026-11-30",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000011",
+    "employee_id": "00000000-0000-0000-0000-000000000007",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "Standardize Global PMS Review Calibration",
+    "description": "Implement normalized rating rubrics and complete 100% of executive calibrations on schedule.",
+    "weightage": 30,
+    "target_date": "2026-10-15",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000012",
+    "employee_id": "00000000-0000-0000-0000-000000000007",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "Employee Learning & Leadership Development",
+    "description": "Roll out modern engineering and management training workshops across all departments.",
+    "weightage": 25,
+    "target_date": "2027-02-28",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000013",
+    "employee_id": "00000000-0000-0000-0000-000000000008",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "Enterprise Talent Acquisition & Retention",
+    "description": "Optimize hiring pipelines to achieve under 30-day time-to-hire with 95% retention rate.",
+    "weightage": 35,
+    "target_date": "2026-11-30",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000014",
+    "employee_id": "00000000-0000-0000-0000-000000000008",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "Standardize Global PMS Review Calibration",
+    "description": "Implement normalized rating rubrics and complete 100% of executive calibrations on schedule.",
+    "weightage": 30,
+    "target_date": "2026-10-15",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000015",
+    "employee_id": "00000000-0000-0000-0000-000000000008",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "Employee Learning & Leadership Development",
+    "description": "Roll out modern engineering and management training workshops across all departments.",
+    "weightage": 25,
+    "target_date": "2027-02-28",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000016",
+    "employee_id": "00000000-0000-0000-0000-000000000009",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "Enterprise Talent Acquisition & Retention",
+    "description": "Optimize hiring pipelines to achieve under 30-day time-to-hire with 95% retention rate.",
+    "weightage": 35,
+    "target_date": "2026-11-30",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000017",
+    "employee_id": "00000000-0000-0000-0000-000000000009",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "Standardize Global PMS Review Calibration",
+    "description": "Implement normalized rating rubrics and complete 100% of executive calibrations on schedule.",
+    "weightage": 30,
+    "target_date": "2026-10-15",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000018",
+    "employee_id": "00000000-0000-0000-0000-000000000009",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "Employee Learning & Leadership Development",
+    "description": "Roll out modern engineering and management training workshops across all departments.",
+    "weightage": 25,
+    "target_date": "2027-02-28",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000019",
+    "employee_id": "00000000-0000-0000-0000-000000000010",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "Enterprise Talent Acquisition & Retention",
+    "description": "Optimize hiring pipelines to achieve under 30-day time-to-hire with 95% retention rate.",
+    "weightage": 35,
+    "target_date": "2026-11-30",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000020",
+    "employee_id": "00000000-0000-0000-0000-000000000010",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "Standardize Global PMS Review Calibration",
+    "description": "Implement normalized rating rubrics and complete 100% of executive calibrations on schedule.",
+    "weightage": 30,
+    "target_date": "2026-10-15",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000021",
+    "employee_id": "00000000-0000-0000-0000-000000000010",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "Employee Learning & Leadership Development",
+    "description": "Roll out modern engineering and management training workshops across all departments.",
+    "weightage": 25,
+    "target_date": "2027-02-28",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000022",
+    "employee_id": "00000000-0000-0000-0000-000000000002",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "Microservices Architecture & Platform Scalability",
+    "description": "Modernize monolithic modules to high-throughput containerized microservices.",
+    "weightage": 35,
+    "target_date": "2026-11-30",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000023",
+    "employee_id": "00000000-0000-0000-0000-000000000002",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "CI/CD Pipeline Automation & Quality Assurance",
+    "description": "Enhance Playwright end-to-end automated testing to achieve 90%+ code coverage.",
+    "weightage": 25,
+    "target_date": "2026-10-15",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000024",
+    "employee_id": "00000000-0000-0000-0000-000000000002",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "Technical Mentorship & Squad Onboarding",
+    "description": "Lead brown-bag architectural sessions and mentor junior software engineers.",
+    "weightage": 25,
+    "target_date": "2027-02-28",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000025",
+    "employee_id": "00000000-0000-0000-0000-000000000003",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "Microservices Architecture & Platform Scalability",
+    "description": "Modernize monolithic modules to high-throughput containerized microservices.",
+    "weightage": 35,
+    "target_date": "2026-11-30",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000026",
+    "employee_id": "00000000-0000-0000-0000-000000000003",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "CI/CD Pipeline Automation & Quality Assurance",
+    "description": "Enhance Playwright end-to-end automated testing to achieve 90%+ code coverage.",
+    "weightage": 25,
+    "target_date": "2026-10-15",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000027",
+    "employee_id": "00000000-0000-0000-0000-000000000003",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "Technical Mentorship & Squad Onboarding",
+    "description": "Lead brown-bag architectural sessions and mentor junior software engineers.",
+    "weightage": 25,
+    "target_date": "2027-02-28",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000028",
+    "employee_id": "00000000-0000-0000-0000-000000000004",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "Microservices Architecture & Platform Scalability",
+    "description": "Modernize monolithic modules to high-throughput containerized microservices.",
+    "weightage": 35,
+    "target_date": "2026-11-30",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000029",
+    "employee_id": "00000000-0000-0000-0000-000000000004",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "CI/CD Pipeline Automation & Quality Assurance",
+    "description": "Enhance Playwright end-to-end automated testing to achieve 90%+ code coverage.",
+    "weightage": 25,
+    "target_date": "2026-10-15",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000030",
+    "employee_id": "00000000-0000-0000-0000-000000000004",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "Technical Mentorship & Squad Onboarding",
+    "description": "Lead brown-bag architectural sessions and mentor junior software engineers.",
+    "weightage": 25,
+    "target_date": "2027-02-28",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000031",
+    "employee_id": "00000000-0000-0000-0000-000000000011",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "Microservices Architecture & Platform Scalability",
+    "description": "Modernize monolithic modules to high-throughput containerized microservices.",
+    "weightage": 35,
+    "target_date": "2026-11-30",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000032",
+    "employee_id": "00000000-0000-0000-0000-000000000011",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "CI/CD Pipeline Automation & Quality Assurance",
+    "description": "Enhance Playwright end-to-end automated testing to achieve 90%+ code coverage.",
+    "weightage": 25,
+    "target_date": "2026-10-15",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000033",
+    "employee_id": "00000000-0000-0000-0000-000000000011",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "Technical Mentorship & Squad Onboarding",
+    "description": "Lead brown-bag architectural sessions and mentor junior software engineers.",
+    "weightage": 25,
+    "target_date": "2027-02-28",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000034",
+    "employee_id": "00000000-0000-0000-0000-000000000012",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "Microservices Architecture & Platform Scalability",
+    "description": "Modernize monolithic modules to high-throughput containerized microservices.",
+    "weightage": 35,
+    "target_date": "2026-11-30",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000035",
+    "employee_id": "00000000-0000-0000-0000-000000000012",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "CI/CD Pipeline Automation & Quality Assurance",
+    "description": "Enhance Playwright end-to-end automated testing to achieve 90%+ code coverage.",
+    "weightage": 25,
+    "target_date": "2026-10-15",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000036",
+    "employee_id": "00000000-0000-0000-0000-000000000012",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "Technical Mentorship & Squad Onboarding",
+    "description": "Lead brown-bag architectural sessions and mentor junior software engineers.",
+    "weightage": 25,
+    "target_date": "2027-02-28",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000037",
+    "employee_id": "00000000-0000-0000-0000-000000000013",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "Microservices Architecture & Platform Scalability",
+    "description": "Modernize monolithic modules to high-throughput containerized microservices.",
+    "weightage": 35,
+    "target_date": "2026-11-30",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000038",
+    "employee_id": "00000000-0000-0000-0000-000000000013",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "CI/CD Pipeline Automation & Quality Assurance",
+    "description": "Enhance Playwright end-to-end automated testing to achieve 90%+ code coverage.",
+    "weightage": 25,
+    "target_date": "2026-10-15",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000039",
+    "employee_id": "00000000-0000-0000-0000-000000000013",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "Technical Mentorship & Squad Onboarding",
+    "description": "Lead brown-bag architectural sessions and mentor junior software engineers.",
+    "weightage": 25,
+    "target_date": "2027-02-28",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000040",
+    "employee_id": "00000000-0000-0000-0000-000000000014",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "Microservices Architecture & Platform Scalability",
+    "description": "Modernize monolithic modules to high-throughput containerized microservices.",
+    "weightage": 35,
+    "target_date": "2026-11-30",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000041",
+    "employee_id": "00000000-0000-0000-0000-000000000014",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "CI/CD Pipeline Automation & Quality Assurance",
+    "description": "Enhance Playwright end-to-end automated testing to achieve 90%+ code coverage.",
+    "weightage": 25,
+    "target_date": "2026-10-15",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000042",
+    "employee_id": "00000000-0000-0000-0000-000000000014",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "Technical Mentorship & Squad Onboarding",
+    "description": "Lead brown-bag architectural sessions and mentor junior software engineers.",
+    "weightage": 25,
+    "target_date": "2027-02-28",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000043",
+    "employee_id": "00000000-0000-0000-0000-000000000015",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "Microservices Architecture & Platform Scalability",
+    "description": "Modernize monolithic modules to high-throughput containerized microservices.",
+    "weightage": 35,
+    "target_date": "2026-11-30",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000044",
+    "employee_id": "00000000-0000-0000-0000-000000000015",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "CI/CD Pipeline Automation & Quality Assurance",
+    "description": "Enhance Playwright end-to-end automated testing to achieve 90%+ code coverage.",
+    "weightage": 25,
+    "target_date": "2026-10-15",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000045",
+    "employee_id": "00000000-0000-0000-0000-000000000015",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "Technical Mentorship & Squad Onboarding",
+    "description": "Lead brown-bag architectural sessions and mentor junior software engineers.",
+    "weightage": 25,
+    "target_date": "2027-02-28",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000046",
+    "employee_id": "00000000-0000-0000-0000-000000000016",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "Microservices Architecture & Platform Scalability",
+    "description": "Modernize monolithic modules to high-throughput containerized microservices.",
+    "weightage": 35,
+    "target_date": "2026-11-30",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000047",
+    "employee_id": "00000000-0000-0000-0000-000000000016",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "CI/CD Pipeline Automation & Quality Assurance",
+    "description": "Enhance Playwright end-to-end automated testing to achieve 90%+ code coverage.",
+    "weightage": 25,
+    "target_date": "2026-10-15",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000048",
+    "employee_id": "00000000-0000-0000-0000-000000000016",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "Technical Mentorship & Squad Onboarding",
+    "description": "Lead brown-bag architectural sessions and mentor junior software engineers.",
+    "weightage": 25,
+    "target_date": "2027-02-28",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000049",
+    "employee_id": "00000000-0000-0000-0000-000000000017",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "Microservices Architecture & Platform Scalability",
+    "description": "Modernize monolithic modules to high-throughput containerized microservices.",
+    "weightage": 35,
+    "target_date": "2026-11-30",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000050",
+    "employee_id": "00000000-0000-0000-0000-000000000017",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "CI/CD Pipeline Automation & Quality Assurance",
+    "description": "Enhance Playwright end-to-end automated testing to achieve 90%+ code coverage.",
+    "weightage": 25,
+    "target_date": "2026-10-15",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000051",
+    "employee_id": "00000000-0000-0000-0000-000000000017",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "Technical Mentorship & Squad Onboarding",
+    "description": "Lead brown-bag architectural sessions and mentor junior software engineers.",
+    "weightage": 25,
+    "target_date": "2027-02-28",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000052",
+    "employee_id": "00000000-0000-0000-0000-000000000018",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "Microservices Architecture & Platform Scalability",
+    "description": "Modernize monolithic modules to high-throughput containerized microservices.",
+    "weightage": 35,
+    "target_date": "2026-11-30",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000053",
+    "employee_id": "00000000-0000-0000-0000-000000000018",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "CI/CD Pipeline Automation & Quality Assurance",
+    "description": "Enhance Playwright end-to-end automated testing to achieve 90%+ code coverage.",
+    "weightage": 25,
+    "target_date": "2026-10-15",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000054",
+    "employee_id": "00000000-0000-0000-0000-000000000018",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "Technical Mentorship & Squad Onboarding",
+    "description": "Lead brown-bag architectural sessions and mentor junior software engineers.",
+    "weightage": 25,
+    "target_date": "2027-02-28",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000055",
+    "employee_id": "00000000-0000-0000-0000-000000000019",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "Microservices Architecture & Platform Scalability",
+    "description": "Modernize monolithic modules to high-throughput containerized microservices.",
+    "weightage": 35,
+    "target_date": "2026-11-30",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000056",
+    "employee_id": "00000000-0000-0000-0000-000000000019",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "CI/CD Pipeline Automation & Quality Assurance",
+    "description": "Enhance Playwright end-to-end automated testing to achieve 90%+ code coverage.",
+    "weightage": 25,
+    "target_date": "2026-10-15",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000057",
+    "employee_id": "00000000-0000-0000-0000-000000000019",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "Technical Mentorship & Squad Onboarding",
+    "description": "Lead brown-bag architectural sessions and mentor junior software engineers.",
+    "weightage": 25,
+    "target_date": "2027-02-28",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000058",
+    "employee_id": "00000000-0000-0000-0000-000000000020",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "Microservices Architecture & Platform Scalability",
+    "description": "Modernize monolithic modules to high-throughput containerized microservices.",
+    "weightage": 35,
+    "target_date": "2026-11-30",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000059",
+    "employee_id": "00000000-0000-0000-0000-000000000020",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "CI/CD Pipeline Automation & Quality Assurance",
+    "description": "Enhance Playwright end-to-end automated testing to achieve 90%+ code coverage.",
+    "weightage": 25,
+    "target_date": "2026-10-15",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000060",
+    "employee_id": "00000000-0000-0000-0000-000000000020",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "Technical Mentorship & Squad Onboarding",
+    "description": "Lead brown-bag architectural sessions and mentor junior software engineers.",
+    "weightage": 25,
+    "target_date": "2027-02-28",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000061",
+    "employee_id": "00000000-0000-0000-0000-000000000021",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "Microservices Architecture & Platform Scalability",
+    "description": "Modernize monolithic modules to high-throughput containerized microservices.",
+    "weightage": 35,
+    "target_date": "2026-11-30",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000062",
+    "employee_id": "00000000-0000-0000-0000-000000000021",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "CI/CD Pipeline Automation & Quality Assurance",
+    "description": "Enhance Playwright end-to-end automated testing to achieve 90%+ code coverage.",
+    "weightage": 25,
+    "target_date": "2026-10-15",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000063",
+    "employee_id": "00000000-0000-0000-0000-000000000021",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "Technical Mentorship & Squad Onboarding",
+    "description": "Lead brown-bag architectural sessions and mentor junior software engineers.",
+    "weightage": 25,
+    "target_date": "2027-02-28",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000064",
+    "employee_id": "00000000-0000-0000-0000-000000000022",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "Product Roadmap Execution & Feature Velocity",
+    "description": "Drive high-impact product releases with zero critical regressions.",
+    "weightage": 35,
+    "target_date": "2026-11-30",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000065",
+    "employee_id": "00000000-0000-0000-0000-000000000022",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "User Retention & Engagement Analytics",
+    "description": "Analyze user interaction funnels and improve core product DAU/MAU by 15%.",
+    "weightage": 30,
+    "target_date": "2026-10-15",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000066",
+    "employee_id": "00000000-0000-0000-0000-000000000022",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "Cross-Functional Agile Alignment",
+    "description": "Streamline sprint planning, user stories, and acceptance criteria across squads.",
+    "weightage": 25,
+    "target_date": "2027-02-28",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000067",
+    "employee_id": "00000000-0000-0000-0000-000000000023",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "Unified Design System & Component Library",
+    "description": "Publish and maintain accessible Figma components and Tailwind UI patterns.",
+    "weightage": 35,
+    "target_date": "2026-11-30",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000068",
+    "employee_id": "00000000-0000-0000-0000-000000000023",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "User Research & Usability Benchmarking",
+    "description": "Conduct customer interviews and iterative usability test cycles for new flows.",
+    "weightage": 30,
+    "target_date": "2026-10-15",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000069",
+    "employee_id": "00000000-0000-0000-0000-000000000023",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "Accessibility (WCAG AA) Compliance",
+    "description": "Audit all interfaces and ensure complete compliance with color contrast and keyboard navigation.",
+    "weightage": 25,
+    "target_date": "2027-02-28",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000070",
+    "employee_id": "00000000-0000-0000-0000-000000000024",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "Unified Design System & Component Library",
+    "description": "Publish and maintain accessible Figma components and Tailwind UI patterns.",
+    "weightage": 35,
+    "target_date": "2026-11-30",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000071",
+    "employee_id": "00000000-0000-0000-0000-000000000024",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "User Research & Usability Benchmarking",
+    "description": "Conduct customer interviews and iterative usability test cycles for new flows.",
+    "weightage": 30,
+    "target_date": "2026-10-15",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000072",
+    "employee_id": "00000000-0000-0000-0000-000000000024",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "Accessibility (WCAG AA) Compliance",
+    "description": "Audit all interfaces and ensure complete compliance with color contrast and keyboard navigation.",
+    "weightage": 25,
+    "target_date": "2027-02-28",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000073",
+    "employee_id": "00000000-0000-0000-0000-000000000025",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "Product Roadmap Execution & Feature Velocity",
+    "description": "Drive high-impact product releases with zero critical regressions.",
+    "weightage": 35,
+    "target_date": "2026-11-30",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000074",
+    "employee_id": "00000000-0000-0000-0000-000000000025",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "User Retention & Engagement Analytics",
+    "description": "Analyze user interaction funnels and improve core product DAU/MAU by 15%.",
+    "weightage": 30,
+    "target_date": "2026-10-15",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000075",
+    "employee_id": "00000000-0000-0000-0000-000000000025",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "Cross-Functional Agile Alignment",
+    "description": "Streamline sprint planning, user stories, and acceptance criteria across squads.",
+    "weightage": 25,
+    "target_date": "2027-02-28",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000076",
+    "employee_id": "00000000-0000-0000-0000-000000000026",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "Product Roadmap Execution & Feature Velocity",
+    "description": "Drive high-impact product releases with zero critical regressions.",
+    "weightage": 35,
+    "target_date": "2026-11-30",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000077",
+    "employee_id": "00000000-0000-0000-0000-000000000026",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "User Retention & Engagement Analytics",
+    "description": "Analyze user interaction funnels and improve core product DAU/MAU by 15%.",
+    "weightage": 30,
+    "target_date": "2026-10-15",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000078",
+    "employee_id": "00000000-0000-0000-0000-000000000026",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "Cross-Functional Agile Alignment",
+    "description": "Streamline sprint planning, user stories, and acceptance criteria across squads.",
+    "weightage": 25,
+    "target_date": "2027-02-28",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000079",
+    "employee_id": "00000000-0000-0000-0000-000000000027",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "Enterprise Customer Onboarding & Time-to-Value",
+    "description": "Reduce onboarding setup time by 25% while maintaining 98%+ CSAT score.",
+    "weightage": 35,
+    "target_date": "2026-11-30",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000080",
+    "employee_id": "00000000-0000-0000-0000-000000000027",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "Proactive Account Health & Retention Programs",
+    "description": "Monitor customer health scores and maintain net revenue retention above 110%.",
+    "weightage": 30,
+    "target_date": "2026-10-15",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000081",
+    "employee_id": "00000000-0000-0000-0000-000000000027",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "Support Ticket Resolution SLA Optimization",
+    "description": "Decrease first-response latency and resolve enterprise tier issues within 2 hours.",
+    "weightage": 25,
+    "target_date": "2027-02-28",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000082",
+    "employee_id": "00000000-0000-0000-0000-000000000028",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "Enterprise Customer Onboarding & Time-to-Value",
+    "description": "Reduce onboarding setup time by 25% while maintaining 98%+ CSAT score.",
+    "weightage": 35,
+    "target_date": "2026-11-30",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000083",
+    "employee_id": "00000000-0000-0000-0000-000000000028",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "Proactive Account Health & Retention Programs",
+    "description": "Monitor customer health scores and maintain net revenue retention above 110%.",
+    "weightage": 30,
+    "target_date": "2026-10-15",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000084",
+    "employee_id": "00000000-0000-0000-0000-000000000028",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "Support Ticket Resolution SLA Optimization",
+    "description": "Decrease first-response latency and resolve enterprise tier issues within 2 hours.",
+    "weightage": 25,
+    "target_date": "2027-02-28",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000085",
+    "employee_id": "00000000-0000-0000-0000-000000000029",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "Enterprise Customer Onboarding & Time-to-Value",
+    "description": "Reduce onboarding setup time by 25% while maintaining 98%+ CSAT score.",
+    "weightage": 35,
+    "target_date": "2026-11-30",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000086",
+    "employee_id": "00000000-0000-0000-0000-000000000029",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "Proactive Account Health & Retention Programs",
+    "description": "Monitor customer health scores and maintain net revenue retention above 110%.",
+    "weightage": 30,
+    "target_date": "2026-10-15",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000087",
+    "employee_id": "00000000-0000-0000-0000-000000000029",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "Support Ticket Resolution SLA Optimization",
+    "description": "Decrease first-response latency and resolve enterprise tier issues within 2 hours.",
+    "weightage": 25,
+    "target_date": "2027-02-28",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000088",
+    "employee_id": "00000000-0000-0000-0000-000000000030",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "Enterprise Customer Onboarding & Time-to-Value",
+    "description": "Reduce onboarding setup time by 25% while maintaining 98%+ CSAT score.",
+    "weightage": 35,
+    "target_date": "2026-11-30",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000089",
+    "employee_id": "00000000-0000-0000-0000-000000000030",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "Proactive Account Health & Retention Programs",
+    "description": "Monitor customer health scores and maintain net revenue retention above 110%.",
+    "weightage": 30,
+    "target_date": "2026-10-15",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000090",
+    "employee_id": "00000000-0000-0000-0000-000000000030",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "Support Ticket Resolution SLA Optimization",
+    "description": "Decrease first-response latency and resolve enterprise tier issues within 2 hours.",
+    "weightage": 25,
+    "target_date": "2027-02-28",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000091",
+    "employee_id": "00000000-0000-0000-0000-000000000031",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "Enterprise Customer Onboarding & Time-to-Value",
+    "description": "Reduce onboarding setup time by 25% while maintaining 98%+ CSAT score.",
+    "weightage": 35,
+    "target_date": "2026-11-30",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000092",
+    "employee_id": "00000000-0000-0000-0000-000000000031",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "Proactive Account Health & Retention Programs",
+    "description": "Monitor customer health scores and maintain net revenue retention above 110%.",
+    "weightage": 30,
+    "target_date": "2026-10-15",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000093",
+    "employee_id": "00000000-0000-0000-0000-000000000031",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "title": "Support Ticket Resolution SLA Optimization",
+    "description": "Decrease first-response latency and resolve enterprise tier issues within 2 hours.",
+    "weightage": 25,
+    "target_date": "2027-02-28",
+    "status": "approved",
+    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
+  }
 ];
 
 const INITIAL_REVIEWS: Review[] = [
-  // 1. Aarya Shirodkar: TOP PERFORMER (⭐ 5.0 / 5.0 Exceptional)
   {
-    id: "30000000-0000-0000-0000-000000000001",
-    employee_id: "00000000-0000-0000-0000-000000000003",
-    manager_id: "00000000-0000-0000-0000-000000000002",
-    cycle_id: "10000000-0000-0000-0000-000000000001",
-    status: "manager_reviewed",
-    overall_self_rating: 5,
-    overall_manager_rating: 5,
-    manager_summary: "Aarya is the top engineering performer this cycle. Her leadership on the microservice migration project was technically rigorous and completed ahead of schedule with zero downtime. Recommended for Senior Staff promotion.",
-    submitted_at: "2026-08-20T10:30:00Z",
-    reviewed_at: "2026-08-24T15:45:00Z",
+    "id": "30000000-0000-0000-0000-000000000001",
+    "employee_id": "00000000-0000-0000-0000-000000000001",
+    "manager_id": null,
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "status": "completed",
+    "overall_self_rating": 4,
+    "overall_manager_rating": 4,
+    "manager_summary": "Praveen has delivered outstanding leadership in standardizing the PMS appraisal workflow and driving organizational talent management initiatives.",
+    "submitted_at": "2026-06-25T10:00:00Z",
+    "reviewed_at": "2026-06-28T14:30:00Z"
   },
-  // 2. Uraj Madkaikar: Solid Frontend Contributor (⭐ 3.5 / 5.0 - Self 3, Manager 4)
   {
-    id: "30000000-0000-0000-0000-000000000002",
-    employee_id: "00000000-0000-0000-0000-000000000004",
-    manager_id: "00000000-0000-0000-0000-000000000002",
-    cycle_id: "10000000-0000-0000-0000-000000000001",
-    status: "manager_reviewed",
-    overall_self_rating: 3,
-    overall_manager_rating: 4,
-    manager_summary: "Uraj made solid progress on frontend modules this cycle. With more focus on automated test coverage and documentation, he will reach the next senior level.",
-    submitted_at: "2026-08-22T09:15:00Z",
-    reviewed_at: "2026-08-26T14:30:00Z",
+    "id": "30000000-0000-0000-0000-000000000002",
+    "employee_id": "00000000-0000-0000-0000-000000000005",
+    "manager_id": null,
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "status": "completed",
+    "overall_self_rating": 4,
+    "overall_manager_rating": 4,
+    "manager_summary": "Praveen has delivered outstanding leadership in standardizing the PMS appraisal workflow and driving organizational talent management initiatives.",
+    "submitted_at": "2026-06-25T10:00:00Z",
+    "reviewed_at": "2026-06-28T14:30:00Z"
   },
-  // 3. Mehmood Sayed: Engineering Lead (⭐ 4.0 / 5.0 - Self 4, Manager 4)
   {
-    id: "30000000-0000-0000-0000-000000000003",
-    employee_id: "00000000-0000-0000-0000-000000000002",
-    manager_id: "00000000-0000-0000-0000-000000000001",
-    cycle_id: "10000000-0000-0000-0000-000000000001",
-    status: "manager_reviewed",
-    overall_self_rating: 4,
-    overall_manager_rating: 4,
-    manager_summary: "Mehmood has maintained good team stability and consistent sprint delivery. Continuing to develop cross-functional alignment in Q3.",
-    submitted_at: "2026-08-18T14:00:00Z",
-    reviewed_at: "2026-08-22T11:20:00Z",
+    "id": "30000000-0000-0000-0000-000000000003",
+    "employee_id": "00000000-0000-0000-0000-000000000006",
+    "manager_id": "00000000-0000-0000-0000-000000000001",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "status": "completed",
+    "overall_self_rating": 4.5,
+    "overall_manager_rating": 4.5,
+    "manager_summary": "Yash has provided stellar architectural direction and strategic vision across Engineering and Product squads.",
+    "submitted_at": "2026-06-25T10:00:00Z",
+    "reviewed_at": "2026-06-28T14:30:00Z"
   },
-  // 4. Praveen Dalal: HR Director (⭐ 4.0 / 5.0 - Self 4, Manager 4)
   {
-    id: "30000000-0000-0000-0000-000000000004",
-    employee_id: "00000000-0000-0000-0000-000000000001",
-    manager_id: null,
-    cycle_id: "10000000-0000-0000-0000-000000000001",
-    status: "completed",
-    overall_self_rating: 4,
-    overall_manager_rating: 4,
-    manager_summary: "Praveen led the execution of organization appraisal cycles and talent calibration frameworks effectively.",
-    submitted_at: "2026-08-15T12:00:00Z",
-    reviewed_at: "2026-08-20T16:00:00Z",
+    "id": "30000000-0000-0000-0000-000000000004",
+    "employee_id": "00000000-0000-0000-0000-000000000007",
+    "manager_id": "00000000-0000-0000-0000-000000000001",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "status": "completed",
+    "overall_self_rating": 4.4,
+    "overall_manager_rating": 4.2,
+    "manager_summary": "Demonstrated dependable execution on departmental deliverables. Solid team player who consistently meets high expectations.",
+    "submitted_at": "2026-06-25T10:00:00Z",
+    "reviewed_at": "2026-06-28T14:30:00Z"
   },
+  {
+    "id": "30000000-0000-0000-0000-000000000005",
+    "employee_id": "00000000-0000-0000-0000-000000000008",
+    "manager_id": "00000000-0000-0000-0000-000000000001",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "status": "completed",
+    "overall_self_rating": 4,
+    "overall_manager_rating": 3.8,
+    "manager_summary": "Demonstrated dependable execution on departmental deliverables. Solid team player who consistently meets high expectations.",
+    "submitted_at": "2026-06-25T10:00:00Z",
+    "reviewed_at": "2026-06-28T14:30:00Z"
+  },
+  {
+    "id": "30000000-0000-0000-0000-000000000006",
+    "employee_id": "00000000-0000-0000-0000-000000000009",
+    "manager_id": "00000000-0000-0000-0000-000000000001",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "status": "self_appraisal_submitted",
+    "overall_self_rating": 3.8,
+    "overall_manager_rating": null,
+    "manager_summary": null,
+    "submitted_at": "2026-06-25T10:00:00Z",
+    "reviewed_at": null
+  },
+  {
+    "id": "30000000-0000-0000-0000-000000000007",
+    "employee_id": "00000000-0000-0000-0000-000000000010",
+    "manager_id": "00000000-0000-0000-0000-000000000009",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "status": "not_started",
+    "overall_self_rating": null,
+    "overall_manager_rating": null,
+    "manager_summary": null,
+    "submitted_at": null,
+    "reviewed_at": null
+  },
+  {
+    "id": "30000000-0000-0000-0000-000000000008",
+    "employee_id": "00000000-0000-0000-0000-000000000002",
+    "manager_id": "00000000-0000-0000-0000-000000000006",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "status": "completed",
+    "overall_self_rating": 4,
+    "overall_manager_rating": 4,
+    "manager_summary": "Mehmood has provided steady leadership to the Core Platform engineering squads, fostering high delivery standards and timely sprint executions.",
+    "submitted_at": "2026-06-25T10:00:00Z",
+    "reviewed_at": "2026-06-28T14:30:00Z"
+  },
+  {
+    "id": "30000000-0000-0000-0000-000000000009",
+    "employee_id": "00000000-0000-0000-0000-000000000003",
+    "manager_id": "00000000-0000-0000-0000-000000000002",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "status": "completed",
+    "overall_self_rating": 5,
+    "overall_manager_rating": 5,
+    "manager_summary": "Exceptional performance across the board. Exemplary technical leadership and flawless execution on microservices modernization. Highly recommended for Senior Staff promotion.",
+    "submitted_at": "2026-06-25T10:00:00Z",
+    "reviewed_at": "2026-06-28T14:30:00Z"
+  },
+  {
+    "id": "30000000-0000-0000-0000-000000000010",
+    "employee_id": "00000000-0000-0000-0000-000000000004",
+    "manager_id": "00000000-0000-0000-0000-000000000002",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "status": "manager_reviewed",
+    "overall_self_rating": 3.5,
+    "overall_manager_rating": 3.5,
+    "manager_summary": "Solid progress on UI redesign and design system components. Encourage taking greater autonomy on complex state management tasks.",
+    "submitted_at": "2026-06-25T10:00:00Z",
+    "reviewed_at": "2026-06-28T14:30:00Z"
+  },
+  {
+    "id": "30000000-0000-0000-0000-000000000011",
+    "employee_id": "00000000-0000-0000-0000-000000000011",
+    "manager_id": "00000000-0000-0000-0000-000000000002",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "status": "self_appraisal_submitted",
+    "overall_self_rating": 3.8,
+    "overall_manager_rating": null,
+    "manager_summary": null,
+    "submitted_at": "2026-06-25T10:00:00Z",
+    "reviewed_at": null
+  },
+  {
+    "id": "30000000-0000-0000-0000-000000000012",
+    "employee_id": "00000000-0000-0000-0000-000000000012",
+    "manager_id": "00000000-0000-0000-0000-000000000002",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "status": "completed",
+    "overall_self_rating": 3.4000000000000004,
+    "overall_manager_rating": 3.2,
+    "manager_summary": "Demonstrated dependable execution on departmental deliverables. Solid team player who consistently meets high expectations.",
+    "submitted_at": "2026-06-25T10:00:00Z",
+    "reviewed_at": "2026-06-28T14:30:00Z"
+  },
+  {
+    "id": "30000000-0000-0000-0000-000000000013",
+    "employee_id": "00000000-0000-0000-0000-000000000013",
+    "manager_id": "00000000-0000-0000-0000-000000000002",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "status": "not_started",
+    "overall_self_rating": null,
+    "overall_manager_rating": null,
+    "manager_summary": null,
+    "submitted_at": null,
+    "reviewed_at": null
+  },
+  {
+    "id": "30000000-0000-0000-0000-000000000014",
+    "employee_id": "00000000-0000-0000-0000-000000000014",
+    "manager_id": "00000000-0000-0000-0000-000000000003",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "status": "completed",
+    "overall_self_rating": 3.7,
+    "overall_manager_rating": 3.5,
+    "manager_summary": "Demonstrated dependable execution on departmental deliverables. Solid team player who consistently meets high expectations.",
+    "submitted_at": "2026-06-25T10:00:00Z",
+    "reviewed_at": "2026-06-28T14:30:00Z"
+  },
+  {
+    "id": "30000000-0000-0000-0000-000000000015",
+    "employee_id": "00000000-0000-0000-0000-000000000015",
+    "manager_id": "00000000-0000-0000-0000-000000000002",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "status": "completed",
+    "overall_self_rating": 4.4,
+    "overall_manager_rating": 4.2,
+    "manager_summary": "Demonstrated dependable execution on departmental deliverables. Solid team player who consistently meets high expectations.",
+    "submitted_at": "2026-06-25T10:00:00Z",
+    "reviewed_at": "2026-06-28T14:30:00Z"
+  },
+  {
+    "id": "30000000-0000-0000-0000-000000000016",
+    "employee_id": "00000000-0000-0000-0000-000000000016",
+    "manager_id": "00000000-0000-0000-0000-000000000006",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "status": "self_appraisal_submitted",
+    "overall_self_rating": 3.8,
+    "overall_manager_rating": null,
+    "manager_summary": null,
+    "submitted_at": "2026-06-25T10:00:00Z",
+    "reviewed_at": null
+  },
+  {
+    "id": "30000000-0000-0000-0000-000000000017",
+    "employee_id": "00000000-0000-0000-0000-000000000017",
+    "manager_id": "00000000-0000-0000-0000-000000000016",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "status": "completed",
+    "overall_self_rating": 3.6,
+    "overall_manager_rating": 3.4,
+    "manager_summary": "Demonstrated dependable execution on departmental deliverables. Solid team player who consistently meets high expectations.",
+    "submitted_at": "2026-06-25T10:00:00Z",
+    "reviewed_at": "2026-06-28T14:30:00Z"
+  },
+  {
+    "id": "30000000-0000-0000-0000-000000000018",
+    "employee_id": "00000000-0000-0000-0000-000000000018",
+    "manager_id": "00000000-0000-0000-0000-000000000016",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "status": "completed",
+    "overall_self_rating": 4.3,
+    "overall_manager_rating": 4.1,
+    "manager_summary": "Demonstrated dependable execution on departmental deliverables. Solid team player who consistently meets high expectations.",
+    "submitted_at": "2026-06-25T10:00:00Z",
+    "reviewed_at": "2026-06-28T14:30:00Z"
+  },
+  {
+    "id": "30000000-0000-0000-0000-000000000019",
+    "employee_id": "00000000-0000-0000-0000-000000000019",
+    "manager_id": "00000000-0000-0000-0000-000000000016",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "status": "not_started",
+    "overall_self_rating": null,
+    "overall_manager_rating": null,
+    "manager_summary": null,
+    "submitted_at": null,
+    "reviewed_at": null
+  },
+  {
+    "id": "30000000-0000-0000-0000-000000000020",
+    "employee_id": "00000000-0000-0000-0000-000000000020",
+    "manager_id": "00000000-0000-0000-0000-000000000016",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "status": "completed",
+    "overall_self_rating": 3.5,
+    "overall_manager_rating": 3.3,
+    "manager_summary": "Demonstrated dependable execution on departmental deliverables. Solid team player who consistently meets high expectations.",
+    "submitted_at": "2026-06-25T10:00:00Z",
+    "reviewed_at": "2026-06-28T14:30:00Z"
+  },
+  {
+    "id": "30000000-0000-0000-0000-000000000021",
+    "employee_id": "00000000-0000-0000-0000-000000000021",
+    "manager_id": "00000000-0000-0000-0000-000000000016",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "status": "self_appraisal_submitted",
+    "overall_self_rating": 3.8,
+    "overall_manager_rating": null,
+    "manager_summary": null,
+    "submitted_at": "2026-06-25T10:00:00Z",
+    "reviewed_at": null
+  },
+  {
+    "id": "30000000-0000-0000-0000-000000000022",
+    "employee_id": "00000000-0000-0000-0000-000000000022",
+    "manager_id": "00000000-0000-0000-0000-000000000006",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "status": "completed",
+    "overall_self_rating": 3.8000000000000003,
+    "overall_manager_rating": 3.6,
+    "manager_summary": "Demonstrated dependable execution on departmental deliverables. Solid team player who consistently meets high expectations.",
+    "submitted_at": "2026-06-25T10:00:00Z",
+    "reviewed_at": "2026-06-28T14:30:00Z"
+  },
+  {
+    "id": "30000000-0000-0000-0000-000000000023",
+    "employee_id": "00000000-0000-0000-0000-000000000023",
+    "manager_id": "00000000-0000-0000-0000-000000000022",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "status": "completed",
+    "overall_self_rating": 3.4000000000000004,
+    "overall_manager_rating": 3.2,
+    "manager_summary": "Demonstrated dependable execution on departmental deliverables. Solid team player who consistently meets high expectations.",
+    "submitted_at": "2026-06-25T10:00:00Z",
+    "reviewed_at": "2026-06-28T14:30:00Z"
+  },
+  {
+    "id": "30000000-0000-0000-0000-000000000024",
+    "employee_id": "00000000-0000-0000-0000-000000000024",
+    "manager_id": "00000000-0000-0000-0000-000000000023",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "status": "completed",
+    "overall_self_rating": 4.1,
+    "overall_manager_rating": 3.9,
+    "manager_summary": "Demonstrated dependable execution on departmental deliverables. Solid team player who consistently meets high expectations.",
+    "submitted_at": "2026-06-25T10:00:00Z",
+    "reviewed_at": "2026-06-28T14:30:00Z"
+  },
+  {
+    "id": "30000000-0000-0000-0000-000000000025",
+    "employee_id": "00000000-0000-0000-0000-000000000025",
+    "manager_id": "00000000-0000-0000-0000-000000000022",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "status": "not_started",
+    "overall_self_rating": null,
+    "overall_manager_rating": null,
+    "manager_summary": null,
+    "submitted_at": null,
+    "reviewed_at": null
+  },
+  {
+    "id": "30000000-0000-0000-0000-000000000026",
+    "employee_id": "00000000-0000-0000-0000-000000000026",
+    "manager_id": "00000000-0000-0000-0000-000000000022",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "status": "self_appraisal_submitted",
+    "overall_self_rating": 3.8,
+    "overall_manager_rating": null,
+    "manager_summary": null,
+    "submitted_at": "2026-06-25T10:00:00Z",
+    "reviewed_at": null
+  },
+  {
+    "id": "30000000-0000-0000-0000-000000000027",
+    "employee_id": "00000000-0000-0000-0000-000000000027",
+    "manager_id": "00000000-0000-0000-0000-000000000001",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "status": "completed",
+    "overall_self_rating": 4,
+    "overall_manager_rating": 3.8,
+    "manager_summary": "Demonstrated dependable execution on departmental deliverables. Solid team player who consistently meets high expectations.",
+    "submitted_at": "2026-06-25T10:00:00Z",
+    "reviewed_at": "2026-06-28T14:30:00Z"
+  },
+  {
+    "id": "30000000-0000-0000-0000-000000000028",
+    "employee_id": "00000000-0000-0000-0000-000000000028",
+    "manager_id": "00000000-0000-0000-0000-000000000027",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "status": "completed",
+    "overall_self_rating": 3.6,
+    "overall_manager_rating": 3.4,
+    "manager_summary": "Demonstrated dependable execution on departmental deliverables. Solid team player who consistently meets high expectations.",
+    "submitted_at": "2026-06-25T10:00:00Z",
+    "reviewed_at": "2026-06-28T14:30:00Z"
+  },
+  {
+    "id": "30000000-0000-0000-0000-000000000029",
+    "employee_id": "00000000-0000-0000-0000-000000000029",
+    "manager_id": "00000000-0000-0000-0000-000000000027",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "status": "completed",
+    "overall_self_rating": 4.3,
+    "overall_manager_rating": 4.1,
+    "manager_summary": "Demonstrated dependable execution on departmental deliverables. Solid team player who consistently meets high expectations.",
+    "submitted_at": "2026-06-25T10:00:00Z",
+    "reviewed_at": "2026-06-28T14:30:00Z"
+  },
+  {
+    "id": "30000000-0000-0000-0000-000000000030",
+    "employee_id": "00000000-0000-0000-0000-000000000030",
+    "manager_id": "00000000-0000-0000-0000-000000000027",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "status": "completed",
+    "overall_self_rating": 3.9000000000000004,
+    "overall_manager_rating": 3.7,
+    "manager_summary": "Demonstrated dependable execution on departmental deliverables. Solid team player who consistently meets high expectations.",
+    "submitted_at": "2026-06-25T10:00:00Z",
+    "reviewed_at": "2026-06-28T14:30:00Z"
+  },
+  {
+    "id": "30000000-0000-0000-0000-000000000031",
+    "employee_id": "00000000-0000-0000-0000-000000000031",
+    "manager_id": "00000000-0000-0000-0000-000000000027",
+    "cycle_id": "10000000-0000-0000-0000-000000000001",
+    "status": "self_appraisal_submitted",
+    "overall_self_rating": 3.8,
+    "overall_manager_rating": null,
+    "manager_summary": null,
+    "submitted_at": "2026-06-25T10:00:00Z",
+    "reviewed_at": null
+  }
 ];
 
 const INITIAL_GOAL_RATINGS: GoalRating[] = [
-  // Aarya Shirodkar Goal Ratings (⭐ 5 on all goals)
   {
-    id: "40000000-0000-0000-0000-000000000001",
-    review_id: "30000000-0000-0000-0000-000000000001",
-    goal_id: "20000000-0000-0000-0000-000000000001",
-    self_comment: "Successfully migrated 100% of monolithic billing and notifications into scalable containerized services with zero downtime and 40% higher peak throughput.",
-    self_rating: 5,
-    manager_comment: "Flawless technical execution. Cutover was seamless with zero client-reported issues.",
-    manager_rating: 5,
+    "id": "40000000-0000-0000-0000-000000000001",
+    "review_id": "30000000-0000-0000-0000-000000000001",
+    "goal_id": "20000000-0000-0000-0000-000000000001",
+    "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
+    "self_rating": 4,
+    "manager_comment": "Meets high performance standards on this objective.",
+    "manager_rating": 4
   },
   {
-    id: "40000000-0000-0000-0000-000000000002",
-    review_id: "30000000-0000-0000-0000-000000000001",
-    goal_id: "20000000-0000-0000-0000-000000000002",
-    self_comment: "Established automated Playwright test pipelines and boosted coverage from 62% to 88% across core user journeys.",
-    self_rating: 5,
-    manager_comment: "Great impact on CI/CD build stability and eliminated regression escape rate.",
-    manager_rating: 5,
+    "id": "40000000-0000-0000-0000-000000000002",
+    "review_id": "30000000-0000-0000-0000-000000000001",
+    "goal_id": "20000000-0000-0000-0000-000000000002",
+    "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
+    "self_rating": 4,
+    "manager_comment": "Meets high performance standards on this objective.",
+    "manager_rating": 4
   },
   {
-    id: "40000000-0000-0000-0000-000000000003",
-    review_id: "30000000-0000-0000-0000-000000000001",
-    goal_id: "20000000-0000-0000-0000-000000000003",
-    self_comment: "Mentored 2 junior engineers through weekly technical sessions and guided them to independent feature delivery.",
-    self_rating: 5,
-    manager_comment: "Aarya is a fantastic technical mentor and positive multiplier for the entire engineering organization.",
-    manager_rating: 5,
-  },
-  // Uraj Madkaikar Goal Ratings (⭐ 3 and 4)
-  {
-    id: "40000000-0000-0000-0000-000000000004",
-    review_id: "30000000-0000-0000-0000-000000000002",
-    goal_id: "20000000-0000-0000-0000-000000000004",
-    self_comment: "Shipped 28 reusable Tailwind UI widgets in Storybook with full keyboard navigation and WCAG AA accessibility compliance.",
-    self_rating: 4,
-    manager_comment: "Good component structure. Keep improving documentation.",
-    manager_rating: 4,
+    "id": "40000000-0000-0000-0000-000000000003",
+    "review_id": "30000000-0000-0000-0000-000000000001",
+    "goal_id": "20000000-0000-0000-0000-000000000003",
+    "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
+    "self_rating": 4,
+    "manager_comment": "Meets high performance standards on this objective.",
+    "manager_rating": 4
   },
   {
-    id: "40000000-0000-0000-0000-000000000005",
-    review_id: "30000000-0000-0000-0000-000000000002",
-    goal_id: "20000000-0000-0000-0000-000000000005",
-    self_comment: "Reduced bundle footprint by 25% and improved Largest Contentful Paint metric towards target.",
-    self_rating: 3,
-    manager_comment: "LCP improved to 1.8s, still working towards 1.2s sub-target.",
-    manager_rating: 3,
-  },
-  // Mehmood Sayed Goal Ratings (⭐ 4)
-  {
-    id: "40000000-0000-0000-0000-000000000006",
-    review_id: "30000000-0000-0000-0000-000000000003",
-    goal_id: "20000000-0000-0000-0000-000000000006",
-    self_comment: "Maintained 91% sprint predictability across squads.",
-    self_rating: 4,
-    manager_comment: "Solid turnaround and consistent delivery rhythm.",
-    manager_rating: 4,
+    "id": "40000000-0000-0000-0000-000000000004",
+    "review_id": "30000000-0000-0000-0000-000000000002",
+    "goal_id": "20000000-0000-0000-0000-000000000004",
+    "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
+    "self_rating": 4,
+    "manager_comment": "Meets high performance standards on this objective.",
+    "manager_rating": 4
   },
   {
-    id: "40000000-0000-0000-0000-000000000007",
-    review_id: "30000000-0000-0000-0000-000000000003",
-    goal_id: "20000000-0000-0000-0000-000000000007",
-    self_comment: "Optimized AWS compute instances, trimming monthly spend by 18%.",
-    self_rating: 4,
-    manager_comment: "Good infrastructure cost management.",
-    manager_rating: 4,
+    "id": "40000000-0000-0000-0000-000000000005",
+    "review_id": "30000000-0000-0000-0000-000000000002",
+    "goal_id": "20000000-0000-0000-0000-000000000005",
+    "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
+    "self_rating": 4,
+    "manager_comment": "Meets high performance standards on this objective.",
+    "manager_rating": 4
   },
   {
-    id: "40000000-0000-0000-0000-000000000008",
-    review_id: "30000000-0000-0000-0000-000000000003",
-    goal_id: "20000000-0000-0000-0000-000000000008",
-    self_comment: "Successfully recruited 3 senior engineers for core squads.",
-    self_rating: 4,
-    manager_comment: "Good hiring traction; keep scaling squad leads.",
-    manager_rating: 4,
-  },
-  // Praveen Dalal Goal Ratings (⭐ 4)
-  {
-    id: "40000000-0000-0000-0000-000000000009",
-    review_id: "30000000-0000-0000-0000-000000000004",
-    goal_id: "20000000-0000-0000-0000-000000000009",
-    self_comment: "Executed performance cycle across personnel with 92% on-time completion.",
-    self_rating: 4,
-    manager_comment: "Good operational execution and timeline adherence.",
-    manager_rating: 4,
+    "id": "40000000-0000-0000-0000-000000000006",
+    "review_id": "30000000-0000-0000-0000-000000000002",
+    "goal_id": "20000000-0000-0000-0000-000000000006",
+    "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
+    "self_rating": 4,
+    "manager_comment": "Meets high performance standards on this objective.",
+    "manager_rating": 4
   },
   {
-    id: "40000000-0000-0000-0000-000000000010",
-    review_id: "30000000-0000-0000-0000-000000000004",
-    goal_id: "20000000-0000-0000-0000-000000000010",
-    self_comment: "Established standardized career progression frameworks for Engineering and Product.",
-    self_rating: 4,
-    manager_comment: "Solid strategic framework and leveling rubrics.",
-    manager_rating: 4,
+    "id": "40000000-0000-0000-0000-000000000007",
+    "review_id": "30000000-0000-0000-0000-000000000003",
+    "goal_id": "20000000-0000-0000-0000-000000000007",
+    "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
+    "self_rating": 4.5,
+    "manager_comment": "Meets high performance standards on this objective.",
+    "manager_rating": 4.4
   },
+  {
+    "id": "40000000-0000-0000-0000-000000000008",
+    "review_id": "30000000-0000-0000-0000-000000000003",
+    "goal_id": "20000000-0000-0000-0000-000000000008",
+    "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
+    "self_rating": 4.5,
+    "manager_comment": "Meets high performance standards on this objective.",
+    "manager_rating": 4.4
+  },
+  {
+    "id": "40000000-0000-0000-0000-000000000009",
+    "review_id": "30000000-0000-0000-0000-000000000003",
+    "goal_id": "20000000-0000-0000-0000-000000000009",
+    "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
+    "self_rating": 4.5,
+    "manager_comment": "Meets high performance standards on this objective.",
+    "manager_rating": 4.4
+  },
+  {
+    "id": "40000000-0000-0000-0000-000000000010",
+    "review_id": "30000000-0000-0000-0000-000000000004",
+    "goal_id": "20000000-0000-0000-0000-000000000010",
+    "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
+    "self_rating": 4.4,
+    "manager_comment": "Meets high performance standards on this objective.",
+    "manager_rating": 4.2
+  },
+  {
+    "id": "40000000-0000-0000-0000-000000000011",
+    "review_id": "30000000-0000-0000-0000-000000000004",
+    "goal_id": "20000000-0000-0000-0000-000000000011",
+    "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
+    "self_rating": 4.4,
+    "manager_comment": "Meets high performance standards on this objective.",
+    "manager_rating": 4.2
+  },
+  {
+    "id": "40000000-0000-0000-0000-000000000012",
+    "review_id": "30000000-0000-0000-0000-000000000004",
+    "goal_id": "20000000-0000-0000-0000-000000000012",
+    "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
+    "self_rating": 4.4,
+    "manager_comment": "Meets high performance standards on this objective.",
+    "manager_rating": 4.2
+  },
+  {
+    "id": "40000000-0000-0000-0000-000000000013",
+    "review_id": "30000000-0000-0000-0000-000000000005",
+    "goal_id": "20000000-0000-0000-0000-000000000013",
+    "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
+    "self_rating": 4,
+    "manager_comment": "Meets high performance standards on this objective.",
+    "manager_rating": 3.8
+  },
+  {
+    "id": "40000000-0000-0000-0000-000000000014",
+    "review_id": "30000000-0000-0000-0000-000000000005",
+    "goal_id": "20000000-0000-0000-0000-000000000014",
+    "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
+    "self_rating": 4,
+    "manager_comment": "Meets high performance standards on this objective.",
+    "manager_rating": 3.8
+  },
+  {
+    "id": "40000000-0000-0000-0000-000000000015",
+    "review_id": "30000000-0000-0000-0000-000000000005",
+    "goal_id": "20000000-0000-0000-0000-000000000015",
+    "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
+    "self_rating": 4,
+    "manager_comment": "Meets high performance standards on this objective.",
+    "manager_rating": 3.8
+  },
+  {
+    "id": "40000000-0000-0000-0000-000000000016",
+    "review_id": "30000000-0000-0000-0000-000000000006",
+    "goal_id": "20000000-0000-0000-0000-000000000016",
+    "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
+    "self_rating": 3.8,
+    "manager_comment": null,
+    "manager_rating": null
+  },
+  {
+    "id": "40000000-0000-0000-0000-000000000017",
+    "review_id": "30000000-0000-0000-0000-000000000006",
+    "goal_id": "20000000-0000-0000-0000-000000000017",
+    "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
+    "self_rating": 3.8,
+    "manager_comment": null,
+    "manager_rating": null
+  },
+  {
+    "id": "40000000-0000-0000-0000-000000000018",
+    "review_id": "30000000-0000-0000-0000-000000000006",
+    "goal_id": "20000000-0000-0000-0000-000000000018",
+    "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
+    "self_rating": 3.8,
+    "manager_comment": null,
+    "manager_rating": null
+  },
+  {
+    "id": "40000000-0000-0000-0000-000000000019",
+    "review_id": "30000000-0000-0000-0000-000000000007",
+    "goal_id": "20000000-0000-0000-0000-000000000019",
+    "self_comment": null,
+    "self_rating": null,
+    "manager_comment": null,
+    "manager_rating": null
+  },
+  {
+    "id": "40000000-0000-0000-0000-000000000020",
+    "review_id": "30000000-0000-0000-0000-000000000007",
+    "goal_id": "20000000-0000-0000-0000-000000000020",
+    "self_comment": null,
+    "self_rating": null,
+    "manager_comment": null,
+    "manager_rating": null
+  },
+  {
+    "id": "40000000-0000-0000-0000-000000000021",
+    "review_id": "30000000-0000-0000-0000-000000000007",
+    "goal_id": "20000000-0000-0000-0000-000000000021",
+    "self_comment": null,
+    "self_rating": null,
+    "manager_comment": null,
+    "manager_rating": null
+  },
+  {
+    "id": "40000000-0000-0000-0000-000000000022",
+    "review_id": "30000000-0000-0000-0000-000000000008",
+    "goal_id": "20000000-0000-0000-0000-000000000022",
+    "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
+    "self_rating": 4,
+    "manager_comment": "Meets high performance standards on this objective.",
+    "manager_rating": 4
+  },
+  {
+    "id": "40000000-0000-0000-0000-000000000023",
+    "review_id": "30000000-0000-0000-0000-000000000008",
+    "goal_id": "20000000-0000-0000-0000-000000000023",
+    "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
+    "self_rating": 4,
+    "manager_comment": "Meets high performance standards on this objective.",
+    "manager_rating": 4
+  },
+  {
+    "id": "40000000-0000-0000-0000-000000000024",
+    "review_id": "30000000-0000-0000-0000-000000000008",
+    "goal_id": "20000000-0000-0000-0000-000000000024",
+    "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
+    "self_rating": 4,
+    "manager_comment": "Meets high performance standards on this objective.",
+    "manager_rating": 4
+  },
+  {
+    "id": "40000000-0000-0000-0000-000000000025",
+    "review_id": "30000000-0000-0000-0000-000000000009",
+    "goal_id": "20000000-0000-0000-0000-000000000025",
+    "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
+    "self_rating": 5,
+    "manager_comment": "Flawless execution with measurable impact on platform reliability.",
+    "manager_rating": 5
+  },
+  {
+    "id": "40000000-0000-0000-0000-000000000026",
+    "review_id": "30000000-0000-0000-0000-000000000009",
+    "goal_id": "20000000-0000-0000-0000-000000000026",
+    "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
+    "self_rating": 5,
+    "manager_comment": "Flawless execution with measurable impact on platform reliability.",
+    "manager_rating": 5
+  },
+  {
+    "id": "40000000-0000-0000-0000-000000000027",
+    "review_id": "30000000-0000-0000-0000-000000000009",
+    "goal_id": "20000000-0000-0000-0000-000000000027",
+    "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
+    "self_rating": 5,
+    "manager_comment": "Flawless execution with measurable impact on platform reliability.",
+    "manager_rating": 5
+  },
+  {
+    "id": "40000000-0000-0000-0000-000000000028",
+    "review_id": "30000000-0000-0000-0000-000000000010",
+    "goal_id": "20000000-0000-0000-0000-000000000028",
+    "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
+    "self_rating": 3.5,
+    "manager_comment": "Meets high performance standards on this objective.",
+    "manager_rating": 3.5
+  },
+  {
+    "id": "40000000-0000-0000-0000-000000000029",
+    "review_id": "30000000-0000-0000-0000-000000000010",
+    "goal_id": "20000000-0000-0000-0000-000000000029",
+    "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
+    "self_rating": 3.5,
+    "manager_comment": "Meets high performance standards on this objective.",
+    "manager_rating": 3.5
+  },
+  {
+    "id": "40000000-0000-0000-0000-000000000030",
+    "review_id": "30000000-0000-0000-0000-000000000010",
+    "goal_id": "20000000-0000-0000-0000-000000000030",
+    "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
+    "self_rating": 3.5,
+    "manager_comment": "Meets high performance standards on this objective.",
+    "manager_rating": 3.5
+  },
+  {
+    "id": "40000000-0000-0000-0000-000000000031",
+    "review_id": "30000000-0000-0000-0000-000000000011",
+    "goal_id": "20000000-0000-0000-0000-000000000031",
+    "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
+    "self_rating": 3.8,
+    "manager_comment": null,
+    "manager_rating": null
+  },
+  {
+    "id": "40000000-0000-0000-0000-000000000032",
+    "review_id": "30000000-0000-0000-0000-000000000011",
+    "goal_id": "20000000-0000-0000-0000-000000000032",
+    "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
+    "self_rating": 3.8,
+    "manager_comment": null,
+    "manager_rating": null
+  },
+  {
+    "id": "40000000-0000-0000-0000-000000000033",
+    "review_id": "30000000-0000-0000-0000-000000000011",
+    "goal_id": "20000000-0000-0000-0000-000000000033",
+    "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
+    "self_rating": 3.8,
+    "manager_comment": null,
+    "manager_rating": null
+  },
+  {
+    "id": "40000000-0000-0000-0000-000000000034",
+    "review_id": "30000000-0000-0000-0000-000000000012",
+    "goal_id": "20000000-0000-0000-0000-000000000034",
+    "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
+    "self_rating": 3.4000000000000004,
+    "manager_comment": "Meets high performance standards on this objective.",
+    "manager_rating": 3.2
+  },
+  {
+    "id": "40000000-0000-0000-0000-000000000035",
+    "review_id": "30000000-0000-0000-0000-000000000012",
+    "goal_id": "20000000-0000-0000-0000-000000000035",
+    "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
+    "self_rating": 3.4000000000000004,
+    "manager_comment": "Meets high performance standards on this objective.",
+    "manager_rating": 3.2
+  },
+  {
+    "id": "40000000-0000-0000-0000-000000000036",
+    "review_id": "30000000-0000-0000-0000-000000000012",
+    "goal_id": "20000000-0000-0000-0000-000000000036",
+    "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
+    "self_rating": 3.4000000000000004,
+    "manager_comment": "Meets high performance standards on this objective.",
+    "manager_rating": 3.2
+  },
+  {
+    "id": "40000000-0000-0000-0000-000000000037",
+    "review_id": "30000000-0000-0000-0000-000000000013",
+    "goal_id": "20000000-0000-0000-0000-000000000037",
+    "self_comment": null,
+    "self_rating": null,
+    "manager_comment": null,
+    "manager_rating": null
+  },
+  {
+    "id": "40000000-0000-0000-0000-000000000038",
+    "review_id": "30000000-0000-0000-0000-000000000013",
+    "goal_id": "20000000-0000-0000-0000-000000000038",
+    "self_comment": null,
+    "self_rating": null,
+    "manager_comment": null,
+    "manager_rating": null
+  },
+  {
+    "id": "40000000-0000-0000-0000-000000000039",
+    "review_id": "30000000-0000-0000-0000-000000000013",
+    "goal_id": "20000000-0000-0000-0000-000000000039",
+    "self_comment": null,
+    "self_rating": null,
+    "manager_comment": null,
+    "manager_rating": null
+  },
+  {
+    "id": "40000000-0000-0000-0000-000000000040",
+    "review_id": "30000000-0000-0000-0000-000000000014",
+    "goal_id": "20000000-0000-0000-0000-000000000040",
+    "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
+    "self_rating": 3.7,
+    "manager_comment": "Meets high performance standards on this objective.",
+    "manager_rating": 3.5
+  },
+  {
+    "id": "40000000-0000-0000-0000-000000000041",
+    "review_id": "30000000-0000-0000-0000-000000000014",
+    "goal_id": "20000000-0000-0000-0000-000000000041",
+    "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
+    "self_rating": 3.7,
+    "manager_comment": "Meets high performance standards on this objective.",
+    "manager_rating": 3.5
+  },
+  {
+    "id": "40000000-0000-0000-0000-000000000042",
+    "review_id": "30000000-0000-0000-0000-000000000014",
+    "goal_id": "20000000-0000-0000-0000-000000000042",
+    "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
+    "self_rating": 3.7,
+    "manager_comment": "Meets high performance standards on this objective.",
+    "manager_rating": 3.5
+  },
+  {
+    "id": "40000000-0000-0000-0000-000000000043",
+    "review_id": "30000000-0000-0000-0000-000000000015",
+    "goal_id": "20000000-0000-0000-0000-000000000043",
+    "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
+    "self_rating": 4.4,
+    "manager_comment": "Meets high performance standards on this objective.",
+    "manager_rating": 4.2
+  },
+  {
+    "id": "40000000-0000-0000-0000-000000000044",
+    "review_id": "30000000-0000-0000-0000-000000000015",
+    "goal_id": "20000000-0000-0000-0000-000000000044",
+    "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
+    "self_rating": 4.4,
+    "manager_comment": "Meets high performance standards on this objective.",
+    "manager_rating": 4.2
+  },
+  {
+    "id": "40000000-0000-0000-0000-000000000045",
+    "review_id": "30000000-0000-0000-0000-000000000015",
+    "goal_id": "20000000-0000-0000-0000-000000000045",
+    "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
+    "self_rating": 4.4,
+    "manager_comment": "Meets high performance standards on this objective.",
+    "manager_rating": 4.2
+  },
+  {
+    "id": "40000000-0000-0000-0000-000000000046",
+    "review_id": "30000000-0000-0000-0000-000000000016",
+    "goal_id": "20000000-0000-0000-0000-000000000046",
+    "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
+    "self_rating": 3.8,
+    "manager_comment": null,
+    "manager_rating": null
+  },
+  {
+    "id": "40000000-0000-0000-0000-000000000047",
+    "review_id": "30000000-0000-0000-0000-000000000016",
+    "goal_id": "20000000-0000-0000-0000-000000000047",
+    "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
+    "self_rating": 3.8,
+    "manager_comment": null,
+    "manager_rating": null
+  },
+  {
+    "id": "40000000-0000-0000-0000-000000000048",
+    "review_id": "30000000-0000-0000-0000-000000000016",
+    "goal_id": "20000000-0000-0000-0000-000000000048",
+    "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
+    "self_rating": 3.8,
+    "manager_comment": null,
+    "manager_rating": null
+  },
+  {
+    "id": "40000000-0000-0000-0000-000000000049",
+    "review_id": "30000000-0000-0000-0000-000000000017",
+    "goal_id": "20000000-0000-0000-0000-000000000049",
+    "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
+    "self_rating": 3.6,
+    "manager_comment": "Meets high performance standards on this objective.",
+    "manager_rating": 3.4
+  },
+  {
+    "id": "40000000-0000-0000-0000-000000000050",
+    "review_id": "30000000-0000-0000-0000-000000000017",
+    "goal_id": "20000000-0000-0000-0000-000000000050",
+    "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
+    "self_rating": 3.6,
+    "manager_comment": "Meets high performance standards on this objective.",
+    "manager_rating": 3.4
+  },
+  {
+    "id": "40000000-0000-0000-0000-000000000051",
+    "review_id": "30000000-0000-0000-0000-000000000017",
+    "goal_id": "20000000-0000-0000-0000-000000000051",
+    "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
+    "self_rating": 3.6,
+    "manager_comment": "Meets high performance standards on this objective.",
+    "manager_rating": 3.4
+  },
+  {
+    "id": "40000000-0000-0000-0000-000000000052",
+    "review_id": "30000000-0000-0000-0000-000000000018",
+    "goal_id": "20000000-0000-0000-0000-000000000052",
+    "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
+    "self_rating": 4.3,
+    "manager_comment": "Meets high performance standards on this objective.",
+    "manager_rating": 4.1
+  },
+  {
+    "id": "40000000-0000-0000-0000-000000000053",
+    "review_id": "30000000-0000-0000-0000-000000000018",
+    "goal_id": "20000000-0000-0000-0000-000000000053",
+    "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
+    "self_rating": 4.3,
+    "manager_comment": "Meets high performance standards on this objective.",
+    "manager_rating": 4.1
+  },
+  {
+    "id": "40000000-0000-0000-0000-000000000054",
+    "review_id": "30000000-0000-0000-0000-000000000018",
+    "goal_id": "20000000-0000-0000-0000-000000000054",
+    "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
+    "self_rating": 4.3,
+    "manager_comment": "Meets high performance standards on this objective.",
+    "manager_rating": 4.1
+  },
+  {
+    "id": "40000000-0000-0000-0000-000000000055",
+    "review_id": "30000000-0000-0000-0000-000000000019",
+    "goal_id": "20000000-0000-0000-0000-000000000055",
+    "self_comment": null,
+    "self_rating": null,
+    "manager_comment": null,
+    "manager_rating": null
+  },
+  {
+    "id": "40000000-0000-0000-0000-000000000056",
+    "review_id": "30000000-0000-0000-0000-000000000019",
+    "goal_id": "20000000-0000-0000-0000-000000000056",
+    "self_comment": null,
+    "self_rating": null,
+    "manager_comment": null,
+    "manager_rating": null
+  },
+  {
+    "id": "40000000-0000-0000-0000-000000000057",
+    "review_id": "30000000-0000-0000-0000-000000000019",
+    "goal_id": "20000000-0000-0000-0000-000000000057",
+    "self_comment": null,
+    "self_rating": null,
+    "manager_comment": null,
+    "manager_rating": null
+  },
+  {
+    "id": "40000000-0000-0000-0000-000000000058",
+    "review_id": "30000000-0000-0000-0000-000000000020",
+    "goal_id": "20000000-0000-0000-0000-000000000058",
+    "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
+    "self_rating": 3.5,
+    "manager_comment": "Meets high performance standards on this objective.",
+    "manager_rating": 3.3
+  },
+  {
+    "id": "40000000-0000-0000-0000-000000000059",
+    "review_id": "30000000-0000-0000-0000-000000000020",
+    "goal_id": "20000000-0000-0000-0000-000000000059",
+    "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
+    "self_rating": 3.5,
+    "manager_comment": "Meets high performance standards on this objective.",
+    "manager_rating": 3.3
+  },
+  {
+    "id": "40000000-0000-0000-0000-000000000060",
+    "review_id": "30000000-0000-0000-0000-000000000020",
+    "goal_id": "20000000-0000-0000-0000-000000000060",
+    "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
+    "self_rating": 3.5,
+    "manager_comment": "Meets high performance standards on this objective.",
+    "manager_rating": 3.3
+  },
+  {
+    "id": "40000000-0000-0000-0000-000000000061",
+    "review_id": "30000000-0000-0000-0000-000000000021",
+    "goal_id": "20000000-0000-0000-0000-000000000061",
+    "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
+    "self_rating": 3.8,
+    "manager_comment": null,
+    "manager_rating": null
+  },
+  {
+    "id": "40000000-0000-0000-0000-000000000062",
+    "review_id": "30000000-0000-0000-0000-000000000021",
+    "goal_id": "20000000-0000-0000-0000-000000000062",
+    "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
+    "self_rating": 3.8,
+    "manager_comment": null,
+    "manager_rating": null
+  },
+  {
+    "id": "40000000-0000-0000-0000-000000000063",
+    "review_id": "30000000-0000-0000-0000-000000000021",
+    "goal_id": "20000000-0000-0000-0000-000000000063",
+    "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
+    "self_rating": 3.8,
+    "manager_comment": null,
+    "manager_rating": null
+  },
+  {
+    "id": "40000000-0000-0000-0000-000000000064",
+    "review_id": "30000000-0000-0000-0000-000000000022",
+    "goal_id": "20000000-0000-0000-0000-000000000064",
+    "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
+    "self_rating": 3.8000000000000003,
+    "manager_comment": "Meets high performance standards on this objective.",
+    "manager_rating": 3.6
+  },
+  {
+    "id": "40000000-0000-0000-0000-000000000065",
+    "review_id": "30000000-0000-0000-0000-000000000022",
+    "goal_id": "20000000-0000-0000-0000-000000000065",
+    "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
+    "self_rating": 3.8000000000000003,
+    "manager_comment": "Meets high performance standards on this objective.",
+    "manager_rating": 3.6
+  },
+  {
+    "id": "40000000-0000-0000-0000-000000000066",
+    "review_id": "30000000-0000-0000-0000-000000000022",
+    "goal_id": "20000000-0000-0000-0000-000000000066",
+    "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
+    "self_rating": 3.8000000000000003,
+    "manager_comment": "Meets high performance standards on this objective.",
+    "manager_rating": 3.6
+  },
+  {
+    "id": "40000000-0000-0000-0000-000000000067",
+    "review_id": "30000000-0000-0000-0000-000000000023",
+    "goal_id": "20000000-0000-0000-0000-000000000067",
+    "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
+    "self_rating": 3.4000000000000004,
+    "manager_comment": "Meets high performance standards on this objective.",
+    "manager_rating": 3.2
+  },
+  {
+    "id": "40000000-0000-0000-0000-000000000068",
+    "review_id": "30000000-0000-0000-0000-000000000023",
+    "goal_id": "20000000-0000-0000-0000-000000000068",
+    "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
+    "self_rating": 3.4000000000000004,
+    "manager_comment": "Meets high performance standards on this objective.",
+    "manager_rating": 3.2
+  },
+  {
+    "id": "40000000-0000-0000-0000-000000000069",
+    "review_id": "30000000-0000-0000-0000-000000000023",
+    "goal_id": "20000000-0000-0000-0000-000000000069",
+    "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
+    "self_rating": 3.4000000000000004,
+    "manager_comment": "Meets high performance standards on this objective.",
+    "manager_rating": 3.2
+  },
+  {
+    "id": "40000000-0000-0000-0000-000000000070",
+    "review_id": "30000000-0000-0000-0000-000000000024",
+    "goal_id": "20000000-0000-0000-0000-000000000070",
+    "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
+    "self_rating": 4.1,
+    "manager_comment": "Meets high performance standards on this objective.",
+    "manager_rating": 3.9
+  },
+  {
+    "id": "40000000-0000-0000-0000-000000000071",
+    "review_id": "30000000-0000-0000-0000-000000000024",
+    "goal_id": "20000000-0000-0000-0000-000000000071",
+    "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
+    "self_rating": 4.1,
+    "manager_comment": "Meets high performance standards on this objective.",
+    "manager_rating": 3.9
+  },
+  {
+    "id": "40000000-0000-0000-0000-000000000072",
+    "review_id": "30000000-0000-0000-0000-000000000024",
+    "goal_id": "20000000-0000-0000-0000-000000000072",
+    "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
+    "self_rating": 4.1,
+    "manager_comment": "Meets high performance standards on this objective.",
+    "manager_rating": 3.9
+  },
+  {
+    "id": "40000000-0000-0000-0000-000000000073",
+    "review_id": "30000000-0000-0000-0000-000000000025",
+    "goal_id": "20000000-0000-0000-0000-000000000073",
+    "self_comment": null,
+    "self_rating": null,
+    "manager_comment": null,
+    "manager_rating": null
+  },
+  {
+    "id": "40000000-0000-0000-0000-000000000074",
+    "review_id": "30000000-0000-0000-0000-000000000025",
+    "goal_id": "20000000-0000-0000-0000-000000000074",
+    "self_comment": null,
+    "self_rating": null,
+    "manager_comment": null,
+    "manager_rating": null
+  },
+  {
+    "id": "40000000-0000-0000-0000-000000000075",
+    "review_id": "30000000-0000-0000-0000-000000000025",
+    "goal_id": "20000000-0000-0000-0000-000000000075",
+    "self_comment": null,
+    "self_rating": null,
+    "manager_comment": null,
+    "manager_rating": null
+  },
+  {
+    "id": "40000000-0000-0000-0000-000000000076",
+    "review_id": "30000000-0000-0000-0000-000000000026",
+    "goal_id": "20000000-0000-0000-0000-000000000076",
+    "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
+    "self_rating": 3.8,
+    "manager_comment": null,
+    "manager_rating": null
+  },
+  {
+    "id": "40000000-0000-0000-0000-000000000077",
+    "review_id": "30000000-0000-0000-0000-000000000026",
+    "goal_id": "20000000-0000-0000-0000-000000000077",
+    "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
+    "self_rating": 3.8,
+    "manager_comment": null,
+    "manager_rating": null
+  },
+  {
+    "id": "40000000-0000-0000-0000-000000000078",
+    "review_id": "30000000-0000-0000-0000-000000000026",
+    "goal_id": "20000000-0000-0000-0000-000000000078",
+    "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
+    "self_rating": 3.8,
+    "manager_comment": null,
+    "manager_rating": null
+  },
+  {
+    "id": "40000000-0000-0000-0000-000000000079",
+    "review_id": "30000000-0000-0000-0000-000000000027",
+    "goal_id": "20000000-0000-0000-0000-000000000079",
+    "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
+    "self_rating": 4,
+    "manager_comment": "Meets high performance standards on this objective.",
+    "manager_rating": 3.8
+  },
+  {
+    "id": "40000000-0000-0000-0000-000000000080",
+    "review_id": "30000000-0000-0000-0000-000000000027",
+    "goal_id": "20000000-0000-0000-0000-000000000080",
+    "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
+    "self_rating": 4,
+    "manager_comment": "Meets high performance standards on this objective.",
+    "manager_rating": 3.8
+  },
+  {
+    "id": "40000000-0000-0000-0000-000000000081",
+    "review_id": "30000000-0000-0000-0000-000000000027",
+    "goal_id": "20000000-0000-0000-0000-000000000081",
+    "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
+    "self_rating": 4,
+    "manager_comment": "Meets high performance standards on this objective.",
+    "manager_rating": 3.8
+  },
+  {
+    "id": "40000000-0000-0000-0000-000000000082",
+    "review_id": "30000000-0000-0000-0000-000000000028",
+    "goal_id": "20000000-0000-0000-0000-000000000082",
+    "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
+    "self_rating": 3.6,
+    "manager_comment": "Meets high performance standards on this objective.",
+    "manager_rating": 3.4
+  },
+  {
+    "id": "40000000-0000-0000-0000-000000000083",
+    "review_id": "30000000-0000-0000-0000-000000000028",
+    "goal_id": "20000000-0000-0000-0000-000000000083",
+    "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
+    "self_rating": 3.6,
+    "manager_comment": "Meets high performance standards on this objective.",
+    "manager_rating": 3.4
+  },
+  {
+    "id": "40000000-0000-0000-0000-000000000084",
+    "review_id": "30000000-0000-0000-0000-000000000028",
+    "goal_id": "20000000-0000-0000-0000-000000000084",
+    "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
+    "self_rating": 3.6,
+    "manager_comment": "Meets high performance standards on this objective.",
+    "manager_rating": 3.4
+  },
+  {
+    "id": "40000000-0000-0000-0000-000000000085",
+    "review_id": "30000000-0000-0000-0000-000000000029",
+    "goal_id": "20000000-0000-0000-0000-000000000085",
+    "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
+    "self_rating": 4.3,
+    "manager_comment": "Meets high performance standards on this objective.",
+    "manager_rating": 4.1
+  },
+  {
+    "id": "40000000-0000-0000-0000-000000000086",
+    "review_id": "30000000-0000-0000-0000-000000000029",
+    "goal_id": "20000000-0000-0000-0000-000000000086",
+    "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
+    "self_rating": 4.3,
+    "manager_comment": "Meets high performance standards on this objective.",
+    "manager_rating": 4.1
+  },
+  {
+    "id": "40000000-0000-0000-0000-000000000087",
+    "review_id": "30000000-0000-0000-0000-000000000029",
+    "goal_id": "20000000-0000-0000-0000-000000000087",
+    "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
+    "self_rating": 4.3,
+    "manager_comment": "Meets high performance standards on this objective.",
+    "manager_rating": 4.1
+  },
+  {
+    "id": "40000000-0000-0000-0000-000000000088",
+    "review_id": "30000000-0000-0000-0000-000000000030",
+    "goal_id": "20000000-0000-0000-0000-000000000088",
+    "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
+    "self_rating": 3.9000000000000004,
+    "manager_comment": "Meets high performance standards on this objective.",
+    "manager_rating": 3.7
+  },
+  {
+    "id": "40000000-0000-0000-0000-000000000089",
+    "review_id": "30000000-0000-0000-0000-000000000030",
+    "goal_id": "20000000-0000-0000-0000-000000000089",
+    "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
+    "self_rating": 3.9000000000000004,
+    "manager_comment": "Meets high performance standards on this objective.",
+    "manager_rating": 3.7
+  },
+  {
+    "id": "40000000-0000-0000-0000-000000000090",
+    "review_id": "30000000-0000-0000-0000-000000000030",
+    "goal_id": "20000000-0000-0000-0000-000000000090",
+    "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
+    "self_rating": 3.9000000000000004,
+    "manager_comment": "Meets high performance standards on this objective.",
+    "manager_rating": 3.7
+  },
+  {
+    "id": "40000000-0000-0000-0000-000000000091",
+    "review_id": "30000000-0000-0000-0000-000000000031",
+    "goal_id": "20000000-0000-0000-0000-000000000091",
+    "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
+    "self_rating": 3.8,
+    "manager_comment": null,
+    "manager_rating": null
+  },
+  {
+    "id": "40000000-0000-0000-0000-000000000092",
+    "review_id": "30000000-0000-0000-0000-000000000031",
+    "goal_id": "20000000-0000-0000-0000-000000000092",
+    "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
+    "self_rating": 3.8,
+    "manager_comment": null,
+    "manager_rating": null
+  },
+  {
+    "id": "40000000-0000-0000-0000-000000000093",
+    "review_id": "30000000-0000-0000-0000-000000000031",
+    "goal_id": "20000000-0000-0000-0000-000000000093",
+    "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
+    "self_rating": 3.8,
+    "manager_comment": null,
+    "manager_rating": null
+  }
 ];
 
-// In-Memory Global Storage (persists within node/browser session for seamless fallback)
-class Store {
-  employees: Employee[] = [...INITIAL_EMPLOYEES];
-  cycles: ReviewCycle[] = [...INITIAL_CYCLES];
-  goals: Goal[] = [...INITIAL_GOALS];
-  reviews: Review[] = [...INITIAL_REVIEWS];
-  goalRatings: GoalRating[] = [...INITIAL_GOAL_RATINGS];
+class InMemoryDataStore {
+  private employees: Employee[] = [];
+  private cycles: ReviewCycle[] = [];
+  private goals: Goal[] = [];
+  private reviews: Review[] = [];
+  private goalRatings: GoalRating[] = [];
 
-  resolveManagerNames() {
-    this.employees = this.employees.map((emp) => {
-      if (emp.manager_id) {
-        const mgr = this.employees.find((m) => m.id === emp.manager_id);
-        return { ...emp, manager_name: mgr ? mgr.full_name : null };
-      }
-      return { ...emp, manager_name: null };
-    });
+  constructor() {
+    this.init();
   }
-}
 
-const memoryStore = new Store();
-memoryStore.resolveManagerNames();
+  private init() {
+    if (typeof window !== "undefined") {
+      const storedEmp = localStorage.getItem("pms_employees_30");
+      const storedCycles = localStorage.getItem("pms_cycles_30");
+      const storedGoals = localStorage.getItem("pms_goals_30");
+      const storedReviews = localStorage.getItem("pms_reviews_30");
+      const storedGR = localStorage.getItem("pms_goal_ratings_30");
 
-export const dataStore = {
+      this.employees = storedEmp ? JSON.parse(storedEmp) : [...INITIAL_EMPLOYEES];
+      this.cycles = storedCycles ? JSON.parse(storedCycles) : [...INITIAL_CYCLES];
+      this.goals = storedGoals ? JSON.parse(storedGoals) : [...INITIAL_GOALS];
+      this.reviews = storedReviews ? JSON.parse(storedReviews) : [...INITIAL_REVIEWS];
+      this.goalRatings = storedGR ? JSON.parse(storedGR) : [...INITIAL_GOAL_RATINGS];
+    } else {
+      this.employees = [...INITIAL_EMPLOYEES];
+      this.cycles = [...INITIAL_CYCLES];
+      this.goals = [...INITIAL_GOALS];
+      this.reviews = [...INITIAL_REVIEWS];
+      this.goalRatings = [...INITIAL_GOAL_RATINGS];
+    }
+  }
+
+  private persist() {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("pms_employees_30", JSON.stringify(this.employees));
+      localStorage.setItem("pms_cycles_30", JSON.stringify(this.cycles));
+      localStorage.setItem("pms_goals_30", JSON.stringify(this.goals));
+      localStorage.setItem("pms_reviews_30", JSON.stringify(this.reviews));
+      localStorage.setItem("pms_goal_ratings_30", JSON.stringify(this.goalRatings));
+    }
+  }
+
   // ---------------- EMPLOYEES ----------------
   async getEmployees(): Promise<Employee[]> {
     if (isSupabaseConfigured()) {
@@ -404,48 +2681,15 @@ export const dataStore = {
           .select("*, manager:manager_id(full_name)")
           .order("full_name");
         if (!error && data && data.length > 0) {
-          return data.map((d: any) => ({
-            ...d,
-            manager_name: d.manager?.full_name || null,
+          return data.map((e: any) => ({
+            ...e,
+            manager_name: e.manager?.full_name || null,
           }));
-        }
-      } catch (e) {
-        console.warn("Supabase query failed, falling back to memory store", e);
-      }
-    }
-    memoryStore.resolveManagerNames();
-    return [...memoryStore.employees];
-  },
-
-  async getEmployeeByEmail(email: string): Promise<Employee | null> {
-    const normalizedEmail =
-      email.toLowerCase() === "alice@company.com"
-        ? "aarya@company.com"
-        : email.toLowerCase() === "bob@company.com" || email.toLowerCase() === "aditya@company.com"
-        ? "uraj@company.com"
-        : email.toLowerCase();
-
-    if (isSupabaseConfigured()) {
-      try {
-        const { data, error } = await supabase
-          .from("employees")
-          .select("*, manager:manager_id(full_name)")
-          .ilike("email", normalizedEmail)
-          .maybeSingle();
-        if (!error && data) {
-          return { ...data, manager_name: data.manager?.full_name || null };
         }
       } catch (e) {}
     }
-    const found = memoryStore.employees.find(
-      (e) => e.email.toLowerCase() === normalizedEmail
-    );
-    if (!found) return null;
-    const mgr = found.manager_id
-      ? memoryStore.employees.find((m) => m.id === found.manager_id)
-      : null;
-    return { ...found, manager_name: mgr ? mgr.full_name : null };
-  },
+    return this.employees;
+  }
 
   async getEmployeeById(id: string): Promise<Employee | null> {
     if (isSupabaseConfigured()) {
@@ -454,21 +2698,43 @@ export const dataStore = {
           .from("employees")
           .select("*, manager:manager_id(full_name)")
           .eq("id", id)
-          .maybeSingle();
+          .single();
         if (!error && data) {
-          return { ...data, manager_name: data.manager?.full_name || null };
+          return {
+            ...data,
+            manager_name: data.manager?.full_name || null,
+          };
         }
       } catch (e) {}
     }
-    const found = memoryStore.employees.find((e) => e.id === id);
-    if (!found) return null;
-    const mgr = found.manager_id
-      ? memoryStore.employees.find((m) => m.id === found.manager_id)
-      : null;
-    return { ...found, manager_name: mgr ? mgr.full_name : null };
-  },
+    return this.employees.find((e) => e.id === id) || null;
+  }
+
+  async getEmployeeByEmail(email: string): Promise<Employee | null> {
+    if (isSupabaseConfigured()) {
+      try {
+        const { data, error } = await supabase
+          .from("employees")
+          .select("*, manager:manager_id(full_name)")
+          .ilike("email", email)
+          .single();
+        if (!error && data) {
+          return {
+            ...data,
+            manager_name: data.manager?.full_name || null,
+          };
+        }
+      } catch (e) {}
+    }
+    return this.employees.find((e) => e.email.toLowerCase() === email.toLowerCase()) || null;
+  }
 
   async linkClerkUser(email: string, clerkUserId: string): Promise<void> {
+    const emp = this.employees.find((e) => e.email.toLowerCase() === email.toLowerCase());
+    if (emp) {
+      emp.clerk_user_id = clerkUserId;
+      this.persist();
+    }
     if (isSupabaseConfigured()) {
       try {
         await supabase
@@ -477,231 +2743,93 @@ export const dataStore = {
           .ilike("email", email);
       } catch (e) {}
     }
-    const emp = memoryStore.employees.find(
-      (e) => e.email.toLowerCase() === email.toLowerCase()
-    );
-    if (emp) {
-      emp.clerk_user_id = clerkUserId;
-    }
-  },
+  }
 
-  async createEmployee(emp: Omit<Employee, "id">): Promise<Employee> {
-    const id = crypto.randomUUID();
-    const newEmp: Employee = { ...emp, id };
-
-    if (isSupabaseConfigured()) {
-      try {
-        const { data, error } = await supabase
-          .from("employees")
-          .insert([newEmp])
-          .select()
-          .single();
-        if (!error && data) return data;
-      } catch (e) {}
-    }
-
-    memoryStore.employees.push(newEmp);
-    memoryStore.resolveManagerNames();
-    return newEmp;
-  },
-
-  // ---------------- REVIEW CYCLES ----------------
+  // ---------------- CYCLES ----------------
   async getCycles(): Promise<ReviewCycle[]> {
     if (isSupabaseConfigured()) {
       try {
         const { data, error } = await supabase
           .from("review_cycles")
           .select("*")
-          .order("created_at", { ascending: false });
+          .order("start_date", { ascending: false });
         if (!error && data && data.length > 0) return data;
       } catch (e) {}
     }
-    return [...memoryStore.cycles];
-  },
+    return this.cycles;
+  }
 
   async getActiveCycle(): Promise<ReviewCycle | null> {
     const cycles = await this.getCycles();
-    return cycles.find((c) => c.status === "open") || null;
-  },
-
-  async createCycle(cycle: Omit<ReviewCycle, "id">): Promise<ReviewCycle> {
-    const id = crypto.randomUUID();
-    const newCycle: ReviewCycle = { ...cycle, id };
-
-    if (newCycle.status === "open") {
-      memoryStore.cycles.forEach((c) => {
-        if (c.status === "open") c.status = "closed";
-      });
-      if (isSupabaseConfigured()) {
-        try {
-          await supabase.from("review_cycles").update({ status: "closed" }).eq("status", "open");
-        } catch (e) {}
-      }
-    }
-
-    if (isSupabaseConfigured()) {
-      try {
-        const { data, error } = await supabase
-          .from("review_cycles")
-          .insert([newCycle])
-          .select()
-          .single();
-        if (!error && data) return data;
-      } catch (e) {}
-    }
-
-    memoryStore.cycles.unshift(newCycle);
-    return newCycle;
-  },
-
-  async updateCycleStatus(id: string, status: "draft" | "open" | "closed"): Promise<void> {
-    if (status === "open") {
-      memoryStore.cycles.forEach((c) => {
-        if (c.status === "open") c.status = "closed";
-      });
-      if (isSupabaseConfigured()) {
-        try {
-          await supabase.from("review_cycles").update({ status: "closed" }).eq("status", "open");
-        } catch (e) {}
-      }
-    }
-
-    const c = memoryStore.cycles.find((x) => x.id === id);
-    if (c) c.status = status;
-
-    if (isSupabaseConfigured()) {
-      try {
-        await supabase.from("review_cycles").update({ status }).eq("id", id);
-      } catch (e) {}
-    }
-  },
+    return cycles.find((c) => c.status === "open") || cycles[0] || null;
+  }
 
   // ---------------- GOALS ----------------
-  async getGoals(employeeId: string, cycleId: string): Promise<Goal[]> {
+  async getGoals(employeeId: string, cycleId?: string): Promise<Goal[]> {
     if (isSupabaseConfigured()) {
       try {
-        const { data, error } = await supabase
+        let q = supabase
           .from("goals")
           .select("*")
-          .eq("employee_id", employeeId)
-          .eq("cycle_id", cycleId)
-          .order("created_at", { ascending: true });
+          .eq("employee_id", employeeId);
+        if (cycleId) q = q.eq("cycle_id", cycleId);
+        const { data, error } = await q.order("created_at", { ascending: true });
         if (!error && data && data.length > 0) return data;
       } catch (e) {}
     }
-    const matching = memoryStore.goals.filter(
-      (g) => g.employee_id === employeeId && g.cycle_id === cycleId
+    return this.goals.filter(
+      (g) =>
+        g.employee_id === employeeId && (!cycleId || g.cycle_id === cycleId)
     );
-    if (matching.length > 0) return matching;
-
-    // If employee is Praveen Dalal (either admin or hr ID alias)
-    if (employeeId === "00000000-0000-0000-0000-000000000001" || employeeId === "00000000-0000-0000-0000-000000000005") {
-      const praveenGoals = memoryStore.goals.filter(
-        (g) => (g.employee_id === "00000000-0000-0000-0000-000000000001" || g.employee_id === "00000000-0000-0000-0000-000000000005") && g.cycle_id === cycleId
-      );
-      if (praveenGoals.length > 0) return praveenGoals.slice(0, 2);
-    }
-
-    return matching;
-  },
+  }
 
   async createGoal(goal: Omit<Goal, "id">): Promise<Goal> {
-    const id = crypto.randomUUID();
-    const newGoal: Goal = { ...goal, id };
+    const newGoal: Goal = {
+      ...goal,
+      id: `20000000-0000-0000-0000-${String(Date.now()).slice(-12)}`,
+    };
+    this.goals.push(newGoal);
+    this.persist();
 
     if (isSupabaseConfigured()) {
       try {
-        const { data, error } = await supabase
-          .from("goals")
-          .insert([newGoal])
-          .select()
-          .single();
-        if (!error && data) return data;
+        await supabase.from("goals").insert([newGoal]);
       } catch (e) {}
     }
-
-    memoryStore.goals.push(newGoal);
     return newGoal;
-  },
+  }
 
-  async updateGoal(id: string, updates: Partial<Goal>): Promise<Goal> {
-    if (isSupabaseConfigured()) {
-      try {
-        const { data, error } = await supabase
-          .from("goals")
-          .update(updates)
-          .eq("id", id)
-          .select()
-          .single();
-        if (!error && data) return data;
-      } catch (e) {}
+  async updateGoalStatus(
+    id: string,
+    status: Goal["status"],
+    managerComment?: string
+  ): Promise<Goal | null> {
+    const g = this.goals.find((item) => item.id === id);
+    if (g) {
+      g.status = status;
+      if (managerComment !== undefined) g.manager_comment = managerComment;
+      this.persist();
     }
-    const idx = memoryStore.goals.findIndex((g) => g.id === id);
-    if (idx !== -1) {
-      memoryStore.goals[idx] = { ...memoryStore.goals[idx], ...updates };
-      return memoryStore.goals[idx];
-    }
-    throw new Error("Goal not found");
-  },
-
-  async deleteGoal(id: string): Promise<void> {
-    if (isSupabaseConfigured()) {
-      try {
-        await supabase.from("goals").delete().eq("id", id);
-      } catch (e) {}
-    }
-    memoryStore.goals = memoryStore.goals.filter((g) => g.id !== id);
-  },
-
-  async submitGoalsForApproval(employeeId: string, cycleId: string): Promise<void> {
     if (isSupabaseConfigured()) {
       try {
         await supabase
           .from("goals")
-          .update({ status: "submitted" })
-          .eq("employee_id", employeeId)
-          .eq("cycle_id", cycleId);
+          .update({
+            status,
+            manager_comment: managerComment,
+          })
+          .eq("id", id);
       } catch (e) {}
     }
-    memoryStore.goals.forEach((g) => {
-      if (g.employee_id === employeeId && g.cycle_id === cycleId) {
-        g.status = "submitted";
-      }
-    });
-  },
+    return g || null;
+  }
 
-  async approveGoal(id: string, managerComment?: string): Promise<void> {
-    const updates = { status: "approved" as const, manager_comment: managerComment || null };
-    if (isSupabaseConfigured()) {
-      try {
-        await supabase.from("goals").update(updates).eq("id", id);
-      } catch (e) {}
-    }
-    const g = memoryStore.goals.find((x) => x.id === id);
-    if (g) {
-      g.status = "approved";
-      g.manager_comment = managerComment || null;
-    }
-  },
-
-  async sendBackGoal(id: string, managerComment: string): Promise<void> {
-    const updates = { status: "sent_back" as const, manager_comment: managerComment };
-    if (isSupabaseConfigured()) {
-      try {
-        await supabase.from("goals").update(updates).eq("id", id);
-      } catch (e) {}
-    }
-    const g = memoryStore.goals.find((x) => x.id === id);
-    if (g) {
-      g.status = "sent_back";
-      g.manager_comment = managerComment;
-    }
-  },
-
-  // ---------------- REVIEWS & APPRAISALS ----------------
-  async getOrCreateReview(employeeId: string, cycleId: string, managerId?: string | null): Promise<Review> {
-    let review: Review | undefined;
-
+  // ---------------- REVIEWS ----------------
+  async getOrCreateReview(
+    employeeId: string,
+    cycleId: string,
+    managerId?: string | null
+  ): Promise<Review> {
     if (isSupabaseConfigured()) {
       try {
         const { data, error } = await supabase
@@ -709,41 +2837,49 @@ export const dataStore = {
           .select("*")
           .eq("employee_id", employeeId)
           .eq("cycle_id", cycleId)
-          .maybeSingle();
+          .single();
         if (!error && data) return data;
       } catch (e) {}
     }
 
-    review = memoryStore.reviews.find(
+    let rev = this.reviews.find(
       (r) => r.employee_id === employeeId && r.cycle_id === cycleId
     );
-
-    if (!review) {
-      const newReview: Review = {
-        id: crypto.randomUUID(),
+    if (!rev) {
+      rev = {
+        id: `30000000-0000-0000-0000-${String(Date.now()).slice(-12)}`,
         employee_id: employeeId,
         manager_id: managerId || null,
         cycle_id: cycleId,
         status: "not_started",
+        overall_self_rating: null,
+        overall_manager_rating: null,
+        manager_summary: null,
       };
-
+      this.reviews.push(rev);
+      this.persist();
       if (isSupabaseConfigured()) {
         try {
-          const { data } = await supabase
-            .from("reviews")
-            .insert([newReview])
-            .select()
-            .single();
-          if (data) return data;
+          await supabase.from("reviews").insert([rev]);
         } catch (e) {}
       }
-
-      memoryStore.reviews.push(newReview);
-      return newReview;
     }
+    return rev;
+  }
 
-    return review;
-  },
+  async getReviewById(id: string): Promise<Review | null> {
+    if (isSupabaseConfigured()) {
+      try {
+        const { data, error } = await supabase
+          .from("reviews")
+          .select("*")
+          .eq("id", id)
+          .single();
+        if (!error && data) return data;
+      } catch (e) {}
+    }
+    return this.reviews.find((r) => r.id === id) || null;
+  }
 
   async getGoalRatings(reviewId: string): Promise<GoalRating[]> {
     if (isSupabaseConfigured()) {
@@ -752,135 +2888,144 @@ export const dataStore = {
           .from("goal_ratings")
           .select("*")
           .eq("review_id", reviewId);
-        if (!error && data) return data;
+        if (!error && data && data.length > 0) return data;
       } catch (e) {}
     }
-    return memoryStore.goalRatings.filter((r) => r.review_id === reviewId);
-  },
+    return this.goalRatings.filter((gr) => gr.review_id === reviewId);
+  }
 
-  async submitSelfAppraisal(
+  async saveSelfAppraisal(
     reviewId: string,
-    ratings: Array<{ goal_id: string; self_comment: string; self_rating: number }>,
-    overallSelfRating: number
+    overallRating: number,
+    ratings: Array<{
+      goal_id: string;
+      self_rating: number;
+      self_comment: string;
+    }>
   ): Promise<void> {
-    // Save goal ratings
+    const rev = this.reviews.find((r) => r.id === reviewId);
+    if (rev) {
+      rev.overall_self_rating = overallRating;
+      rev.status = "self_appraisal_submitted";
+      rev.submitted_at = new Date().toISOString();
+      this.persist();
+    }
+
     for (const r of ratings) {
-      const existingIdx = memoryStore.goalRatings.findIndex(
-        (x) => x.review_id === reviewId && x.goal_id === r.goal_id
+      let gr = this.goalRatings.find(
+        (item) => item.review_id === reviewId && item.goal_id === r.goal_id
       );
-      if (existingIdx !== -1) {
-        memoryStore.goalRatings[existingIdx] = {
-          ...memoryStore.goalRatings[existingIdx],
-          self_comment: r.self_comment,
-          self_rating: r.self_rating,
-        };
+      if (gr) {
+        gr.self_rating = r.self_rating;
+        gr.self_comment = r.self_comment;
       } else {
-        memoryStore.goalRatings.push({
-          id: crypto.randomUUID(),
+        gr = {
+          id: `40000000-0000-0000-0000-${String(Date.now()).slice(-12)}`,
           review_id: reviewId,
           goal_id: r.goal_id,
-          self_comment: r.self_comment,
           self_rating: r.self_rating,
-        });
-      }
-
-      if (isSupabaseConfigured()) {
-        try {
-          await supabase.from("goal_ratings").upsert(
-            {
-              review_id: reviewId,
-              goal_id: r.goal_id,
-              self_comment: r.self_comment,
-              self_rating: r.self_rating,
-            },
-            { onConflict: "review_id,goal_id" }
-          );
-        } catch (e) {}
+          self_comment: r.self_comment,
+          manager_rating: null,
+          manager_comment: null,
+        };
+        this.goalRatings.push(gr);
       }
     }
-
-    // Update review status
-    const rev = memoryStore.reviews.find((r) => r.id === reviewId);
-    if (rev) {
-      rev.status = "self_appraisal_submitted";
-      rev.overall_self_rating = overallSelfRating;
-      rev.submitted_at = new Date().toISOString();
-    }
+    this.persist();
 
     if (isSupabaseConfigured()) {
       try {
         await supabase
           .from("reviews")
           .update({
+            overall_self_rating: overallRating,
             status: "self_appraisal_submitted",
-            overall_self_rating: overallSelfRating,
             submitted_at: new Date().toISOString(),
           })
           .eq("id", reviewId);
-      } catch (e) {}
-    }
-  },
 
-  async submitManagerReview(
-    reviewId: string,
-    ratings: Array<{ goal_id: string; manager_comment: string; manager_rating: number }>,
-    overallManagerRating: number,
-    managerSummary: string
-  ): Promise<void> {
-    for (const r of ratings) {
-      const existing = memoryStore.goalRatings.find(
-        (x) => x.review_id === reviewId && x.goal_id === r.goal_id
-      );
-      if (existing) {
-        existing.manager_comment = r.manager_comment;
-        existing.manager_rating = r.manager_rating;
-      } else {
-        memoryStore.goalRatings.push({
-          id: crypto.randomUUID(),
-          review_id: reviewId,
-          goal_id: r.goal_id,
-          manager_comment: r.manager_comment,
-          manager_rating: r.manager_rating,
-        });
-      }
-
-      if (isSupabaseConfigured()) {
-        try {
+        for (const r of ratings) {
           await supabase.from("goal_ratings").upsert(
             {
               review_id: reviewId,
               goal_id: r.goal_id,
-              manager_comment: r.manager_comment,
-              manager_rating: r.manager_rating,
+              self_rating: r.self_rating,
+              self_comment: r.self_comment,
             },
             { onConflict: "review_id,goal_id" }
           );
-        } catch (e) {}
-      }
+        }
+      } catch (e) {}
+    }
+  }
+
+  async saveManagerReview(
+    reviewId: string,
+    overallRating: number,
+    managerSummary: string,
+    ratings: Array<{
+      goal_id: string;
+      manager_rating: number;
+      manager_comment: string;
+    }>
+  ): Promise<void> {
+    const rev = this.reviews.find((r) => r.id === reviewId);
+    if (rev) {
+      rev.overall_manager_rating = overallRating;
+      rev.manager_summary = managerSummary;
+      rev.status = "manager_reviewed";
+      rev.reviewed_at = new Date().toISOString();
+      this.persist();
     }
 
-    const rev = memoryStore.reviews.find((r) => r.id === reviewId);
-    if (rev) {
-      rev.status = "completed";
-      rev.overall_manager_rating = overallManagerRating;
-      rev.manager_summary = managerSummary;
-      rev.reviewed_at = new Date().toISOString();
+    for (const r of ratings) {
+      let gr = this.goalRatings.find(
+        (item) => item.review_id === reviewId && item.goal_id === r.goal_id
+      );
+      if (gr) {
+        gr.manager_rating = r.manager_rating;
+        gr.manager_comment = r.manager_comment;
+      } else {
+        gr = {
+          id: `40000000-0000-0000-0000-${String(Date.now()).slice(-12)}`,
+          review_id: reviewId,
+          goal_id: r.goal_id,
+          self_rating: null,
+          self_comment: null,
+          manager_rating: r.manager_rating,
+          manager_comment: r.manager_comment,
+        };
+        this.goalRatings.push(gr);
+      }
     }
+    this.persist();
 
     if (isSupabaseConfigured()) {
       try {
         await supabase
           .from("reviews")
           .update({
-            status: "completed",
-            overall_manager_rating: overallManagerRating,
+            overall_manager_rating: overallRating,
             manager_summary: managerSummary,
+            status: "manager_reviewed",
             reviewed_at: new Date().toISOString(),
           })
           .eq("id", reviewId);
+
+        for (const r of ratings) {
+          await supabase.from("goal_ratings").upsert(
+            {
+              review_id: reviewId,
+              goal_id: r.goal_id,
+              manager_rating: r.manager_rating,
+              manager_comment: r.manager_comment,
+            },
+            { onConflict: "review_id,goal_id" }
+          );
+        }
       } catch (e) {}
     }
-  },
+  }
 
   // ---------------- MANAGER & HR VIEWS ----------------
   async getDirectReports(managerId: string): Promise<Employee[]> {
@@ -894,7 +3039,7 @@ export const dataStore = {
         (e.manager_id === targetId || e.manager_id === managerId) &&
         e.is_active
     );
-  },
+  }
 
   async getCompletionReport(cycleId: string): Promise<
     Array<{
@@ -928,5 +3073,7 @@ export const dataStore = {
     }
 
     return report;
-  },
-};
+  }
+}
+
+export const dataStore = new InMemoryDataStore();
