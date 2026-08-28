@@ -55,12 +55,6 @@ export const AppNavbar = () => {
       roles: ["manager", "hr_admin"],
     },
     {
-      label: "Org Structure",
-      href: "/admin/org-chart",
-      icon: Network,
-      roles: ["hr_admin"],
-    },
-    {
       label: "Employees",
       href: "/admin/employees",
       icon: Building2,
