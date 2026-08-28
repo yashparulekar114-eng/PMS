@@ -380,7 +380,7 @@ export default function AdminDashboardPage() {
             <div className="p-2 bg-indigo-50 text-indigo-600 rounded-xl">
               <BarChart3 className="w-5 h-5" />
             </div>
-            <h1 className="text-2xl font-bold text-slate-900">Organization Performance Analytics</h1>
+            <h1 className="text-2xl font-bold text-slate-900">Performance & Appraisal Analytics</h1>
             <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800">
               HR Executive View
             </span>
