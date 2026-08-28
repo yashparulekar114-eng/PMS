@@ -2680,6 +2680,39 @@ class InMemoryDataStore {
     return cycles.find((c) => c.status === "open") || cycles[0] || null;
   }
 
+  async createCycle(cycle: Omit<ReviewCycle, "id">): Promise<ReviewCycle> {
+    const newCycle: ReviewCycle = {
+      ...cycle,
+      id: `10000000-0000-0000-0000-${String(Date.now()).slice(-12)}`,
+    };
+    this.cycles.unshift(newCycle);
+    this.persist();
+
+    if (isSupabaseConfigured()) {
+      try {
+        await supabase.from("review_cycles").insert([newCycle]);
+      } catch (e) {}
+    }
+    return newCycle;
+  }
+
+  async updateCycleStatus(id: string, status: ReviewCycle["status"]): Promise<ReviewCycle | null> {
+    const c = this.cycles.find((item) => item.id === id);
+    if (c) {
+      c.status = status;
+      this.persist();
+    }
+    if (isSupabaseConfigured()) {
+      try {
+        await supabase
+          .from("review_cycles")
+          .update({ status })
+          .eq("id", id);
+      } catch (e) {}
+    }
+    return c || null;
+  }
+
   // ---------------- GOALS ----------------
   async getGoals(employeeId: string, cycleId?: string): Promise<Goal[]> {
     if (isSupabaseConfigured()) {
@@ -2949,6 +2982,46 @@ class InMemoryDataStore {
         }
       } catch (e) {}
     }
+  }
+
+  async submitSelfAppraisal(
+    reviewId: string,
+    ratings: Array<{
+      goal_id: string;
+      self_rating: number;
+      self_comment: string;
+    }>,
+    overallRating?: number
+  ): Promise<void> {
+    const calcOverall =
+      overallRating !== undefined
+        ? overallRating
+        : ratings.reduce((acc, r) => acc + (r.self_rating || 0), 0) /
+          Math.max(1, ratings.length);
+    return this.saveSelfAppraisal(reviewId, calcOverall, ratings);
+  }
+
+  async submitManagerReview(
+    reviewId: string,
+    ratings: Array<{
+      goal_id: string;
+      manager_rating: number;
+      manager_comment: string;
+    }>,
+    overallRating?: number,
+    managerSummary?: string
+  ): Promise<void> {
+    const calcOverall =
+      overallRating !== undefined
+        ? overallRating
+        : ratings.reduce((acc, r) => acc + (r.manager_rating || 0), 0) /
+          Math.max(1, ratings.length);
+    return this.saveManagerReview(
+      reviewId,
+      calcOverall,
+      managerSummary || "Manager review completed.",
+      ratings
+    );
   }
 
   // ---------------- MANAGER & HR VIEWS ----------------
