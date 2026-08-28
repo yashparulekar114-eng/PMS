@@ -24,6 +24,7 @@ import {
   Layers,
   FileCheck2,
   Printer,
+  Sparkles,
 } from "lucide-react";
 
 // TypeScript interfaces
@@ -569,6 +570,129 @@ export default function AdminDashboardPage() {
         </div>
       </div>
 
+      {/* Bell Curve & Rating Calibration Distribution */}
+      <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-6 space-y-4">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b border-slate-100 pb-3">
+          <div>
+            <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2">
+              <Sparkles className="w-5 h-5 text-amber-500" />
+              Executive Rating Calibration & Normalization (Bell Curve)
+            </h2>
+            <p className="text-xs text-slate-500 mt-0.5">
+              Calibrated distribution across performance tiers. Click any tier to filter the audit matrix.
+            </p>
+          </div>
+          <button
+            onClick={() => setSelectedStatus("All")}
+            className="text-xs font-semibold text-indigo-600 hover:text-indigo-800"
+          >
+            Reset Filters
+          </button>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-1">
+          {/* Tier 1: Exceptional (5.0) */}
+          <div
+            onClick={() => {
+              setSelectedStatus("All");
+              setSearchTerm("Aarya");
+            }}
+            className="p-4 rounded-xl border border-amber-200 bg-amber-50/60 hover:bg-amber-100/70 transition-all cursor-pointer space-y-2 shadow-2xs"
+          >
+            <div className="flex justify-between items-center">
+              <span className="text-xs font-bold text-amber-900 uppercase tracking-wider">
+                🌟 Grade A+ (5.0 / 5.0)
+              </span>
+              <span className="text-xs font-black px-2 py-0.5 rounded-full bg-amber-200 text-amber-900">
+                1 Emp (3.3%)
+              </span>
+            </div>
+            <div className="text-lg font-black text-amber-950">Top Star Performer</div>
+            <div className="text-[11px] text-amber-800">
+              Only Aarya Shirodkar (Senior Full-Stack Lead)
+            </div>
+            <div className="w-full bg-amber-200 h-1.5 rounded-full overflow-hidden">
+              <div className="bg-amber-500 h-full rounded-full" style={{ width: "100%" }}></div>
+            </div>
+          </div>
+
+          {/* Tier 2: Exceeds Expectations (4.0 - 4.9) */}
+          <div
+            onClick={() => {
+              setSearchTerm("");
+              setSelectedStatus("completed");
+            }}
+            className="p-4 rounded-xl border border-emerald-200 bg-emerald-50/60 hover:bg-emerald-100/70 transition-all cursor-pointer space-y-2 shadow-2xs"
+          >
+            <div className="flex justify-between items-center">
+              <span className="text-xs font-bold text-emerald-900 uppercase tracking-wider">
+                🟢 Grade A (4.0 - 4.9)
+              </span>
+              <span className="text-xs font-black px-2 py-0.5 rounded-full bg-emerald-200 text-emerald-900">
+                15 Emps (50.0%)
+              </span>
+            </div>
+            <div className="text-lg font-black text-emerald-950">Exceeds Expectations</div>
+            <div className="text-[11px] text-emerald-800">
+              High achievers & department managers
+            </div>
+            <div className="w-full bg-emerald-200 h-1.5 rounded-full overflow-hidden">
+              <div className="bg-emerald-500 h-full rounded-full" style={{ width: "85%" }}></div>
+            </div>
+          </div>
+
+          {/* Tier 3: Meets Expectations (3.0 - 3.9) */}
+          <div
+            onClick={() => {
+              setSearchTerm("");
+              setSelectedStatus("All");
+            }}
+            className="p-4 rounded-xl border border-indigo-200 bg-indigo-50/60 hover:bg-indigo-100/70 transition-all cursor-pointer space-y-2 shadow-2xs"
+          >
+            <div className="flex justify-between items-center">
+              <span className="text-xs font-bold text-indigo-900 uppercase tracking-wider">
+                🟡 Grade B (3.0 - 3.9)
+              </span>
+              <span className="text-xs font-black px-2 py-0.5 rounded-full bg-indigo-200 text-indigo-900">
+                11 Emps (36.7%)
+              </span>
+            </div>
+            <div className="text-lg font-black text-indigo-950">Meets Expectations</div>
+            <div className="text-[11px] text-indigo-800">
+              Solid dependable contributors
+            </div>
+            <div className="w-full bg-indigo-200 h-1.5 rounded-full overflow-hidden">
+              <div className="bg-indigo-500 h-full rounded-full" style={{ width: "65%" }}></div>
+            </div>
+          </div>
+
+          {/* Tier 4: In Progress / Pending (< 3.0) */}
+          <div
+            onClick={() => {
+              setSearchTerm("");
+              setSelectedStatus("self_appraisal_submitted");
+            }}
+            className="p-4 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 transition-all cursor-pointer space-y-2 shadow-2xs"
+          >
+            <div className="flex justify-between items-center">
+              <span className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+                ⏳ In Progress / Pending
+              </span>
+              <span className="text-xs font-black px-2 py-0.5 rounded-full bg-slate-200 text-slate-800">
+                3 Emps (10.0%)
+              </span>
+            </div>
+            <div className="text-lg font-black text-slate-900">Pending Evaluation</div>
+            <div className="text-[11px] text-slate-600">
+              Self-appraisal submitted / drafting
+            </div>
+            <div className="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden">
+              <div className="bg-slate-400 h-full rounded-full" style={{ width: "30%" }}></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Comprehensive Organization Audit Matrix */}
       <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-6 space-y-5">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-slate-100 pb-4">
@@ -578,7 +702,7 @@ export default function AdminDashboardPage() {
               Organization Review Audit Matrix
             </h2>
             <p className="text-xs text-slate-500 mt-0.5">
-              Detailed tracking of all 200 personnel with manager alignment and score calibration.
+              Detailed appraisal tracking of all {totalEmployees} personnel with manager alignment and score calibration.
             </p>
           </div>
 
@@ -700,16 +824,25 @@ export default function AdminDashboardPage() {
                       {getStatusBadge(rec.status)}
                     </td>
 
-                    {/* Action: View & Download PDF Report */}
+                    {/* Actions: View PDF Report & Open Review Portal */}
                     <td className="px-6 py-4 whitespace-nowrap text-right">
-                      <Link
-                        href={`/reports/${rec.employee.id}`}
-                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-bold bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 transition-colors shadow-2xs"
-                        title="View and print official appraisal summary report"
-                      >
-                        <Printer className="w-3 h-3" />
-                        <span>PDF Report</span>
-                      </Link>
+                      <div className="flex items-center justify-end gap-2">
+                        <Link
+                          href={`/team/reviews/${rec.employee.id}`}
+                          className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors shadow-2xs"
+                          title="Open manager evaluation and calibration portal"
+                        >
+                          <span>Review</span>
+                        </Link>
+                        <Link
+                          href={`/reports/${rec.employee.id}`}
+                          className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-bold bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 transition-colors shadow-2xs"
+                          title="View and print official appraisal summary report"
+                        >
+                          <Printer className="w-3 h-3" />
+                          <span>PDF Report</span>
+                        </Link>
+                      </div>
                     </td>
                   </tr>
                 ))

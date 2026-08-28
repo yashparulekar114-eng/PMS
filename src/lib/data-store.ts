@@ -2740,6 +2740,14 @@ class InMemoryDataStore {
     return g || null;
   }
 
+  async approveGoal(id: string, comment?: string): Promise<Goal | null> {
+    return this.updateGoalStatus(id, "approved", comment || "Approved by manager.");
+  }
+
+  async sendBackGoal(id: string, comment?: string): Promise<Goal | null> {
+    return this.updateGoalStatus(id, "sent_back", comment || "Sent back for revision.");
+  }
+
   // ---------------- REVIEWS ----------------
   async getOrCreateReview(
     employeeId: string,
