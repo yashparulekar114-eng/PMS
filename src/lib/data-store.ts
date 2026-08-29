@@ -444,47 +444,14 @@ const INITIAL_GOALS: Goal[] = [
     "manager_comment": "Approved. Strategic milestone for the annual review cycle."
   },
   {
-    "id": "20000000-0000-0000-0000-000000000010",
-    "employee_id": "00000000-0000-0000-0000-000000000007",
-    "cycle_id": "10000000-0000-0000-0000-000000000001",
-    "title": "Enterprise Talent Acquisition & Retention",
-    "description": "Optimize hiring pipelines to achieve under 30-day time-to-hire with 95% retention rate.",
-    "weightage": 35,
-    "target_date": "2026-11-30",
-    "status": "approved",
-    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
-  },
-  {
-    "id": "20000000-0000-0000-0000-000000000011",
-    "employee_id": "00000000-0000-0000-0000-000000000007",
-    "cycle_id": "10000000-0000-0000-0000-000000000001",
-    "title": "Standardize Global PMS Review Calibration",
-    "description": "Implement normalized rating rubrics and complete 100% of executive calibrations on schedule.",
-    "weightage": 30,
-    "target_date": "2026-10-15",
-    "status": "approved",
-    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
-  },
-  {
-    "id": "20000000-0000-0000-0000-000000000012",
-    "employee_id": "00000000-0000-0000-0000-000000000007",
-    "cycle_id": "10000000-0000-0000-0000-000000000001",
-    "title": "Employee Learning & Leadership Development",
-    "description": "Roll out modern engineering and management training workshops across all departments.",
-    "weightage": 25,
-    "target_date": "2027-02-28",
-    "status": "approved",
-    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
-  },
-  {
     "id": "20000000-0000-0000-0000-000000000013",
     "employee_id": "00000000-0000-0000-0000-000000000008",
     "cycle_id": "10000000-0000-0000-0000-000000000001",
     "title": "Enterprise Talent Acquisition & Retention",
     "description": "Optimize hiring pipelines to achieve under 30-day time-to-hire with 95% retention rate.",
-    "weightage": 35,
+    "weightage": 40,
     "target_date": "2026-11-30",
-    "status": "approved",
+    "status": "draft",
     "manager_comment": "Approved. Strategic milestone for the annual review cycle."
   },
   {
@@ -493,9 +460,9 @@ const INITIAL_GOALS: Goal[] = [
     "cycle_id": "10000000-0000-0000-0000-000000000001",
     "title": "Standardize Global PMS Review Calibration",
     "description": "Implement normalized rating rubrics and complete 100% of executive calibrations on schedule.",
-    "weightage": 30,
+    "weightage": 40,
     "target_date": "2026-10-15",
-    "status": "approved",
+    "status": "draft",
     "manager_comment": "Approved. Strategic milestone for the annual review cycle."
   },
   {
@@ -504,9 +471,9 @@ const INITIAL_GOALS: Goal[] = [
     "cycle_id": "10000000-0000-0000-0000-000000000001",
     "title": "Employee Learning & Leadership Development",
     "description": "Roll out modern engineering and management training workshops across all departments.",
-    "weightage": 25,
+    "weightage": 40,
     "target_date": "2027-02-28",
-    "status": "approved",
+    "status": "draft",
     "manager_comment": "Approved. Strategic milestone for the annual review cycle."
   },
   {
@@ -534,39 +501,6 @@ const INITIAL_GOALS: Goal[] = [
   {
     "id": "20000000-0000-0000-0000-000000000018",
     "employee_id": "00000000-0000-0000-0000-000000000009",
-    "cycle_id": "10000000-0000-0000-0000-000000000001",
-    "title": "Employee Learning & Leadership Development",
-    "description": "Roll out modern engineering and management training workshops across all departments.",
-    "weightage": 25,
-    "target_date": "2027-02-28",
-    "status": "approved",
-    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
-  },
-  {
-    "id": "20000000-0000-0000-0000-000000000019",
-    "employee_id": "00000000-0000-0000-0000-000000000010",
-    "cycle_id": "10000000-0000-0000-0000-000000000001",
-    "title": "Enterprise Talent Acquisition & Retention",
-    "description": "Optimize hiring pipelines to achieve under 30-day time-to-hire with 95% retention rate.",
-    "weightage": 35,
-    "target_date": "2026-11-30",
-    "status": "approved",
-    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
-  },
-  {
-    "id": "20000000-0000-0000-0000-000000000020",
-    "employee_id": "00000000-0000-0000-0000-000000000010",
-    "cycle_id": "10000000-0000-0000-0000-000000000001",
-    "title": "Standardize Global PMS Review Calibration",
-    "description": "Implement normalized rating rubrics and complete 100% of executive calibrations on schedule.",
-    "weightage": 30,
-    "target_date": "2026-10-15",
-    "status": "approved",
-    "manager_comment": "Approved. Strategic milestone for the annual review cycle."
-  },
-  {
-    "id": "20000000-0000-0000-0000-000000000021",
-    "employee_id": "00000000-0000-0000-0000-000000000010",
     "cycle_id": "10000000-0000-0000-0000-000000000001",
     "title": "Employee Learning & Leadership Development",
     "description": "Roll out modern engineering and management training workshops across all departments.",
@@ -1399,24 +1333,24 @@ const INITIAL_REVIEWS: Review[] = [
     "employee_id": "00000000-0000-0000-0000-000000000007",
     "manager_id": "00000000-0000-0000-0000-000000000001",
     "cycle_id": "10000000-0000-0000-0000-000000000001",
-    "status": "completed",
-    "overall_self_rating": 4.4,
-    "overall_manager_rating": 4.2,
-    "manager_summary": "Demonstrated dependable execution on departmental deliverables. Solid team player who consistently meets high expectations.",
-    "submitted_at": "2026-06-25T10:00:00Z",
-    "reviewed_at": "2026-06-28T14:30:00Z"
+    "status": "not_started",
+    "overall_self_rating": null,
+    "overall_manager_rating": null,
+    "manager_summary": null,
+    "submitted_at": null,
+    "reviewed_at": null
   },
   {
     "id": "30000000-0000-0000-0000-000000000005",
     "employee_id": "00000000-0000-0000-0000-000000000008",
     "manager_id": "00000000-0000-0000-0000-000000000001",
     "cycle_id": "10000000-0000-0000-0000-000000000001",
-    "status": "completed",
-    "overall_self_rating": 4,
-    "overall_manager_rating": 3.8,
-    "manager_summary": "Demonstrated dependable execution on departmental deliverables. Solid team player who consistently meets high expectations.",
-    "submitted_at": "2026-06-25T10:00:00Z",
-    "reviewed_at": "2026-06-28T14:30:00Z"
+    "status": "not_started",
+    "overall_self_rating": null,
+    "overall_manager_rating": null,
+    "manager_summary": null,
+    "submitted_at": null,
+    "reviewed_at": null
   },
   {
     "id": "30000000-0000-0000-0000-000000000006",
@@ -1788,60 +1722,6 @@ const INITIAL_GOAL_RATINGS: GoalRating[] = [
     "manager_rating": 4.4
   },
   {
-    "id": "40000000-0000-0000-0000-000000000010",
-    "review_id": "30000000-0000-0000-0000-000000000004",
-    "goal_id": "20000000-0000-0000-0000-000000000010",
-    "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
-    "self_rating": 4.4,
-    "manager_comment": "Meets high performance standards on this objective.",
-    "manager_rating": 4.2
-  },
-  {
-    "id": "40000000-0000-0000-0000-000000000011",
-    "review_id": "30000000-0000-0000-0000-000000000004",
-    "goal_id": "20000000-0000-0000-0000-000000000011",
-    "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
-    "self_rating": 4.4,
-    "manager_comment": "Meets high performance standards on this objective.",
-    "manager_rating": 4.2
-  },
-  {
-    "id": "40000000-0000-0000-0000-000000000012",
-    "review_id": "30000000-0000-0000-0000-000000000004",
-    "goal_id": "20000000-0000-0000-0000-000000000012",
-    "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
-    "self_rating": 4.4,
-    "manager_comment": "Meets high performance standards on this objective.",
-    "manager_rating": 4.2
-  },
-  {
-    "id": "40000000-0000-0000-0000-000000000013",
-    "review_id": "30000000-0000-0000-0000-000000000005",
-    "goal_id": "20000000-0000-0000-0000-000000000013",
-    "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
-    "self_rating": 4,
-    "manager_comment": "Meets high performance standards on this objective.",
-    "manager_rating": 3.8
-  },
-  {
-    "id": "40000000-0000-0000-0000-000000000014",
-    "review_id": "30000000-0000-0000-0000-000000000005",
-    "goal_id": "20000000-0000-0000-0000-000000000014",
-    "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
-    "self_rating": 4,
-    "manager_comment": "Meets high performance standards on this objective.",
-    "manager_rating": 3.8
-  },
-  {
-    "id": "40000000-0000-0000-0000-000000000015",
-    "review_id": "30000000-0000-0000-0000-000000000005",
-    "goal_id": "20000000-0000-0000-0000-000000000015",
-    "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
-    "self_rating": 4,
-    "manager_comment": "Meets high performance standards on this objective.",
-    "manager_rating": 3.8
-  },
-  {
     "id": "40000000-0000-0000-0000-000000000016",
     "review_id": "30000000-0000-0000-0000-000000000006",
     "goal_id": "20000000-0000-0000-0000-000000000016",
@@ -1865,33 +1745,6 @@ const INITIAL_GOAL_RATINGS: GoalRating[] = [
     "goal_id": "20000000-0000-0000-0000-000000000018",
     "self_comment": "Achieved target deliverables on schedule with high quality and adherence to core criteria.",
     "self_rating": 3.8,
-    "manager_comment": null,
-    "manager_rating": null
-  },
-  {
-    "id": "40000000-0000-0000-0000-000000000019",
-    "review_id": "30000000-0000-0000-0000-000000000007",
-    "goal_id": "20000000-0000-0000-0000-000000000019",
-    "self_comment": null,
-    "self_rating": null,
-    "manager_comment": null,
-    "manager_rating": null
-  },
-  {
-    "id": "40000000-0000-0000-0000-000000000020",
-    "review_id": "30000000-0000-0000-0000-000000000007",
-    "goal_id": "20000000-0000-0000-0000-000000000020",
-    "self_comment": null,
-    "self_rating": null,
-    "manager_comment": null,
-    "manager_rating": null
-  },
-  {
-    "id": "40000000-0000-0000-0000-000000000021",
-    "review_id": "30000000-0000-0000-0000-000000000007",
-    "goal_id": "20000000-0000-0000-0000-000000000021",
-    "self_comment": null,
-    "self_rating": null,
     "manager_comment": null,
     "manager_rating": null
   },
@@ -2558,11 +2411,11 @@ class InMemoryDataStore {
 
   private init() {
     if (typeof window !== "undefined") {
-      const storedEmp = localStorage.getItem("pms_employees_30");
-      const storedCycles = localStorage.getItem("pms_cycles_30");
-      const storedGoals = localStorage.getItem("pms_goals_30");
-      const storedReviews = localStorage.getItem("pms_reviews_30");
-      const storedGR = localStorage.getItem("pms_goal_ratings_30");
+      const storedEmp = localStorage.getItem("pms_employees_v2");
+      const storedCycles = localStorage.getItem("pms_cycles_v2");
+      const storedGoals = localStorage.getItem("pms_goals_v2");
+      const storedReviews = localStorage.getItem("pms_reviews_v2");
+      const storedGR = localStorage.getItem("pms_goal_ratings_v2");
 
       this.employees = storedEmp ? JSON.parse(storedEmp) : [...INITIAL_EMPLOYEES];
       this.cycles = storedCycles ? JSON.parse(storedCycles) : [...INITIAL_CYCLES];
@@ -2578,13 +2431,22 @@ class InMemoryDataStore {
     }
   }
 
+  resetDataStore() {
+    this.employees = [...INITIAL_EMPLOYEES];
+    this.cycles = [...INITIAL_CYCLES];
+    this.goals = [...INITIAL_GOALS];
+    this.reviews = [...INITIAL_REVIEWS];
+    this.goalRatings = [...INITIAL_GOAL_RATINGS];
+    this.persist();
+  }
+
   private persist() {
     if (typeof window !== "undefined") {
-      localStorage.setItem("pms_employees_30", JSON.stringify(this.employees));
-      localStorage.setItem("pms_cycles_30", JSON.stringify(this.cycles));
-      localStorage.setItem("pms_goals_30", JSON.stringify(this.goals));
-      localStorage.setItem("pms_reviews_30", JSON.stringify(this.reviews));
-      localStorage.setItem("pms_goal_ratings_30", JSON.stringify(this.goalRatings));
+      localStorage.setItem("pms_employees_v2", JSON.stringify(this.employees));
+      localStorage.setItem("pms_cycles_v2", JSON.stringify(this.cycles));
+      localStorage.setItem("pms_goals_v2", JSON.stringify(this.goals));
+      localStorage.setItem("pms_reviews_v2", JSON.stringify(this.reviews));
+      localStorage.setItem("pms_goal_ratings_v2", JSON.stringify(this.goalRatings));
     }
   }
 

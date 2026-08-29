@@ -79,12 +79,12 @@ export const AppNavbar = () => {
 
   const demoProfiles = [
     { name: "Praveen Dalal", email: "admin@company.com", roleLabel: "HR Admin", roleKey: "hr_admin" },
-    { name: "Yash Parulekar", email: "yash@company.com", roleLabel: "VP Tech", roleKey: "manager" },
+    { name: "Yash Parulekar", email: "yash@company.com", roleLabel: "VP Tech (Manager)", roleKey: "manager" },
+    { name: "Ananya Sharma", email: "ananya@company.com", roleLabel: "Ananya (Fresh Test Employee)", roleKey: "employee" },
+    { name: "Rohan Mehta", email: "rohan@company.com", roleLabel: "Rohan (Fresh Test Employee)", roleKey: "employee" },
+    { name: "Kunal Varma", email: "kunal@company.com", roleLabel: "Kunal (Draft Goal)", roleKey: "employee" },
     { name: "Mehmood Sayed", email: "manager@company.com", roleLabel: "Eng Lead", roleKey: "manager" },
-    { name: "Aarya Shirodkar", email: "aarya@company.com", roleLabel: "Senior Dev (⭐ 5.0)", roleKey: "manager" },
-    { name: "Uraj Madkaikar", email: "uraj@company.com", roleLabel: "Frontend Dev", roleKey: "employee" },
-    { name: "Rohit Deshmukh", email: "rohit@company.com", roleLabel: "Mobile Mgr", roleKey: "manager" },
-    { name: "Natasha D'Souza", email: "natasha@company.com", roleLabel: "Product Mgr", roleKey: "manager" },
+    { name: "Aarya Shirodkar", email: "aarya@company.com", roleLabel: "⭐ 5.0 Performer", roleKey: "manager" },
   ];
 
   return (
