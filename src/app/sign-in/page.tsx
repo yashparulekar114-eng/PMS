@@ -48,14 +48,25 @@ export default function SignInPage() {
         </label>
 
         <button
-          onClick={() => handleRoleSelect("yash@company.com")}
+          onClick={() => handleRoleSelect("admin@company.com")}
           className="w-full flex items-center justify-between p-3 rounded-xl border border-purple-300 bg-purple-100/70 hover:bg-purple-100 text-left transition-all ring-1 ring-purple-400/30"
         >
           <div>
-            <div className="text-sm font-bold text-purple-950">Yash Parulekar (👑 HR Admin)</div>
-            <div className="text-xs text-purple-700 font-medium">HR Director & Technology Lead • Full Access</div>
+            <div className="text-sm font-bold text-purple-950">Praveen Dalal (👑 HR Admin)</div>
+            <div className="text-xs text-purple-700 font-medium">HR Director • Full Administration & Calibration Access</div>
           </div>
           <ArrowRight className="w-4 h-4 text-purple-600" />
+        </button>
+
+        <button
+          onClick={() => handleRoleSelect("yash@company.com")}
+          className="w-full flex items-center justify-between p-3 rounded-xl border border-indigo-300 bg-indigo-100/70 hover:bg-indigo-100 text-left transition-all ring-1 ring-indigo-400/30"
+        >
+          <div>
+            <div className="text-sm font-bold text-indigo-950">Yash Parulekar (👑 HR Admin)</div>
+            <div className="text-xs text-indigo-700 font-medium">HR Director & Technology Lead • Full Access</div>
+          </div>
+          <ArrowRight className="w-4 h-4 text-indigo-600" />
         </button>
 
         <button
