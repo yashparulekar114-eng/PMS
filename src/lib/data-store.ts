@@ -2748,6 +2748,44 @@ class InMemoryDataStore {
     return newGoal;
   }
 
+  async updateGoal(
+    id: string,
+    updates: Partial<Omit<Goal, "id" | "employee_id" | "cycle_id">>
+  ): Promise<Goal | null> {
+    const g = this.goals.find((item) => item.id === id);
+    if (g) {
+      if (updates.title !== undefined) g.title = updates.title;
+      if (updates.description !== undefined) g.description = updates.description;
+      if (updates.weightage !== undefined) g.weightage = Number(updates.weightage);
+      if (updates.target_date !== undefined) g.target_date = updates.target_date;
+      if (updates.status !== undefined) g.status = updates.status;
+      this.persist();
+    }
+    if (isSupabaseConfigured()) {
+      try {
+        await supabase
+          .from("goals")
+          .update(updates)
+          .eq("id", id);
+      } catch (e) {}
+    }
+    return g || null;
+  }
+
+  async deleteGoal(id: string): Promise<boolean> {
+    const idx = this.goals.findIndex((item) => item.id === id);
+    if (idx !== -1) {
+      this.goals.splice(idx, 1);
+      this.persist();
+    }
+    if (isSupabaseConfigured()) {
+      try {
+        await supabase.from("goals").delete().eq("id", id);
+      } catch (e) {}
+    }
+    return true;
+  }
+
   async updateGoalStatus(
     id: string,
     status: Goal["status"],
