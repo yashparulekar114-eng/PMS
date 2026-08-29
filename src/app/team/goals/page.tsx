@@ -373,6 +373,17 @@ export default function TeamGoalsApprovalPage() {
                           </p>
                         )}
 
+                        {/* Employee Feedback Comment (if submitted by subordinate) */}
+                        {goal.employee_comment && (
+                          <div className="p-3 bg-indigo-50/80 border border-indigo-200 rounded-xl text-xs text-indigo-950 flex items-start gap-2">
+                            <MessageSquare className="w-4 h-4 text-indigo-600 mt-0.5 flex-shrink-0" />
+                            <div>
+                              <strong className="block text-indigo-900 font-bold">Subordinate Feedback ({employee.full_name}):</strong>
+                              <p className="mt-0.5">{goal.employee_comment}</p>
+                            </div>
+                          </div>
+                        )}
+
                         {/* Feedback & Actions */}
                         <div className="pt-2 flex flex-col sm:flex-row items-start sm:items-center gap-3 justify-between">
                           <div className="w-full sm:w-2/3">

@@ -38,6 +38,7 @@ export interface Goal {
   target_date?: string;
   status: GoalStatus;
   manager_comment?: string | null;
+  employee_comment?: string | null;
   created_at?: string;
 }
 

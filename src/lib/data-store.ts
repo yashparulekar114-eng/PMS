@@ -2676,6 +2676,8 @@ class InMemoryDataStore {
       if (updates.weightage !== undefined) g.weightage = Number(updates.weightage);
       if (updates.target_date !== undefined) g.target_date = updates.target_date;
       if (updates.status !== undefined) g.status = updates.status;
+      if (updates.manager_comment !== undefined) g.manager_comment = updates.manager_comment;
+      if (updates.employee_comment !== undefined) g.employee_comment = updates.employee_comment;
       this.persist();
     }
     if (isSupabaseConfigured()) {
@@ -2685,6 +2687,38 @@ class InMemoryDataStore {
           .update(updates)
           .eq("id", id);
       } catch (e) {}
+    }
+    return g || null;
+  }
+
+  async saveEmployeeGoalComment(goalId: string, comment: string): Promise<Goal | null> {
+    const g = this.goals.find((item) => item.id === goalId);
+    if (g) {
+      g.employee_comment = comment;
+      this.persist();
+
+      const employee = this.employees.find((e) => e.id === g.employee_id);
+      const manager = employee?.manager_id ? this.employees.find((e) => e.id === employee.manager_id) : null;
+
+      if (manager) {
+        await this.createNotification({
+          recipient_id: manager.id,
+          recipient_email: manager.email,
+          title: "💬 Subordinate Feedback on Goal",
+          message: `${employee?.full_name || "Employee"} shared feedback on "${g.title}": "${comment}"`,
+          type: "goal_set",
+          link_url: "/team/goals",
+        });
+      }
+
+      if (isSupabaseConfigured()) {
+        try {
+          await supabase
+            .from("goals")
+            .update({ employee_comment: comment })
+            .eq("id", goalId);
+        } catch (e) {}
+      }
     }
     return g || null;
   }
