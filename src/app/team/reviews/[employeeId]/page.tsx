@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
@@ -109,6 +109,30 @@ export default function ManagerReviewPage() {
         overallManagerRating,
         managerSummary
       );
+
+      // Non-blocking Resend email dispatch to HR Admin and Employee
+      try {
+        const appOrigin = typeof window !== "undefined" ? window.location.origin : "http://localhost:3000";
+        fetch("/api/notify-manager", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            type: "manager_evaluation_done",
+            employeeName: employee?.full_name,
+            employeeEmail: employee?.email,
+            managerName: user?.full_name || "Reporting Manager",
+            managerEmail: "admin@company.com",
+            cycleName: activeCycle?.name || "Annual Review",
+            managerRating: overallManagerRating,
+            managerSummary: managerSummary,
+            reviewUrl: `${appOrigin}/admin/reports`,
+          }),
+        }).catch((e) => {
+          console.warn("[Non-Blocking] Resend manager evaluation notice:", e);
+        });
+      } catch (e) {
+        // Never block the user experience or database save
+      }
 
       setSuccessMsg("Manager review completed and finalized successfully!");
       await fetchReviewDetails();

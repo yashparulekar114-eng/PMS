@@ -303,19 +303,6 @@ export default function SelfAppraisalPage() {
           if (ratingErr) throw ratingErr;
         }
 
-        // Trigger notification email
-        try {
-          await fetch("/api/notify-manager", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              employeeName: user.full_name,
-              managerEmail: user.manager_name ? `${user.manager_name.toLowerCase().replace(/[^a-z]/g, "")}@company.com` : "manager@company.com",
-              cycleName: activeCycle.name,
-              reviewUrl: `http://localhost:3000/team/reviews/${user.id}`,
-            }),
-          });
-        } catch (e) {}
       } else {
         // Fallback to dataStore
         if (review) {
@@ -326,6 +313,29 @@ export default function SelfAppraisalPage() {
           }));
           await dataStore.submitSelfAppraisal(review.id, payload, overallSelfRating);
         }
+      }
+
+      // Guaranteed non-blocking email dispatch to manager via Resend API route
+      try {
+        const appOrigin = typeof window !== "undefined" ? window.location.origin : "http://localhost:3000";
+        fetch("/api/notify-manager", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            type: "self_appraisal",
+            employeeName: user.full_name,
+            employeeEmail: user.email,
+            managerName: user.manager_name,
+            managerEmail: user.manager_name ? `${user.manager_name.toLowerCase().replace(/[^a-z]/g, "")}@company.com` : "manager@company.com",
+            cycleName: activeCycle.name,
+            selfRating: overallSelfRating,
+            reviewUrl: `${appOrigin}/team/reviews/${user.id}`,
+          }),
+        }).catch((e) => {
+          console.warn("[Non-Blocking] Resend email notice:", e);
+        });
+      } catch (e) {
+        // Never block the user experience or database save
       }
 
       setSubmissionBanner(`🎉 Self-appraisal ratings successfully submitted (${overallSelfRating}★)! Your reporting manager has received a notification: "Now you should give the ratings".`);
