@@ -3058,19 +3058,33 @@ class InMemoryDataStore {
     }
     this.persist();
 
-    // Notify Employee that Manager completed their rating
+    // 1. Notify HR Admin and Employee when Manager completes evaluation
     if (rev) {
       const employee = this.employees.find((e) => e.id === rev.employee_id);
       const manager = rev.manager_id ? this.employees.find((e) => e.id === rev.manager_id) : null;
+      const hrAdmins = this.employees.filter((e) => e.role === "hr_admin" || e.email === "admin@company.com");
 
+      // Notify HR Admin: "Action Required: HR Final Sign-off"
+      for (const hr of hrAdmins) {
+        await this.createNotification({
+          recipient_id: hr.id,
+          recipient_email: hr.email,
+          title: "🏢 Action Required: HR Final Sign-off",
+          message: `${manager?.full_name || "Manager"} completed the evaluation for ${employee?.full_name || "subordinate"} (${overallRating.toFixed(1)}★). Please review and finalize to complete the cycle and activate their PDF certificate.`,
+          type: "manager_review",
+          link_url: "/admin/reports",
+        });
+      }
+
+      // Notify Employee: "Manager evaluation completed • Sent to HR"
       if (employee) {
         await this.createNotification({
           recipient_id: employee.id,
           recipient_email: employee.email,
-          title: "⭐ Manager Ratings & Evaluation Completed",
-          message: `${manager?.full_name || "Your manager"} completed your performance evaluation with a rating of ${overallRating.toFixed(1)}★.`,
+          title: "⏳ Manager Evaluation Completed • Awaiting HR Sign-off",
+          message: `Your manager ${manager?.full_name || ""} completed your performance evaluation with a rating of ${overallRating.toFixed(1)}★. Your appraisal is now with HR for final sign-off and certificate activation.`,
           type: "manager_review",
-          link_url: "/reviews/self",
+          link_url: "/employee/dashboard",
         });
       }
     }
@@ -3100,6 +3114,67 @@ class InMemoryDataStore {
         }
       } catch (e) {}
     }
+  }
+
+  async finalizeReviewByHR(reviewId: string): Promise<Review | null> {
+    const rev = this.reviews.find((r) => r.id === reviewId);
+    if (!rev) return null;
+
+    rev.status = "completed";
+    this.persist();
+
+    const employee = this.employees.find((e) => e.id === rev.employee_id);
+    const manager = rev.manager_id ? this.employees.find((e) => e.id === rev.manager_id) : null;
+
+    // 1. Notify Employee: Certificate Activated!
+    if (employee) {
+      await this.createNotification({
+        recipient_id: employee.id,
+        recipient_email: employee.email,
+        title: "🏆 Appraisal Finalized & Certificate Activated!",
+        message: `HR has approved and finalized your performance appraisal. Your official Certificate & PDF Report are now activated!`,
+        type: "cycle_complete",
+        link_url: `/reports/${rev.employee_id}`,
+      });
+    }
+
+    // 2. Notify Manager: Subordinate appraisal completed by HR
+    if (manager) {
+      await this.createNotification({
+        recipient_id: manager.id,
+        recipient_email: manager.email,
+        title: "✅ Subordinate Appraisal Finalized by HR",
+        message: `HR completed final calibration for ${employee?.full_name || "subordinate"} and closed the appraisal cycle.`,
+        type: "cycle_complete",
+        link_url: "/team",
+      });
+    }
+
+    if (isSupabaseConfigured()) {
+      try {
+        await supabase
+          .from("reviews")
+          .update({ status: "completed" })
+          .eq("id", reviewId);
+      } catch (e) {}
+    }
+
+    return rev;
+  }
+
+  async finalizeAllReviewedByHR(cycleId?: string): Promise<number> {
+    const targetCycleId = cycleId || (await this.getActiveCycle())?.id;
+    const pendingReviews = this.reviews.filter(
+      (r) =>
+        r.status === "manager_reviewed" &&
+        (!targetCycleId || r.cycle_id === targetCycleId)
+    );
+
+    for (const rev of pendingReviews) {
+      await this.finalizeReviewByHR(rev.id);
+    }
+
+    return pendingReviews.length;
   }
 
   async submitSelfAppraisal(
