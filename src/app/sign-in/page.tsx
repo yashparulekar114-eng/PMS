@@ -48,47 +48,47 @@ export default function SignInPage() {
         </label>
 
         <button
-          onClick={() => handleRoleSelect("admin@company.com")}
-          className="w-full flex items-center justify-between p-3 rounded-xl border border-purple-200 bg-purple-50/50 hover:bg-purple-50 text-left transition-all"
+          onClick={() => handleRoleSelect("yash@company.com")}
+          className="w-full flex items-center justify-between p-3 rounded-xl border border-purple-300 bg-purple-100/70 hover:bg-purple-100 text-left transition-all ring-1 ring-purple-400/30"
         >
           <div>
-            <div className="text-sm font-semibold text-purple-900">Praveen Dalal</div>
-            <div className="text-xs text-purple-700">HR Director (HR Admin Role)</div>
+            <div className="text-sm font-bold text-purple-950">Yash Parulekar (👑 HR Admin)</div>
+            <div className="text-xs text-purple-700 font-medium">HR Director & Technology Lead • Full Access</div>
           </div>
-          <ArrowRight className="w-4 h-4 text-purple-500" />
+          <ArrowRight className="w-4 h-4 text-purple-600" />
         </button>
 
         <button
-          onClick={() => handleRoleSelect("manager@company.com")}
+          onClick={() => handleRoleSelect("ananya@company.com")}
+          className="w-full flex items-center justify-between p-3 rounded-xl border border-emerald-200 bg-emerald-50/50 hover:bg-emerald-50 text-left transition-all"
+        >
+          <div>
+            <div className="text-sm font-semibold text-emerald-900">Ananya Sharma</div>
+            <div className="text-xs text-emerald-700">Senior HR Partner • Reports to Yash</div>
+          </div>
+          <ArrowRight className="w-4 h-4 text-emerald-500" />
+        </button>
+
+        <button
+          onClick={() => handleRoleSelect("rohan@company.com")}
+          className="w-full flex items-center justify-between p-3 rounded-xl border border-indigo-200 bg-indigo-50/50 hover:bg-indigo-50 text-left transition-all"
+        >
+          <div>
+            <div className="text-sm font-semibold text-indigo-900">Rohan Mehta</div>
+            <div className="text-xs text-indigo-700">People Analytics Specialist • Reports to Yash</div>
+          </div>
+          <ArrowRight className="w-4 h-4 text-indigo-500" />
+        </button>
+
+        <button
+          onClick={() => handleRoleSelect("kunal@company.com")}
           className="w-full flex items-center justify-between p-3 rounded-xl border border-blue-200 bg-blue-50/50 hover:bg-blue-50 text-left transition-all"
         >
           <div>
-            <div className="text-sm font-semibold text-blue-900">Mehmood Sayed</div>
-            <div className="text-xs text-blue-700">Engineering Lead (Manager Role)</div>
+            <div className="text-sm font-semibold text-blue-900">Kunal Varma</div>
+            <div className="text-xs text-blue-700">Talent Acquisition Lead • Reports to Yash</div>
           </div>
           <ArrowRight className="w-4 h-4 text-blue-500" />
-        </button>
-
-        <button
-          onClick={() => handleRoleSelect("aarya@company.com")}
-          className="w-full flex items-center justify-between p-3 rounded-xl border border-emerald-200 bg-emerald-50/50 hover:bg-emerald-50 text-left transition-all"
-        >
-          <div>
-            <div className="text-sm font-semibold text-emerald-900">Aarya Shirodkar</div>
-            <div className="text-xs text-emerald-700">Senior Full-Stack Engineer (Employee Role)</div>
-          </div>
-          <ArrowRight className="w-4 h-4 text-emerald-500" />
-        </button>
-
-        <button
-          onClick={() => handleRoleSelect("uraj@company.com")}
-          className="w-full flex items-center justify-between p-3 rounded-xl border border-emerald-200 bg-emerald-50/50 hover:bg-emerald-50 text-left transition-all"
-        >
-          <div>
-            <div className="text-sm font-semibold text-emerald-900">Uraj Madkaikar</div>
-            <div className="text-xs text-emerald-700">Frontend Developer (Employee Role)</div>
-          </div>
-          <ArrowRight className="w-4 h-4 text-emerald-500" />
         </button>
       </div>
 

@@ -126,13 +126,13 @@ export const AppNavbar = () => {
   const filteredNavItems = navItems.filter((item) => role && item.roles.includes(role));
 
   const demoProfiles = [
-    { name: "Praveen Dalal", email: "admin@company.com", roleLabel: "HR Admin", roleKey: "hr_admin" },
-    { name: "Yash Parulekar", email: "yash@company.com", roleLabel: "VP Tech (Manager)", roleKey: "manager" },
-    { name: "Ananya Sharma", email: "ananya@company.com", roleLabel: "Ananya (Fresh Test Employee)", roleKey: "employee" },
-    { name: "Rohan Mehta", email: "rohan@company.com", roleLabel: "Rohan (Fresh Test Employee)", roleKey: "employee" },
-    { name: "Kunal Varma", email: "kunal@company.com", roleLabel: "Kunal (Draft Goal)", roleKey: "employee" },
-    { name: "Mehmood Sayed", email: "manager@company.com", roleLabel: "Eng Lead", roleKey: "manager" },
-    { name: "Aarya Shirodkar", email: "aarya@company.com", roleLabel: "⭐ 5.0 Performer", roleKey: "manager" },
+    { name: "Yash Parulekar", email: "yash@company.com", roleLabel: "👑 HR Admin (Yash)", roleKey: "hr_admin" },
+    { name: "Ananya Sharma", email: "ananya@company.com", roleLabel: "Ananya (Yash Report)", roleKey: "employee" },
+    { name: "Rohan Mehta", email: "rohan@company.com", roleLabel: "Rohan (Yash Report)", roleKey: "employee" },
+    { name: "Kunal Varma", email: "kunal@company.com", roleLabel: "Kunal (Yash Report)", roleKey: "employee" },
+    { name: "Deepika Joshi", email: "deepika@company.com", roleLabel: "Deepika (Yash Report)", roleKey: "manager" },
+    { name: "Mehmood Sayed", email: "manager@company.com", roleLabel: "Mehmood (Yash Report)", roleKey: "manager" },
+    { name: "Praveen Dalal", email: "admin@company.com", roleLabel: "Praveen (HR Admin)", roleKey: "hr_admin" },
   ];
 
   return (
