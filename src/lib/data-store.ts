@@ -2957,6 +2957,40 @@ class InMemoryDataStore {
     }
     this.persist();
 
+    // 1. Dual Notification Dispatch on Self-Appraisal Submission
+    if (rev) {
+      const employee = this.employees.find((e) => e.id === rev.employee_id);
+      const manager = rev.manager_id
+        ? this.employees.find((e) => e.id === rev.manager_id)
+        : employee?.manager_id
+        ? this.employees.find((e) => e.id === employee.manager_id)
+        : null;
+
+      // Notify Reporting Manager: "Action Required: Now you should give the ratings"
+      if (manager) {
+        await this.createNotification({
+          recipient_id: manager.id,
+          recipient_email: manager.email,
+          title: "📋 Self-Appraisal Submitted: Give Ratings",
+          message: `${employee?.full_name || "Your direct report"} has submitted their self-appraisal rating (${overallRating.toFixed(1)}★). Now you should review and provide your manager evaluations and ratings.`,
+          type: "self_appraisal",
+          link_url: `/team/reviews/${rev.employee_id}`,
+        });
+      }
+
+      // Notify Subordinate (Employee)
+      if (employee) {
+        await this.createNotification({
+          recipient_id: employee.id,
+          recipient_email: employee.email,
+          title: "✅ Self-Appraisal Submitted Successfully",
+          message: `Your self-appraisal rating of ${overallRating.toFixed(1)}★ has been submitted. Your reporting manager ${manager?.full_name || ""} has been notified to evaluate and provide ratings.`,
+          type: "self_appraisal",
+          link_url: "/employee/dashboard",
+        });
+      }
+    }
+
     if (isSupabaseConfigured()) {
       try {
         await supabase
@@ -3023,6 +3057,23 @@ class InMemoryDataStore {
       }
     }
     this.persist();
+
+    // Notify Employee that Manager completed their rating
+    if (rev) {
+      const employee = this.employees.find((e) => e.id === rev.employee_id);
+      const manager = rev.manager_id ? this.employees.find((e) => e.id === rev.manager_id) : null;
+
+      if (employee) {
+        await this.createNotification({
+          recipient_id: employee.id,
+          recipient_email: employee.email,
+          title: "⭐ Manager Ratings & Evaluation Completed",
+          message: `${manager?.full_name || "Your manager"} completed your performance evaluation with a rating of ${overallRating.toFixed(1)}★.`,
+          type: "manager_review",
+          link_url: "/reviews/self",
+        });
+      }
+    }
 
     if (isSupabaseConfigured()) {
       try {

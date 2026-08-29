@@ -21,6 +21,7 @@ import {
   User,
   Printer,
   Download,
+  X,
 } from "lucide-react";
 
 // TypeScript interfaces
@@ -77,6 +78,7 @@ export default function SelfAppraisalPage() {
   const [submitting, setSubmitting] = useState<boolean>(false);
   const [formError, setFormError] = useState<string | null>(null);
   const [isEditingSubmitted, setIsEditingSubmitted] = useState<boolean>(false);
+  const [submissionBanner, setSubmissionBanner] = useState<string | null>(null);
 
   const fetchSelfReview = async () => {
     if (!user) {
@@ -300,6 +302,20 @@ export default function SelfAppraisalPage() {
 
           if (ratingErr) throw ratingErr;
         }
+
+        // Trigger notification email
+        try {
+          await fetch("/api/notify-manager", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              employeeName: user.full_name,
+              managerEmail: user.manager_name ? `${user.manager_name.toLowerCase().replace(/[^a-z]/g, "")}@company.com` : "manager@company.com",
+              cycleName: activeCycle.name,
+              reviewUrl: `http://localhost:3000/team/reviews/${user.id}`,
+            }),
+          });
+        } catch (e) {}
       } else {
         // Fallback to dataStore
         if (review) {
@@ -312,11 +328,12 @@ export default function SelfAppraisalPage() {
         }
       }
 
+      setSubmissionBanner(`🎉 Self-appraisal ratings successfully submitted (${overallSelfRating}★)! Your reporting manager has received a notification: "Now you should give the ratings".`);
       setIsEditingSubmitted(false);
       await fetchSelfReview();
     } catch (err: any) {
       console.error("Error submitting self-appraisal:", err);
-      setFormError(err.message || "Failed to submit self-appraisal to Supabase.");
+      setFormError(err.message || "Failed to submit self-appraisal.");
     } finally {
       setSubmitting(false);
     }
@@ -416,6 +433,19 @@ export default function SelfAppraisalPage() {
           </button>
         </div>
       </div>
+
+      {/* Submission Success Banner */}
+      {submissionBanner && (
+        <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl flex items-center justify-between text-emerald-900 text-xs shadow-xs animate-in fade-in">
+          <div className="flex items-center gap-2.5">
+            <CheckCircle2 className="w-5 h-5 text-emerald-600 flex-shrink-0" />
+            <span className="font-semibold">{submissionBanner}</span>
+          </div>
+          <button onClick={() => setSubmissionBanner(null)} className="text-emerald-700 hover:text-emerald-950">
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+      )}
 
       {/* Error Message */}
       {error && (
