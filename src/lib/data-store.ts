@@ -1,5 +1,5 @@
 import { supabase, isSupabaseConfigured } from "./supabase/client";
-import { Employee, ReviewCycle, Goal, Review, GoalRating } from "@/types";
+import { Employee, ReviewCycle, Goal, Review, GoalRating, AppNotification, NotificationType } from "@/types";
 
 // Initial Demo Seed Data - 30 Employees Roster
 const INITIAL_EMPLOYEES: Employee[] = [
@@ -2398,12 +2398,62 @@ const INITIAL_GOAL_RATINGS: GoalRating[] = [
   }
 ];
 
+
+// Initial Demo Notifications Seed Data
+const INITIAL_NOTIFICATIONS: AppNotification[] = [
+  {
+    id: "notif-001",
+    recipient_id: "00000000-0000-0000-0000-000000000001", // Praveen (HR / Mgr)
+    recipient_email: "admin@company.com",
+    title: "Review Cycle Active",
+    message: "FY 2026-27 Annual Review cycle is currently open for submissions.",
+    type: "cycle_complete",
+    link_url: "/admin/cycles",
+    is_read: false,
+    created_at: new Date(Date.now() - 3600000 * 4).toISOString(),
+  },
+  {
+    id: "notif-002",
+    recipient_id: "00000000-0000-0000-0000-000000000006", // Yash (VP Tech)
+    recipient_email: "yash@company.com",
+    title: "Direct Reports Goal Setting Open",
+    message: "You can assign goals to your direct reports or review their submissions.",
+    type: "goal_approval_request",
+    link_url: "/team/goals",
+    is_read: false,
+    created_at: new Date(Date.now() - 3600000 * 2).toISOString(),
+  },
+  {
+    id: "notif-003",
+    recipient_id: "00000000-0000-0000-0000-000000000007", // Ananya (Employee)
+    recipient_email: "ananya@company.com",
+    title: "Goal Setting Initialized",
+    message: "Please set your performance goals (≥85% weightage) for manager approval.",
+    type: "goal_set",
+    link_url: "/goals",
+    is_read: false,
+    created_at: new Date(Date.now() - 3600000 * 1).toISOString(),
+  },
+  {
+    id: "notif-004",
+    recipient_id: "00000000-0000-0000-0000-000000000010", // Rohan (Employee)
+    recipient_email: "rohan@company.com",
+    title: "Goal Setting Initialized",
+    message: "Please define your SMART goals and submit to your reporting manager.",
+    type: "goal_set",
+    link_url: "/goals",
+    is_read: false,
+    created_at: new Date(Date.now() - 3600000 * 1).toISOString(),
+  },
+];
+
 class InMemoryDataStore {
   private employees: Employee[] = [];
   private cycles: ReviewCycle[] = [];
   private goals: Goal[] = [];
   private reviews: Review[] = [];
   private goalRatings: GoalRating[] = [];
+  private notifications: AppNotification[] = [];
 
   constructor() {
     this.init();
@@ -2416,18 +2466,21 @@ class InMemoryDataStore {
       const storedGoals = localStorage.getItem("pms_goals_v2");
       const storedReviews = localStorage.getItem("pms_reviews_v2");
       const storedGR = localStorage.getItem("pms_goal_ratings_v2");
+      const storedNotifs = localStorage.getItem("pms_notifications_v2");
 
       this.employees = storedEmp ? JSON.parse(storedEmp) : [...INITIAL_EMPLOYEES];
       this.cycles = storedCycles ? JSON.parse(storedCycles) : [...INITIAL_CYCLES];
       this.goals = storedGoals ? JSON.parse(storedGoals) : [...INITIAL_GOALS];
       this.reviews = storedReviews ? JSON.parse(storedReviews) : [...INITIAL_REVIEWS];
       this.goalRatings = storedGR ? JSON.parse(storedGR) : [...INITIAL_GOAL_RATINGS];
+      this.notifications = storedNotifs ? JSON.parse(storedNotifs) : [...INITIAL_NOTIFICATIONS];
     } else {
       this.employees = [...INITIAL_EMPLOYEES];
       this.cycles = [...INITIAL_CYCLES];
       this.goals = [...INITIAL_GOALS];
       this.reviews = [...INITIAL_REVIEWS];
       this.goalRatings = [...INITIAL_GOAL_RATINGS];
+      this.notifications = [...INITIAL_NOTIFICATIONS];
     }
   }
 
@@ -2437,6 +2490,7 @@ class InMemoryDataStore {
     this.goals = [...INITIAL_GOALS];
     this.reviews = [...INITIAL_REVIEWS];
     this.goalRatings = [...INITIAL_GOAL_RATINGS];
+    this.notifications = [...INITIAL_NOTIFICATIONS];
     this.persist();
   }
 
@@ -2447,6 +2501,7 @@ class InMemoryDataStore {
       localStorage.setItem("pms_goals_v2", JSON.stringify(this.goals));
       localStorage.setItem("pms_reviews_v2", JSON.stringify(this.reviews));
       localStorage.setItem("pms_goal_ratings_v2", JSON.stringify(this.goalRatings));
+      localStorage.setItem("pms_notifications_v2", JSON.stringify(this.notifications));
     }
   }
 
@@ -2673,13 +2728,91 @@ class InMemoryDataStore {
     return g || null;
   }
 
+  
   async approveGoal(id: string, comment?: string): Promise<Goal | null> {
-    return this.updateGoalStatus(id, "approved", comment || "Approved by manager.");
+    const g = this.goals.find((item) => item.id === id);
+    if (!g) return null;
+
+    g.status = "approved";
+    g.manager_comment = comment || "Approved by reporting manager.";
+    this.persist();
+
+    const employee = this.employees.find((e) => e.id === g.employee_id);
+    const manager = employee?.manager_id ? this.employees.find((e) => e.id === employee.manager_id) : null;
+
+    if (isSupabaseConfigured()) {
+      try {
+        await supabase
+          .from("goals")
+          .update({
+            status: "approved",
+            manager_comment: g.manager_comment,
+          })
+          .eq("id", id);
+      } catch (e) {}
+    }
+
+    // 1. Notify Subordinate (Employee)
+    await this.createNotification({
+      recipient_id: g.employee_id,
+      recipient_email: employee?.email,
+      title: "✅ Goal Approved by Manager",
+      message: `${manager?.full_name || "Your manager"} approved your goal "${g.title}". Deliverables are locked.`,
+      type: "goal_approved",
+      link_url: "/goals",
+    });
+
+    // 2. Notify Manager
+    if (manager) {
+      await this.createNotification({
+        recipient_id: manager.id,
+        recipient_email: manager.email,
+        title: "👍 Goal Approval Recorded",
+        message: `You approved goal "${g.title}" for ${employee?.full_name || "subordinate"}.`,
+        type: "goal_approved",
+        link_url: "/team/goals",
+      });
+    }
+
+    return g;
   }
 
   async sendBackGoal(id: string, comment?: string): Promise<Goal | null> {
-    return this.updateGoalStatus(id, "sent_back", comment || "Sent back for revision.");
+    const g = this.goals.find((item) => item.id === id);
+    if (!g) return null;
+
+    g.status = "sent_back";
+    g.manager_comment = comment || "Sent back for revision.";
+    this.persist();
+
+    const employee = this.employees.find((e) => e.id === g.employee_id);
+    const manager = employee?.manager_id ? this.employees.find((e) => e.id === employee.manager_id) : null;
+
+    if (isSupabaseConfigured()) {
+      try {
+        await supabase
+          .from("goals")
+          .update({
+            status: "sent_back",
+            manager_comment: g.manager_comment,
+          })
+          .eq("id", id);
+      } catch (e) {}
+    }
+
+    // 1. Notify Subordinate (Employee)
+    await this.createNotification({
+      recipient_id: g.employee_id,
+      recipient_email: employee?.email,
+      title: "⚠️ Goal Revision Requested",
+      message: `${manager?.full_name || "Your manager"} requested revisions on "${g.title}": "${comment}"`,
+      type: "goal_sent_back",
+      link_url: "/goals",
+    });
+
+    return g;
   }
+
 
   // ---------------- REVIEWS ----------------
   async getOrCreateReview(
@@ -2936,6 +3069,184 @@ class InMemoryDataStore {
         (e.manager_id === targetId || e.manager_id === managerId) &&
         e.is_active
     );
+  }
+
+
+  // ---------------- NOTIFICATIONS ----------------
+  async getNotifications(employeeId: string): Promise<AppNotification[]> {
+    if (isSupabaseConfigured()) {
+      try {
+        const { data, error } = await supabase
+          .from("appraisal_activity_logs")
+          .select("*")
+          .eq("employee_id", employeeId)
+          .order("created_at", { ascending: false });
+        if (!error && data && data.length > 0) {
+          return data.map((d: any) => ({
+            id: d.id,
+            recipient_id: d.employee_id,
+            title: d.title,
+            message: d.description || "",
+            type: d.action_type || "goal_set",
+            link_url: "/dashboard",
+            is_read: false,
+            created_at: d.created_at,
+          }));
+        }
+      } catch (e) {}
+    }
+    return this.notifications
+      .filter((n) => n.recipient_id === employeeId)
+      .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+  }
+
+  async createNotification(
+    notif: Omit<AppNotification, "id" | "created_at" | "is_read">
+  ): Promise<AppNotification> {
+    const newNotif: AppNotification = {
+      ...notif,
+      id: `notif-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
+      is_read: false,
+      created_at: new Date().toISOString(),
+    };
+    this.notifications.unshift(newNotif);
+    this.persist();
+
+    if (isSupabaseConfigured()) {
+      try {
+        await supabase.from("appraisal_activity_logs").insert([
+          {
+            employee_id: notif.recipient_id,
+            action_type: notif.type,
+            title: notif.title,
+            description: notif.message,
+            actor_name: "PMS System",
+            actor_role: "Notification",
+          },
+        ]);
+      } catch (e) {}
+    }
+    return newNotif;
+  }
+
+  async markNotificationAsRead(id: string): Promise<void> {
+    const n = this.notifications.find((item) => item.id === id);
+    if (n) {
+      n.is_read = true;
+      this.persist();
+    }
+  }
+
+  async markAllNotificationsAsRead(employeeId: string): Promise<void> {
+    this.notifications.forEach((n) => {
+      if (n.recipient_id === employeeId) {
+        n.is_read = true;
+      }
+    });
+    this.persist();
+  }
+
+  // ---------------- SUBORDINATE GOALS & APPROVAL WORKFLOW ----------------
+  async createGoalForSubordinate(
+    managerId: string,
+    subordinateId: string,
+    goalData: Omit<Goal, "id" | "employee_id" | "status">
+  ): Promise<Goal> {
+    const subordinate = this.employees.find((e) => e.id === subordinateId);
+    const manager = this.employees.find((e) => e.id === managerId);
+
+    const newGoal: Goal = {
+      ...goalData,
+      id: `20000000-0000-0000-0000-${String(Date.now()).slice(-12)}`,
+      employee_id: subordinateId,
+      status: "approved", // Directly approved since configured by reporting manager
+      manager_comment: `Assigned and approved by reporting manager ${manager?.full_name || ""}.`,
+    };
+
+    this.goals.push(newGoal);
+    this.persist();
+
+    if (isSupabaseConfigured()) {
+      try {
+        await supabase.from("goals").insert([newGoal]);
+      } catch (e) {}
+    }
+
+    // 1. Notify Subordinate (Employee)
+    await this.createNotification({
+      recipient_id: subordinateId,
+      recipient_email: subordinate?.email,
+      title: "🎯 New Goal Assigned by Manager",
+      message: `${manager?.full_name || "Your manager"} assigned a goal: "${newGoal.title}" (${newGoal.weightage}% weightage).`,
+      type: "goal_set",
+      link_url: "/goals",
+    });
+
+    // 2. Notify Manager (Confirmation)
+    await this.createNotification({
+      recipient_id: managerId,
+      recipient_email: manager?.email,
+      title: "✅ Goal Configured for Direct Report",
+      message: `You configured and approved goal "${newGoal.title}" for ${subordinate?.full_name || "subordinate"}.`,
+      type: "goal_set",
+      link_url: "/team/goals",
+    });
+
+    return newGoal;
+  }
+
+  async submitGoalsForApproval(employeeId: string, cycleId: string): Promise<Goal[]> {
+    const employee = this.employees.find((e) => e.id === employeeId);
+    const managerId = employee?.manager_id;
+    const manager = managerId ? this.employees.find((e) => e.id === managerId) : null;
+
+    const empGoals = this.goals.filter(
+      (g) => g.employee_id === employeeId && (!cycleId || g.cycle_id === cycleId)
+    );
+
+    empGoals.forEach((g) => {
+      if (g.status === "draft" || g.status === "sent_back") {
+        g.status = "submitted";
+      }
+    });
+
+    this.persist();
+
+    if (isSupabaseConfigured()) {
+      try {
+        await supabase
+          .from("goals")
+          .update({ status: "submitted" })
+          .eq("employee_id", employeeId)
+          .eq("cycle_id", cycleId);
+      } catch (e) {}
+    }
+
+    const totalWeight = empGoals.reduce((sum, g) => sum + Number(g.weightage), 0);
+
+    // 1. Notify Manager of Goal Submission
+    if (managerId) {
+      await this.createNotification({
+        recipient_id: managerId,
+        recipient_email: manager?.email,
+        title: "📋 Goals Awaiting Your Approval",
+        message: `${employee?.full_name || "An employee"} submitted ${empGoals.length} goals (${totalWeight}% weightage) for your review.`,
+        type: "goal_approval_request",
+        link_url: "/team/goals",
+      });
+    }
+
+    // 2. Notify Employee of Successful Submission
+    await this.createNotification({
+      recipient_id: employeeId,
+      recipient_email: employee?.email,
+      title: "🚀 Goals Submitted to Manager",
+      message: `Your ${empGoals.length} performance goals have been submitted to ${manager?.full_name || "your reporting manager"} for approval.`,
+      type: "goal_approval_request",
+      link_url: "/employee/dashboard",
+    });
+
+    return empGoals;
   }
 
   async getCompletionReport(cycleId: string): Promise<

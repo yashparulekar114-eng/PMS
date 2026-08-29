@@ -1,4 +1,4 @@
-﻿export type Role = "employee" | "manager" | "hr_admin";
+export type Role = "employee" | "manager" | "hr_admin";
 export type CycleStatus = "draft" | "open" | "closed";
 export type GoalStatus = "draft" | "submitted" | "approved" | "sent_back";
 export type ReviewStatus = "not_started" | "self_appraisal_submitted" | "manager_reviewed" | "completed";
@@ -68,4 +68,25 @@ export interface GoalRating {
   manager_rating?: number | null;
   created_at?: string;
   goal?: Goal;
+}
+
+export type NotificationType =
+  | "goal_set"
+  | "goal_approval_request"
+  | "goal_approved"
+  | "goal_sent_back"
+  | "self_appraisal"
+  | "manager_review"
+  | "cycle_complete";
+
+export interface AppNotification {
+  id: string;
+  recipient_id: string;
+  recipient_email?: string;
+  title: string;
+  message: string;
+  type: NotificationType;
+  link_url?: string;
+  is_read: boolean;
+  created_at: string;
 }

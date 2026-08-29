@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useAuth } from "@/lib/auth/user-context";
 import { supabase, isSupabaseConfigured } from "@/lib/supabase/client";
 import { dataStore } from "@/lib/data-store";
+import { GoalStatus } from "@/types";
 import {
   Target,
   Plus,
@@ -21,10 +22,13 @@ import {
   Edit3,
   Trash2,
   MessageSquare,
-  HelpCircle,
+  Send,
+  UserCheck,
+  ShieldCheck,
+  Bell,
+  Check,
 } from "lucide-react";
 
-// TypeScript interface for the Supabase goals table row
 export interface GoalRow {
   id: string;
   employee_id: string;
@@ -33,7 +37,7 @@ export interface GoalRow {
   description?: string | null;
   weightage: number;
   target_date?: string | null;
-  status: "draft" | "submitted" | "approved" | "sent_back" | string;
+  status: GoalStatus | string;
   manager_comment?: string | null;
   created_at?: string;
 }
@@ -44,6 +48,7 @@ export default function GoalsPage() {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [cycleId, setCycleId] = useState<string | null>(null);
+  const [managerName, setManagerName] = useState<string>("Assigned Manager");
 
   // Add Goal Modal State
   const [showAddModal, setShowAddModal] = useState<boolean>(false);
@@ -67,7 +72,10 @@ export default function GoalsPage() {
   // Delete Goal State
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
-  // Fetch active cycle and goals for the logged-in user
+  // Submission to Manager State
+  const [submittingApproval, setSubmittingApproval] = useState<boolean>(false);
+  const [approvalBanner, setApprovalBanner] = useState<string | null>(null);
+
   const fetchGoals = async () => {
     if (!user) {
       setLoading(false);
@@ -90,10 +98,21 @@ export default function GoalsPage() {
             }))
           );
         }
+        if (user.manager_name) setManagerName(user.manager_name);
         return;
       }
 
-      // 1. Fetch the default/active cycle ID
+      // Fetch employee manager
+      const { data: empData } = await supabase
+        .from("employees")
+        .select("manager_name, manager:manager_id(full_name)")
+        .eq("id", user.id)
+        .single();
+
+      if (empData) {
+        setManagerName((empData as any).manager?.full_name || empData.manager_name || "Assigned Manager");
+      }
+
       const { data: cycleData } = await supabase
         .from("review_cycles")
         .select("id")
@@ -103,23 +122,19 @@ export default function GoalsPage() {
       const activeCycleId = cycleData && cycleData.length > 0 ? cycleData[0].id : null;
       setCycleId(activeCycleId);
 
-      // 2. Fetch only goals where employee_id matches the logged-in user's ID
       const { data, error: supabaseError } = await supabase
         .from("goals")
         .select("*")
         .eq("employee_id", user.id)
         .order("created_at", { ascending: true });
 
-      if (supabaseError) {
-        throw supabaseError;
-      }
+      if (supabaseError) throw supabaseError;
 
       let loadedGoals = (data || []).map((g) => ({
         ...g,
         weightage: Number(g.weightage),
       }));
 
-      // If Supabase has no rows for this persona, seamlessly load preset goals from dataStore
       if (loadedGoals.length === 0) {
         const fallbackGoals = await dataStore.getGoals(user.id, activeCycleId || "10000000-0000-0000-0000-000000000001");
         loadedGoals = fallbackGoals.map((g) => ({ ...g, weightage: Number(g.weightage) }));
@@ -127,7 +142,7 @@ export default function GoalsPage() {
 
       setGoals(loadedGoals);
     } catch (err: any) {
-      console.error("Error fetching goals from Supabase:", err);
+      console.error("Error fetching goals:", err);
       setError(err.message || "Failed to load goals.");
     } finally {
       setLoading(false);
@@ -146,24 +161,25 @@ export default function GoalsPage() {
   const neededForValid = Math.max(0, VALID_THRESHOLD - totalWeightage);
   const isValidAllocation = totalWeightage >= VALID_THRESHOLD && totalWeightage <= TOTAL_CAPACITY;
 
-  // Edit Capacity Calculation: 100% capacity minus the other goals' weightages
+  const hasDraftOrPendingGoals = goals.some((g) => g.status === "draft" || g.status === "sent_back");
+  const isAllApproved = goals.length > 0 && goals.every((g) => g.status === "approved");
+  const isSubmittedToManager = goals.length > 0 && goals.some((g) => g.status === "submitted") && !hasDraftOrPendingGoals;
+
   const getEditCapacity = (currentGoal: GoalRow | null) => {
     if (!currentGoal) return remainingToMax;
     const weightageOfOtherGoals = totalWeightage - currentGoal.weightage;
     return Math.max(0, TOTAL_CAPACITY - weightageOfOtherGoals);
   };
 
-  // Open Add Goal Modal
   const handleOpenAddModal = () => {
     setTitle("");
     setDescription("");
-    setWeightage(neededForValid > 0 ? String(neededForValid) : remainingToMax > 0 ? String(Math.min(remainingToMax, 15)) : "0");
+    setWeightage(neededForValid > 0 ? String(neededForValid) : remainingToMax > 0 ? String(Math.min(remainingToMax, 25)) : "0");
     setTargetDate(new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString().split("T")[0]);
     setFormError(null);
     setShowAddModal(true);
   };
 
-  // Open Edit Goal Modal
   const handleOpenEditModal = (goal: GoalRow) => {
     setEditingGoal(goal);
     setEditTitle(goal.title);
@@ -196,7 +212,7 @@ export default function GoalsPage() {
 
     if (totalWeightage + numericWeightage > TOTAL_CAPACITY) {
       setFormError(
-        `Goal weightage (${numericWeightage}%) exceeds the remaining available capacity (${remainingToMax}%). Total weightage cannot exceed ${TOTAL_CAPACITY}%.`
+        `Goal weightage (${numericWeightage}%) exceeds the remaining available capacity (${remainingToMax}%). Total cannot exceed ${TOTAL_CAPACITY}%.`
       );
       return;
     }
@@ -205,63 +221,22 @@ export default function GoalsPage() {
     setFormError(null);
 
     try {
-      if (!isSupabaseConfigured()) {
-        const targetCycleId = cycleId || "10000000-0000-0000-0000-000000000001";
-        await dataStore.createGoal({
-          employee_id: user.id,
-          cycle_id: targetCycleId,
-          title: title.trim(),
-          description: description.trim() || undefined,
-          weightage: numericWeightage,
-          target_date: targetDate || undefined,
-          status: "draft",
-        });
-        setShowAddModal(false);
-        await fetchGoals();
-        return;
-      }
-
-      let targetCycleId = cycleId;
-
-      if (!targetCycleId) {
-        const { data: newCycle } = await supabase
-          .from("review_cycles")
-          .insert([
-            {
-              name: "FY 2026-27 Annual Review",
-              start_date: "2026-04-01",
-              end_date: "2027-03-31",
-              status: "open",
-            },
-          ])
-          .select("id")
-          .single();
-
-        targetCycleId = newCycle?.id || "10000000-0000-0000-0000-000000000001";
-        setCycleId(targetCycleId);
-      }
-
-      const { error: insertError } = await supabase.from("goals").insert([
-        {
-          employee_id: user.id,
-          cycle_id: targetCycleId,
-          title: title.trim(),
-          description: description.trim() || null,
-          weightage: numericWeightage,
-          target_date: targetDate || null,
-          status: "draft",
-        },
-      ]);
-
-      if (insertError) {
-        throw insertError;
-      }
+      const targetCycleId = cycleId || "10000000-0000-0000-0000-000000000001";
+      await dataStore.createGoal({
+        employee_id: user.id,
+        cycle_id: targetCycleId,
+        title: title.trim(),
+        description: description.trim() || undefined,
+        weightage: numericWeightage,
+        target_date: targetDate || undefined,
+        status: "draft",
+      });
 
       setShowAddModal(false);
       await fetchGoals();
     } catch (err: any) {
       console.error("Error creating goal:", err);
-      setFormError(err.message || "Failed to insert goal into Supabase.");
+      setFormError(err.message || "Failed to create goal.");
     } finally {
       setSubmitting(false);
     }
@@ -271,10 +246,7 @@ export default function GoalsPage() {
   const handleEditGoal = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!user || !editingGoal) {
-      setEditFormError("No goal selected for edit.");
-      return;
-    }
+    if (!user || !editingGoal) return;
 
     if (!editTitle.trim()) {
       setEditFormError("Please enter a goal title.");
@@ -290,7 +262,7 @@ export default function GoalsPage() {
     const maxAllowedForThisGoal = getEditCapacity(editingGoal);
     if (numericWeightage > maxAllowedForThisGoal) {
       setEditFormError(
-        `Goal weightage (${numericWeightage}%) exceeds the max allowable capacity (${maxAllowedForThisGoal}%). Total weightage across all goals cannot exceed ${TOTAL_CAPACITY}%.`
+        `Goal weightage (${numericWeightage}%) exceeds max allowable capacity (${maxAllowedForThisGoal}%).`
       );
       return;
     }
@@ -299,34 +271,13 @@ export default function GoalsPage() {
     setEditFormError(null);
 
     try {
-      if (!isSupabaseConfigured()) {
-        await dataStore.updateGoal(editingGoal.id, {
-          title: editTitle.trim(),
-          description: editDescription.trim() || undefined,
-          weightage: numericWeightage,
-          target_date: editTargetDate || undefined,
-          status: (editingGoal.status === "sent_back" ? "draft" : editingGoal.status) as any,
-        });
-        setShowEditModal(false);
-        setEditingGoal(null);
-        await fetchGoals();
-        return;
-      }
-
-      const { error: updateError } = await supabase
-        .from("goals")
-        .update({
-          title: editTitle.trim(),
-          description: editDescription.trim() || null,
-          weightage: numericWeightage,
-          target_date: editTargetDate || null,
-          status: editingGoal.status === "sent_back" ? "draft" : editingGoal.status,
-        })
-        .eq("id", editingGoal.id);
-
-      if (updateError) {
-        throw updateError;
-      }
+      await dataStore.updateGoal(editingGoal.id, {
+        title: editTitle.trim(),
+        description: editDescription.trim() || undefined,
+        weightage: numericWeightage,
+        target_date: editTargetDate || undefined,
+        status: (editingGoal.status === "sent_back" ? "draft" : editingGoal.status) as any,
+      });
 
       setShowEditModal(false);
       setEditingGoal(null);
@@ -341,21 +292,11 @@ export default function GoalsPage() {
 
   // Delete Goal Handler
   const handleDeleteGoal = async (goalId: string) => {
-    if (!confirm("Are you sure you want to delete this goal? This will free up its allocated weightage.")) {
-      return;
-    }
+    if (!confirm("Are you sure you want to delete this goal? This will free up its allocated weightage.")) return;
 
     setDeletingId(goalId);
     try {
-      if (!isSupabaseConfigured()) {
-        await dataStore.deleteGoal(goalId);
-        await fetchGoals();
-        return;
-      }
-
-      const { error: delError } = await supabase.from("goals").delete().eq("id", goalId);
-      if (delError) throw delError;
-
+      await dataStore.deleteGoal(goalId);
       await fetchGoals();
     } catch (err: any) {
       console.error("Error deleting goal:", err);
@@ -365,31 +306,52 @@ export default function GoalsPage() {
     }
   };
 
+  // Submit Goals for Manager Approval
+  const handleSubmitGoalsToManager = async () => {
+    if (!user) return;
+    if (totalWeightage < VALID_THRESHOLD) {
+      alert(`Please allocate at least ${VALID_THRESHOLD}% total weightage across your goals before submitting (Current: ${totalWeightage}%).`);
+      return;
+    }
+
+    setSubmittingApproval(true);
+    try {
+      const targetCycleId = cycleId || "10000000-0000-0000-0000-000000000001";
+      await dataStore.submitGoalsForApproval(user.id, targetCycleId);
+      setApprovalBanner(`Your ${goals.length} goals (${totalWeightage}%) have been submitted to ${managerName} for approval! Both you and your manager received notifications.`);
+      await fetchGoals();
+    } catch (err: any) {
+      alert(err.message || "Failed to submit goals.");
+    } finally {
+      setSubmittingApproval(false);
+    }
+  };
+
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "approved":
         return (
-          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800 border border-emerald-200">
-            <CheckCircle2 className="w-3 h-3 text-emerald-600" /> Approved
+          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
+            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" /> Approved
           </span>
         );
       case "submitted":
         return (
-          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-800 border border-blue-200">
-            <Clock className="w-3 h-3 text-blue-600" /> Submitted
+          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-800 border border-blue-200 animate-pulse">
+            <Clock className="w-3.5 h-3.5 text-blue-600" /> Pending Approval
           </span>
         );
       case "sent_back":
         return (
-          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-rose-100 text-rose-800 border border-rose-200">
-            <AlertCircle className="w-3 h-3 text-rose-600" /> Revision Requested
+          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-rose-100 text-rose-800 border border-rose-200">
+            <AlertCircle className="w-3.5 h-3.5 text-rose-600" /> Revision Requested
           </span>
         );
       case "draft":
       default:
         return (
-          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-800 border border-amber-200">
-            <Clock className="w-3 h-3 text-amber-600" /> Draft
+          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800 border border-amber-200">
+            <Clock className="w-3.5 h-3.5 text-amber-600" /> Draft
           </span>
         );
     }
@@ -405,14 +367,15 @@ export default function GoalsPage() {
               <Target className="w-5 h-5" />
             </div>
             <h1 className="text-2xl font-bold text-slate-900">My Performance Goals</h1>
-            <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800">
+            <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800">
               Employee Portal
             </span>
           </div>
           <p className="text-sm text-slate-500 mt-1">
             {user ? (
               <>
-                Logged in as: <strong className="text-slate-800">{user.full_name}</strong> ({user.email})
+                Logged in as: <strong className="text-slate-800">{user.full_name}</strong> • Reporting to:{" "}
+                <strong className="text-indigo-600">{managerName}</strong>
               </>
             ) : (
               "Please sign in to view and manage your goals."
@@ -433,7 +396,7 @@ export default function GoalsPage() {
           <button
             onClick={handleOpenAddModal}
             disabled={!user || totalWeightage >= TOTAL_CAPACITY}
-            className="inline-flex items-center gap-2 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-sm font-medium shadow-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            className="inline-flex items-center gap-2 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-sm font-bold shadow-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <Plus className="w-4 h-4" />
             Add Goal
@@ -441,69 +404,122 @@ export default function GoalsPage() {
         </div>
       </div>
 
-      {/* Weightage Summary Banner */}
-      <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <div className={`p-2 rounded-xl ${isValidAllocation ? "bg-emerald-50 text-emerald-700" : "bg-amber-50 text-amber-700"}`}>
-            <Percent className="w-5 h-5" />
+      {/* Submission Success Alert */}
+      {approvalBanner && (
+        <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl flex items-center justify-between text-emerald-900 text-xs shadow-xs animate-in fade-in">
+          <div className="flex items-center gap-2.5">
+            <CheckCircle2 className="w-5 h-5 text-emerald-600 flex-shrink-0" />
+            <span className="font-semibold">{approvalBanner}</span>
           </div>
-          <div>
-            <div className="text-sm font-bold text-slate-900 flex items-center gap-2">
-              <span>Goal Weightage Allocation</span>
-              <span className={`text-xs px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider ${
-                isValidAllocation ? "bg-emerald-100 text-emerald-800" : "bg-amber-100 text-amber-800"
-              }`}>
-                {isValidAllocation ? "Valid (≥85%)" : "Pending Target (85%)"}
-              </span>
-            </div>
-            <div className="text-xs text-slate-500 mt-0.5">
-              Total allocated: <span className="font-bold text-slate-900">{totalWeightage}%</span> / 100% Maximum
-              {neededForValid > 0 ? (
-                <span className="text-amber-700 font-semibold ml-1.5">
-                  ({neededForValid}% more needed to reach 85% valid threshold)
-                </span>
-              ) : (
-                <span className="text-emerald-700 font-semibold ml-1.5">
-                  (85% Valid target reached • {remainingToMax}% unallocated buffer)
-                </span>
-              )}
-            </div>
-          </div>
-        </div>
-
-        <div className="w-full sm:w-56 space-y-1">
-          <div className="flex justify-between text-[11px] font-bold text-slate-500">
-            <span>Progress: {totalWeightage}%</span>
-            <span>Scale: 100%</span>
-          </div>
-          <div className="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden relative">
-            <div
-              className={`h-full transition-all duration-300 ${
-                isValidAllocation ? "bg-emerald-500" : "bg-amber-500"
-              }`}
-              style={{ width: `${Math.min(100, totalWeightage)}%` }}
-            ></div>
-          </div>
-        </div>
-      </div>
-
-      {/* Error Message */}
-      {error && (
-        <div className="p-4 bg-amber-50 border border-amber-200 rounded-xl flex items-start gap-3 text-amber-800 text-sm">
-          <AlertCircle className="w-5 h-5 flex-shrink-0 text-amber-600 mt-0.5" />
-          <div>
-            <span className="font-semibold">Notice:</span> {error}
-          </div>
+          <button onClick={() => setApprovalBanner(null)} className="text-emerald-700 hover:text-emerald-950">
+            <X className="w-4 h-4" />
+          </button>
         </div>
       )}
 
-      {/* Main Table Container */}
+      {/* Weightage & Manager Submission Banner */}
+      <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className={`p-2.5 rounded-2xl ${isValidAllocation ? "bg-emerald-50 text-emerald-700" : "bg-amber-50 text-amber-700"}`}>
+              <Percent className="w-5 h-5" />
+            </div>
+            <div>
+              <div className="text-sm font-bold text-slate-900 flex items-center gap-2">
+                <span>Goal Weightage Allocation</span>
+                <span className={`text-xs px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider ${
+                  isValidAllocation ? "bg-emerald-100 text-emerald-800" : "bg-amber-100 text-amber-800"
+                }`}>
+                  {isValidAllocation ? "Valid (≥85%)" : "Pending Target (85%)"}
+                </span>
+              </div>
+              <div className="text-xs text-slate-500 mt-0.5">
+                Allocated: <strong className="text-slate-900">{totalWeightage}%</strong> / 100% Max
+                {neededForValid > 0 ? (
+                  <span className="text-amber-700 font-semibold ml-1.5">
+                    ({neededForValid}% more needed to reach 85% approval threshold)
+                  </span>
+                ) : (
+                  <span className="text-emerald-700 font-semibold ml-1.5">
+                    (Ready for manager validation • {remainingToMax}% unallocated buffer)
+                  </span>
+                )}
+              </div>
+            </div>
+          </div>
+
+          <div className="w-full sm:w-56 space-y-1">
+            <div className="flex justify-between text-[11px] font-bold text-slate-500">
+              <span>Progress: {totalWeightage}%</span>
+              <span>Scale: 100%</span>
+            </div>
+            <div className="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
+              <div
+                className={`h-full transition-all duration-300 ${
+                  isValidAllocation ? "bg-emerald-500" : "bg-amber-500"
+                }`}
+                style={{ width: `${Math.min(100, totalWeightage)}%` }}
+              ></div>
+            </div>
+          </div>
+        </div>
+
+        {/* Manager Approval Action Row */}
+        <div className="pt-3 border-t border-slate-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-slate-50 p-4 rounded-xl">
+          <div className="flex items-center gap-2 text-xs text-slate-600">
+            <ShieldCheck className="w-4 h-4 text-indigo-600 flex-shrink-0" />
+            <span>
+              {isAllApproved ? (
+                <span className="text-emerald-700 font-semibold">
+                  All goals approved by {managerName}. Self-appraisal is unlocked!
+                </span>
+              ) : isSubmittedToManager ? (
+                <span className="text-blue-700 font-semibold">
+                  Awaiting review from {managerName}. You will receive a notification once signed off.
+                </span>
+              ) : (
+                <span>
+                  Goals set by employees must be submitted to <strong>{managerName}</strong> for sign-off.
+                </span>
+              )}
+            </span>
+          </div>
+
+          {hasDraftOrPendingGoals && (
+            <button
+              onClick={handleSubmitGoalsToManager}
+              disabled={!isValidAllocation || submittingApproval}
+              className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold shadow-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+            >
+              {submittingApproval ? (
+                <>
+                  <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                  Submitting...
+                </>
+              ) : (
+                <>
+                  <Send className="w-3.5 h-3.5" />
+                  <span>Submit for Manager Approval</span>
+                </>
+              )}
+            </button>
+          )}
+        </div>
+      </div>
+
+      {error && (
+        <div className="p-4 bg-amber-50 border border-amber-200 rounded-xl flex items-start gap-3 text-amber-800 text-sm">
+          <AlertCircle className="w-5 h-5 flex-shrink-0 text-amber-600 mt-0.5" />
+          <div>{error}</div>
+        </div>
+      )}
+
+      {/* Main Goals Table */}
       <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
         {loading ? (
           <div className="p-16 text-center">
             <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-slate-200 border-t-indigo-600 mb-4"></div>
-            <p className="text-sm font-medium text-slate-700">Loading your goals from Supabase...</p>
-            <p className="text-xs text-slate-400 mt-1">Filtering goals for your employee profile</p>
+            <p className="text-sm font-medium text-slate-700">Loading your goals...</p>
           </div>
         ) : goals.length === 0 ? (
           <div className="p-16 text-center space-y-3">
@@ -512,13 +528,13 @@ export default function GoalsPage() {
             </div>
             <h3 className="text-base font-semibold text-slate-800">No Goals Created Yet</h3>
             <p className="text-sm text-slate-500 max-w-md mx-auto">
-              You haven't defined any performance goals yet. Click <span className="font-semibold text-indigo-600">"Add Goal"</span> to create your first goal with allocated weightage.
+              You haven't defined any performance goals yet. You can add goals for yourself (requiring manager approval) or your manager can assign goals to you.
             </p>
             <div className="pt-2">
               <button
                 onClick={handleOpenAddModal}
                 disabled={!user}
-                className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded-xl text-sm font-semibold transition-colors disabled:opacity-50"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded-xl text-sm font-semibold transition-colors"
               >
                 <Plus className="w-4 h-4" />
                 Add Your First Goal
@@ -533,14 +549,13 @@ export default function GoalsPage() {
                   <th scope="col" className="px-6 py-4">Title & SMART Deliverables</th>
                   <th scope="col" className="px-6 py-4">Weightage</th>
                   <th scope="col" className="px-6 py-4">Target Date</th>
-                  <th scope="col" className="px-6 py-4">Status & Feedback</th>
+                  <th scope="col" className="px-6 py-4">Status & Manager Feedback</th>
                   <th scope="col" className="px-6 py-4 text-right">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
                 {goals.map((goal) => (
                   <tr key={goal.id} className="hover:bg-slate-50/70 transition-colors">
-                    {/* Title & Description */}
                     <td className="px-6 py-4 max-w-md">
                       <div className="font-bold text-slate-900">{goal.title}</div>
                       {goal.description && (
@@ -550,14 +565,12 @@ export default function GoalsPage() {
                       )}
                     </td>
 
-                    {/* Weightage */}
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-bold bg-indigo-50 text-indigo-700 border border-indigo-100">
                         {goal.weightage}%
                       </span>
                     </td>
 
-                    {/* Target Date */}
                     <td className="px-6 py-4 whitespace-nowrap text-slate-700 text-xs font-medium">
                       {goal.target_date ? (
                         <div className="flex items-center gap-1.5">
@@ -569,7 +582,6 @@ export default function GoalsPage() {
                       )}
                     </td>
 
-                    {/* Status & Manager Feedback */}
                     <td className="px-6 py-4">
                       <div className="space-y-1.5">
                         <div>{getStatusBadge(goal.status)}</div>
@@ -584,13 +596,12 @@ export default function GoalsPage() {
                       </div>
                     </td>
 
-                    {/* Actions: Edit & Delete */}
                     <td className="px-6 py-4 whitespace-nowrap text-right text-xs font-medium">
                       <div className="flex items-center justify-end gap-1.5">
                         <button
                           onClick={() => handleOpenEditModal(goal)}
                           className="inline-flex items-center gap-1 px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 rounded-lg font-semibold transition-colors shadow-2xs"
-                          title="Edit this goal's title, deliverables, and weightage"
+                          title="Edit goal deliverables and weightage"
                         >
                           <Edit3 className="w-3.5 h-3.5" />
                           <span>Edit</span>
@@ -600,7 +611,7 @@ export default function GoalsPage() {
                           onClick={() => handleDeleteGoal(goal.id)}
                           disabled={deletingId === goal.id}
                           className="inline-flex items-center gap-1 px-2.5 py-1.5 bg-slate-100 hover:bg-rose-50 hover:text-rose-700 text-slate-600 rounded-lg transition-colors disabled:opacity-50 shadow-2xs"
-                          title="Delete this goal"
+                          title="Delete goal"
                         >
                           {deletingId === goal.id ? (
                             <RefreshCw className="w-3.5 h-3.5 animate-spin" />
@@ -618,24 +629,24 @@ export default function GoalsPage() {
         )}
       </div>
 
-      {/* Quick Navigation to Self-Appraisal Review */}
-      {goals.length > 0 && (
-        <div className="bg-gradient-to-r from-indigo-50 to-purple-50 border border-indigo-100 rounded-2xl p-6 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      {/* Navigation to Self-Appraisal */}
+      {isAllApproved && (
+        <div className="bg-gradient-to-r from-emerald-50 to-indigo-50 border border-emerald-200 rounded-2xl p-6 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3.5">
-            <div className="p-3 bg-white text-indigo-600 rounded-xl shadow-xs border border-indigo-100">
+            <div className="p-3 bg-white text-emerald-600 rounded-xl shadow-xs border border-emerald-100">
               <FileCheck2 className="w-6 h-6" />
             </div>
             <div>
-              <h3 className="text-base font-bold text-slate-900">Ready to Submit Your Self-Appraisal?</h3>
+              <h3 className="text-base font-bold text-slate-900">Goals Approved by Manager!</h3>
               <p className="text-xs text-slate-600 mt-0.5">
-                Evaluate your performance across your {goals.length} defined goals and provide reflections for your annual review.
+                All performance deliverables are approved. You can now complete your self-appraisal rating.
               </p>
             </div>
           </div>
 
           <Link
             href="/reviews/self"
-            className="inline-flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-sm font-semibold shadow-sm transition-all whitespace-nowrap"
+            className="inline-flex items-center gap-2 px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-sm font-semibold shadow-sm transition-all whitespace-nowrap"
           >
             <span>Proceed to My Review</span>
             <ArrowRight className="w-4 h-4" />
@@ -643,9 +654,7 @@ export default function GoalsPage() {
         </div>
       )}
 
-      {/* ========================================================================= */}
-      {/* 1. ADD GOAL MODAL */}
-      {/* ========================================================================= */}
+      {/* ADD GOAL MODAL */}
       {showAddModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4">
           <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 space-y-5 animate-in fade-in zoom-in-95 duration-150">
@@ -654,7 +663,10 @@ export default function GoalsPage() {
                 <div className="p-1.5 bg-indigo-50 text-indigo-600 rounded-lg">
                   <Target className="w-4 h-4" />
                 </div>
-                <h3 className="text-lg font-bold text-slate-900">Add Performance Goal</h3>
+                <div>
+                  <h3 className="text-lg font-bold text-slate-900">Add Performance Goal</h3>
+                  <p className="text-xs text-slate-500">Will be submitted to {managerName} for approval</p>
+                </div>
               </div>
               <button
                 onClick={() => setShowAddModal(false)}
@@ -718,9 +730,7 @@ export default function GoalsPage() {
                     onChange={(e) => {
                       setWeightage(e.target.value);
                       if (Number(e.target.value) > remainingToMax) {
-                        setFormError(
-                          `Weightage cannot exceed the remaining available capacity of ${remainingToMax}%.`
-                        );
+                        setFormError(`Weightage cannot exceed ${remainingToMax}%.`);
                       } else {
                         setFormError(null);
                       }
@@ -754,7 +764,7 @@ export default function GoalsPage() {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="px-5 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg shadow-sm transition-colors disabled:opacity-50 flex items-center gap-2"
+                  className="px-5 py-2 text-sm font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg shadow-sm transition-colors disabled:opacity-50 flex items-center gap-2"
                 >
                   {submitting ? (
                     <>
@@ -771,9 +781,7 @@ export default function GoalsPage() {
         </div>
       )}
 
-      {/* ========================================================================= */}
-      {/* 2. EDIT GOAL MODAL (FOR EDITING PREVIOUSLY SET UP GOALS) */}
-      {/* ========================================================================= */}
+      {/* EDIT GOAL MODAL */}
       {showEditModal && editingGoal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4">
           <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 space-y-5 animate-in fade-in zoom-in-95 duration-150">
@@ -784,7 +792,7 @@ export default function GoalsPage() {
                 </div>
                 <div>
                   <h3 className="text-lg font-bold text-slate-900">Edit Performance Goal</h3>
-                  <p className="text-xs text-slate-500">Update deliverables, description, or weightage allocation</p>
+                  <p className="text-xs text-slate-500">Update deliverables or weightage allocation</p>
                 </div>
               </div>
               <button
@@ -815,8 +823,7 @@ export default function GoalsPage() {
                   required
                   value={editTitle}
                   onChange={(e) => setEditTitle(e.target.value)}
-                  placeholder="e.g. Optimize platform microservices latency by 20%"
-                  className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none placeholder:text-slate-400 text-slate-900"
+                  className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none text-slate-900"
                 />
               </div>
 
@@ -828,8 +835,7 @@ export default function GoalsPage() {
                   rows={3}
                   value={editDescription}
                   onChange={(e) => setEditDescription(e.target.value)}
-                  placeholder="Specific metrics, milestones, and deliverables..."
-                  className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none placeholder:text-slate-400 text-slate-900"
+                  className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none text-slate-900"
                 />
               </div>
 
@@ -849,18 +855,7 @@ export default function GoalsPage() {
                     min={1}
                     max={getEditCapacity(editingGoal)}
                     value={editWeightage}
-                    onChange={(e) => {
-                      setEditWeightage(e.target.value);
-                      const maxAllowed = getEditCapacity(editingGoal);
-                      if (Number(e.target.value) > maxAllowed) {
-                        setEditFormError(
-                          `Weightage cannot exceed the max allowable capacity of ${maxAllowed}%.`
-                        );
-                      } else {
-                        setEditFormError(null);
-                      }
-                    }}
-                    placeholder={`Max ${getEditCapacity(editingGoal)}`}
+                    onChange={(e) => setEditWeightage(e.target.value)}
                     className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none text-slate-900"
                   />
                 </div>
@@ -877,16 +872,6 @@ export default function GoalsPage() {
                   />
                 </div>
               </div>
-
-              {editingGoal.manager_comment && (
-                <div className="p-3 bg-amber-50 rounded-xl border border-amber-200 text-xs text-amber-800 space-y-1">
-                  <div className="font-bold flex items-center gap-1.5">
-                    <MessageSquare className="w-3.5 h-3.5 text-amber-600" />
-                    Previous Manager Feedback
-                  </div>
-                  <p className="text-slate-700 italic">"{editingGoal.manager_comment}"</p>
-                </div>
-              )}
 
               <div className="flex justify-between items-center pt-4 border-t border-slate-100">
                 <button
@@ -915,7 +900,7 @@ export default function GoalsPage() {
                   <button
                     type="submit"
                     disabled={editSubmitting}
-                    className="px-5 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg shadow-sm transition-colors disabled:opacity-50 flex items-center gap-2"
+                    className="px-5 py-2 text-sm font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg shadow-sm transition-colors disabled:opacity-50 flex items-center gap-2"
                   >
                     {editSubmitting ? (
                       <>
