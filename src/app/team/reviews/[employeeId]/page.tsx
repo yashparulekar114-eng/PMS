@@ -110,7 +110,39 @@ export default function ManagerReviewPage() {
         managerSummary
       );
 
-      // Non-blocking Resend email dispatch to HR Admin and Employee
+      // 1. IN-APP NOTIFICATIONS (Navbar Bell & Activity Log)
+      try {
+        const allEmployees = await dataStore.getEmployees();
+        const hrAdmins = allEmployees.filter((e) => e.role === "hr_admin" || e.email === "admin@company.com");
+
+        // Notify HR Admins: "🏢 Action Required: HR Final Sign-off"
+        for (const hr of hrAdmins) {
+          await dataStore.createNotification({
+            recipient_id: hr.id,
+            recipient_email: hr.email,
+            title: "🏢 Action Required: HR Final Sign-off",
+            message: `${user?.full_name || "Manager"} evaluated ${employee?.full_name || "subordinate"} (${overallManagerRating}★). Please finalize to complete cycle & release PDF certificate.`,
+            type: "manager_review",
+            link_url: "/admin/reports",
+          });
+        }
+
+        // Notify Employee: "⏳ Manager Evaluation Completed • Awaiting HR Sign-off"
+        if (employee) {
+          await dataStore.createNotification({
+            recipient_id: employee.id,
+            recipient_email: employee.email,
+            title: "⏳ Manager Evaluation Completed • Awaiting HR Sign-off",
+            message: `Your manager ${user?.full_name || ""} evaluated your performance with a rating of ${overallManagerRating}★. Your appraisal has moved to HR for final sign-off.`,
+            type: "manager_review",
+            link_url: "/employee/dashboard",
+          });
+        }
+      } catch (err) {
+        console.warn("In-app notification dispatch note:", err);
+      }
+
+      // 2. Non-blocking Resend email dispatch to HR Admin and Employee
       try {
         const appOrigin = typeof window !== "undefined" ? window.location.origin : "http://localhost:3000";
         fetch("/api/notify-manager", {

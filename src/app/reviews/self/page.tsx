@@ -315,7 +315,36 @@ export default function SelfAppraisalPage() {
         }
       }
 
-      // Guaranteed non-blocking email dispatch to manager via Resend API route
+      // 1. IN-APP NOTIFICATIONS (Navbar Bell & Activity Tracker)
+      try {
+        const reportingManager = user.manager_id ? await dataStore.getEmployeeById(user.manager_id) : null;
+        
+        // Notify Reporting Manager: "📋 Action Required: Give Ratings"
+        if (reportingManager || user.manager_id) {
+          await dataStore.createNotification({
+            recipient_id: user.manager_id || reportingManager?.id || "00000000-0000-0000-0000-000000000001",
+            recipient_email: reportingManager?.email || "manager@company.com",
+            title: "📋 Self-Appraisal Submitted: Give Ratings",
+            message: `${user.full_name} has submitted their self-appraisal ratings (${overallSelfRating.toFixed(1)}★). Now you should review and provide your manager evaluations and ratings.`,
+            type: "self_appraisal",
+            link_url: `/team/reviews/${user.id}`,
+          });
+        }
+
+        // Notify Subordinate (Employee confirmation)
+        await dataStore.createNotification({
+          recipient_id: user.id,
+          recipient_email: user.email,
+          title: "✅ Self-Appraisal Submitted",
+          message: `Your self-appraisal rating of ${overallSelfRating.toFixed(1)}★ has been recorded. Your manager has been notified to evaluate.`,
+          type: "self_appraisal",
+          link_url: "/employee/dashboard",
+        });
+      } catch (err) {
+        console.warn("In-app notification dispatch note:", err);
+      }
+
+      // 2. Guaranteed non-blocking email dispatch to manager via Resend API route
       try {
         const appOrigin = typeof window !== "undefined" ? window.location.origin : "http://localhost:3000";
         fetch("/api/notify-manager", {
