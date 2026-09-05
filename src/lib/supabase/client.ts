@@ -8,6 +8,7 @@ const supabaseAnonKey =
 
 export const isSupabaseConfigured = () => {
   return (
+    process.env.NEXT_PUBLIC_USE_REAL_SUPABASE === "true" &&
     process.env.NEXT_PUBLIC_SUPABASE_URL !== undefined &&
     process.env.NEXT_PUBLIC_SUPABASE_URL !== "" &&
     process.env.NEXT_PUBLIC_SUPABASE_URL !== "https://placeholder-project.supabase.co" &&

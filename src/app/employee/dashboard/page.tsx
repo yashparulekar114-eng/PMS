@@ -140,7 +140,10 @@ export default function EmployeeStatusTrackerPage() {
 
   useEffect(() => {
     setMounted(true);
-  }, []);
+    if (user) {
+      fetchEmployeeStatus();
+    }
+  }, [user]);
 
   const fetchEmployeeStatus = async () => {
     if (!user) {
@@ -245,6 +248,7 @@ export default function EmployeeStatusTrackerPage() {
         });
 
         setActivities(demoActivities);
+        setLoading(false);
         return;
       }
 

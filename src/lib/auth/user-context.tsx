@@ -27,8 +27,18 @@ const AuthContext = createContext<AuthContextType>({
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const { user: clerkUser, isLoaded: isClerkLoaded, isSignedIn } = useUser();
-  const [user, setUser] = useState<Employee | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [user, setUser] = useState<Employee | null>(() => {
+    if (typeof window !== "undefined") {
+      const savedEmail = localStorage.getItem("pms_active_user_email") || "admin@company.com";
+      return (
+        dataStore.getEmployeesDirect().find((e) => e.email === savedEmail) ||
+        dataStore.getEmployeesDirect()[0] ||
+        null
+      );
+    }
+    return null;
+  });
+  const [isLoading, setIsLoading] = useState(false);
   const [isAccountNotSetUp, setIsAccountNotSetUp] = useState(false);
 
   useEffect(() => {
@@ -37,8 +47,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       if (!isClerkLoaded) {
         return;
       }
-
-      setIsLoading(true);
 
       try {
         // If user is signed in via Clerk

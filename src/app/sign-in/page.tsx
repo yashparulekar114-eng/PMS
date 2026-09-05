@@ -70,6 +70,28 @@ export default function SignInPage() {
         </button>
 
         <button
+          onClick={() => handleRoleSelect("aarya@company.com")}
+          className="w-full flex items-center justify-between p-3 rounded-xl border border-sky-300 bg-sky-100/70 hover:bg-sky-100 text-left transition-all ring-1 ring-sky-400/30"
+        >
+          <div>
+            <div className="text-sm font-bold text-sky-950">Aarya Shirodkar (Manager)</div>
+            <div className="text-xs text-sky-700 font-medium">Senior Full-Stack Engineer • Direct Manager to Aditya</div>
+          </div>
+          <ArrowRight className="w-4 h-4 text-sky-600" />
+        </button>
+
+        <button
+          onClick={() => handleRoleSelect("aditya@company.com")}
+          className="w-full flex items-center justify-between p-3 rounded-xl border border-teal-200 bg-teal-50/50 hover:bg-teal-50 text-left transition-all"
+        >
+          <div>
+            <div className="text-sm font-semibold text-teal-900">Aditya Kamat (Aarya's Subordinate)</div>
+            <div className="text-xs text-teal-700">Associate Full-Stack Developer • Reports to Aarya</div>
+          </div>
+          <ArrowRight className="w-4 h-4 text-teal-500" />
+        </button>
+
+        <button
           onClick={() => handleRoleSelect("ananya@company.com")}
           className="w-full flex items-center justify-between p-3 rounded-xl border border-emerald-200 bg-emerald-50/50 hover:bg-emerald-50 text-left transition-all"
         >

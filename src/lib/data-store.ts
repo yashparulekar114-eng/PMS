@@ -2468,12 +2468,19 @@ class InMemoryDataStore {
       const storedGR = localStorage.getItem("pms_goal_ratings_v2");
       const storedNotifs = localStorage.getItem("pms_notifications_v2");
 
-      this.employees = storedEmp ? JSON.parse(storedEmp) : [...INITIAL_EMPLOYEES];
-      this.cycles = storedCycles ? JSON.parse(storedCycles) : [...INITIAL_CYCLES];
-      this.goals = storedGoals ? JSON.parse(storedGoals) : [...INITIAL_GOALS];
-      this.reviews = storedReviews ? JSON.parse(storedReviews) : [...INITIAL_REVIEWS];
-      this.goalRatings = storedGR ? JSON.parse(storedGR) : [...INITIAL_GOAL_RATINGS];
-      this.notifications = storedNotifs ? JSON.parse(storedNotifs) : [...INITIAL_NOTIFICATIONS];
+      const parsedEmp = storedEmp ? JSON.parse(storedEmp) : [];
+      const parsedCycles = storedCycles ? JSON.parse(storedCycles) : [];
+      const parsedGoals = storedGoals ? JSON.parse(storedGoals) : [];
+      const parsedReviews = storedReviews ? JSON.parse(storedReviews) : [];
+      const parsedGR = storedGR ? JSON.parse(storedGR) : [];
+      const parsedNotifs = storedNotifs ? JSON.parse(storedNotifs) : [];
+
+      this.employees = parsedEmp.length > 0 ? parsedEmp : [...INITIAL_EMPLOYEES];
+      this.cycles = parsedCycles.length > 0 ? parsedCycles : [...INITIAL_CYCLES];
+      this.goals = parsedGoals.length > 0 ? parsedGoals : [...INITIAL_GOALS];
+      this.reviews = parsedReviews.length > 0 ? parsedReviews : [...INITIAL_REVIEWS];
+      this.goalRatings = parsedGR.length > 0 ? parsedGR : [...INITIAL_GOAL_RATINGS];
+      this.notifications = parsedNotifs.length > 0 ? parsedNotifs : [...INITIAL_NOTIFICATIONS];
     } else {
       this.employees = [...INITIAL_EMPLOYEES];
       this.cycles = [...INITIAL_CYCLES];
@@ -2506,6 +2513,10 @@ class InMemoryDataStore {
   }
 
   // ---------------- EMPLOYEES ----------------
+  getEmployeesDirect(): Employee[] {
+    return this.employees;
+  }
+
   async getEmployees(): Promise<Employee[]> {
     if (isSupabaseConfigured()) {
       try {
@@ -3422,25 +3433,24 @@ class InMemoryDataStore {
   > {
     const employees = await this.getEmployees();
     const activeEmployees = employees.filter((e) => e.is_active);
-    const report = [];
 
-    for (const emp of activeEmployees) {
-      const review = await this.getOrCreateReview(emp.id, cycleId, emp.manager_id);
-      const goals = await this.getGoals(emp.id, cycleId);
-      const totalWeightage = goals.reduce((sum, g) => sum + Number(g.weightage), 0);
+    return Promise.all(
+      activeEmployees.map(async (emp) => {
+        const review = await this.getOrCreateReview(emp.id, cycleId, emp.manager_id);
+        const goals = await this.getGoals(emp.id, cycleId);
+        const totalWeightage = goals.reduce((sum, g) => sum + Number(g.weightage), 0);
 
-      report.push({
-        employee: emp,
-        status: review.status,
-        goalsCount: goals.length,
-        totalWeightage,
-        overallSelfRating: review.overall_self_rating,
-        overallManagerRating: review.overall_manager_rating,
-        reviewId: review.id,
-      });
-    }
-
-    return report;
+        return {
+          employee: emp,
+          status: review.status,
+          goalsCount: goals.length,
+          totalWeightage,
+          overallSelfRating: review.overall_self_rating,
+          overallManagerRating: review.overall_manager_rating,
+          reviewId: review.id,
+        };
+      })
+    );
   }
 }
 

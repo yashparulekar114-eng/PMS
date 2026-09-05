@@ -13,10 +13,10 @@ VALUES ('10000000-0000-0000-0000-000000000001', 'FY 2026-27 Annual Review', '202
 INSERT INTO employees (id, full_name, email, designation, department, date_of_joining, manager_id, role, is_active)
 VALUES
   ('00000000-0000-0000-0000-000000000001', 'Praveen Dalal', 'admin@company.com', 'HR Director', 'Human Resources', '2021-04-15', NULL, 'hr_admin', true),
-  ('00000000-0000-0000-0000-000000000006', 'Yash Parulekar', 'yash@company.com', 'VP of Technology & Engineering', 'Engineering', '2021-06-01', '00000000-0000-0000-0000-000000000001', 'manager', true),
-  ('00000000-0000-0000-0000-000000000007', 'Ananya Sharma', 'ananya@company.com', 'Senior HR Business Partner', 'Human Resources', '2022-02-10', '00000000-0000-0000-0000-000000000001', 'employee', true),
-  ('00000000-0000-0000-0000-000000000008', 'Kunal Varma', 'kunal@company.com', 'Talent Acquisition Lead', 'Human Resources', '2022-05-15', '00000000-0000-0000-0000-000000000001', 'employee', true),
-  ('00000000-0000-0000-0000-000000000009', 'Deepika Joshi', 'deepika@company.com', 'HR Operations Manager', 'Human Resources', '2022-08-01', '00000000-0000-0000-0000-000000000001', 'manager', true),
+  ('00000000-0000-0000-0000-000000000006', 'Yash Parulekar', 'yash@company.com', 'HR Director & VP of Technology', 'Human Resources', '2021-06-01', NULL, 'hr_admin', true),
+  ('00000000-0000-0000-0000-000000000007', 'Ananya Sharma', 'ananya@company.com', 'Senior HR Business Partner', 'Human Resources', '2022-02-10', '00000000-0000-0000-0000-000000000006', 'employee', true),
+  ('00000000-0000-0000-0000-000000000008', 'Kunal Varma', 'kunal@company.com', 'Talent Acquisition Lead', 'Human Resources', '2022-05-15', '00000000-0000-0000-0000-000000000006', 'employee', true),
+  ('00000000-0000-0000-0000-000000000009', 'Deepika Joshi', 'deepika@company.com', 'HR Operations Manager', 'Human Resources', '2022-08-01', '00000000-0000-0000-0000-000000000006', 'manager', true),
   ('00000000-0000-0000-0000-000000000010', 'Rohan Mehta', 'rohan@company.com', 'People Analytics Specialist', 'Human Resources', '2023-01-15', '00000000-0000-0000-0000-000000000009', 'employee', true),
   ('00000000-0000-0000-0000-000000000002', 'Mehmood Sayed', 'manager@company.com', 'Engineering Lead', 'Engineering', '2022-03-01', '00000000-0000-0000-0000-000000000006', 'manager', true),
   ('00000000-0000-0000-0000-000000000003', 'Aarya Shirodkar', 'aarya@company.com', 'Senior Full-Stack Engineer', 'Engineering', '2023-06-10', '00000000-0000-0000-0000-000000000002', 'manager', true),

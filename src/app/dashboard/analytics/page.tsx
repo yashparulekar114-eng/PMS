@@ -67,6 +67,7 @@ export default function PerformanceBellCurvePage() {
 
   useEffect(() => {
     setMounted(true);
+    fetchData();
   }, []);
 
   // 1. Data Fetching from Supabase
@@ -97,6 +98,7 @@ export default function PerformanceBellCurvePage() {
         });
 
         setRecords(enriched);
+        setLoading(false);
         return;
       }
 
@@ -164,9 +166,6 @@ export default function PerformanceBellCurvePage() {
     }
   };
 
-  useEffect(() => {
-    fetchData();
-  }, []);
 
   // Filtered Records by Department
   const filteredRecords = useMemo(() => {
