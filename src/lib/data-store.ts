@@ -2902,6 +2902,17 @@ class InMemoryDataStore {
     return rev;
   }
 
+  // Read-only: lists a cycle's reviews without creating missing rows (getOrCreateReview writes).
+  async getReviewsForCycle(cycleId: string): Promise<Review[]> {
+    if (isSupabaseConfigured()) {
+      try {
+        const { data, error } = await supabase.from("reviews").select("*").eq("cycle_id", cycleId);
+        if (!error && data) return data;
+      } catch (e) {}
+    }
+    return this.reviews.filter((r) => r.cycle_id === cycleId);
+  }
+
   async getReviewById(id: string): Promise<Review | null> {
     if (isSupabaseConfigured()) {
       try {

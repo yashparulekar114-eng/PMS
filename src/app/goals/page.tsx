@@ -6,6 +6,7 @@ import { useAuth } from "@/lib/auth/user-context";
 import { supabase, isSupabaseConfigured } from "@/lib/supabase/client";
 import { dataStore } from "@/lib/data-store";
 import { GoalStatus } from "@/types";
+import { GoalCoachPanel } from "@/components/ai/GoalCoachPanel";
 import {
   Target,
   Plus,
@@ -785,6 +786,17 @@ export default function GoalsPage() {
                 />
               </div>
 
+              <GoalCoachPanel
+                title={title}
+                description={description}
+                targetDate={targetDate}
+                existingGoals={goals.map((g) => ({ id: g.id, title: g.title }))}
+                onAccept={(s) => {
+                  setTitle(s.title);
+                  setDescription(s.description);
+                }}
+              />
+
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <div className="flex justify-between items-center mb-1">
@@ -912,6 +924,18 @@ export default function GoalsPage() {
                   className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none text-slate-900"
                 />
               </div>
+
+              <GoalCoachPanel
+                title={editTitle}
+                description={editDescription}
+                targetDate={editTargetDate}
+                existingGoals={goals.map((g) => ({ id: g.id, title: g.title }))}
+                excludeGoalId={editingGoal?.id}
+                onAccept={(s) => {
+                  setEditTitle(s.title);
+                  setEditDescription(s.description);
+                }}
+              />
 
               <div className="grid grid-cols-2 gap-4">
                 <div>

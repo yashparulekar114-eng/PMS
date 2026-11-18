@@ -12,9 +12,76 @@ import { Resend } from "resend";
  *    even when Resend is unconfigured, rate-limited, or encounters network errors.
  */
 
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+const escapeHtml = (value: string) =>
+  value.replace(/[&<>"']/g, (ch) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch] as string));
+
+/**
+ * DEADLINE REMINDERS (sent by the daily cron job only)
+ * Requires the shared CRON_SECRET as a bearer token, so this open route cannot be used to send arbitrary mail.
+ * Subject and body come from the cron planner and are HTML-escaped before they are placed in the template.
+ */
+async function handleDeadlineReminder(req: NextRequest, body: Record<string, unknown>) {
+  const secret = process.env.CRON_SECRET;
+  if (!secret || req.headers.get("authorization") !== `Bearer ${secret}`) {
+    return NextResponse.json({ success: false, error: "Unauthorized." }, { status: 401 });
+  }
+
+  const recipientEmail = typeof body.recipientEmail === "string" ? body.recipientEmail.trim() : "";
+  const recipientName = typeof body.recipientName === "string" ? body.recipientName.slice(0, 120) : "";
+  const subject = typeof body.subject === "string" ? body.subject.slice(0, 200) : "Performance cycle reminder";
+  const bodyText = typeof body.bodyText === "string" ? body.bodyText.slice(0, 4000) : "";
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+  const reviewUrl =
+    typeof body.reviewUrl === "string" && /^https?:\/\//.test(body.reviewUrl) ? body.reviewUrl : `${appUrl}/dashboard`;
+
+  if (!EMAIL_PATTERN.test(recipientEmail) || !bodyText) {
+    return NextResponse.json({ success: false, error: "Recipient and body are required." }, { status: 400 });
+  }
+
+  const apiKey = process.env.RESEND_API_KEY;
+  const fromAddress = process.env.EMAIL_FROM_ADDRESS || "onboarding@resend.dev";
+  if (!apiKey || apiKey === "re_your_resend_api_key" || apiKey === "re_123456789") {
+    console.log(`[PMS Non-Blocking Email Simulation]
+  Event Type: deadline_reminder
+  Recipient: ${recipientEmail}
+  Subject: ${subject}
+  Status: Simulated successfully (Add valid RESEND_API_KEY in .env.local for live delivery).`);
+    return NextResponse.json({ success: true, emailSent: false, simulated: true });
+  }
+
+  const resend = new Resend(apiKey);
+  const { data, error } = await resend.emails.send({
+    from: `PMS Performance System <${fromAddress}>`,
+    to: [recipientEmail],
+    subject,
+    text: bodyText,
+    html: `<!DOCTYPE html><html><body style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:#1e293b;padding:24px;">
+      <div style="max-width:600px;margin:0 auto;background:#fff;border:1px solid #e2e8f0;border-radius:16px;padding:32px;">
+        <p style="font-size:12px;font-weight:700;color:#4f46e5;text-transform:uppercase;letter-spacing:.05em;margin:0 0 12px;">Deadline Reminder</p>
+        <p style="font-size:14px;margin:0 0 16px;">Hello ${escapeHtml(recipientName || "there")},</p>
+        <pre style="font-family:inherit;font-size:14px;line-height:1.6;white-space:pre-wrap;margin:0;">${escapeHtml(bodyText)}</pre>
+        <div style="text-align:center;margin-top:24px;">
+          <a href="${escapeHtml(reviewUrl)}" style="display:inline-block;padding:14px 28px;background:#4f46e5;color:#fff;border-radius:10px;text-decoration:none;font-weight:700;font-size:14px;">Open the PMS</a>
+        </div>
+        <p style="font-size:11px;color:#94a3b8;text-align:center;margin-top:28px;">Automated reminder from the Performance Management System. Replies are not monitored.</p>
+      </div></body></html>`,
+  });
+
+  if (error) {
+    console.warn("[Resend Warning] Deadline reminder not delivered:", error);
+    return NextResponse.json({ success: false, emailSent: false }, { status: 502 });
+  }
+  return NextResponse.json({ success: true, emailSent: true, data });
+}
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
+    if (body?.type === "deadline_reminder") {
+      return handleDeadlineReminder(req, body);
+    }
     const {
       type = "self_appraisal",
       employeeName,

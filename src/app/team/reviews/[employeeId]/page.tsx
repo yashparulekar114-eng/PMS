@@ -18,6 +18,9 @@ import {
   ShieldAlert,
 } from "lucide-react";
 import Link from "next/link";
+import { FeedbackFlags } from "@/components/ai/FeedbackFlags";
+import { ReviewSummaryAssistant } from "@/components/ai/ReviewSummaryAssistant";
+import { checkFeedback } from "@/lib/ai/feedback-checker";
 
 export default function ManagerReviewPage() {
   const params = useParams();
@@ -92,6 +95,17 @@ export default function ManagerReviewPage() {
     e.preventDefault();
     if (!review || !managerSummary.trim()) {
       alert("Please provide an overall manager summary evaluation.");
+      return;
+    }
+
+    // Advisory check: remaining high/medium wording flags need an explicit decision before submitting.
+    const flagCount = [
+      ...goals.map((g) =>
+        checkFeedback(managerRatingsState[g.id]?.manager_comment || "", managerRatingsState[g.id]?.manager_rating ?? null)
+      ),
+      checkFeedback(managerSummary, overallManagerRating),
+    ].reduce((total, flags) => total + flags.filter((f) => f.severity !== "low").length, 0);
+    if (flagCount > 0 && !confirm(`${flagCount} wording flag(s) are still open in this review. Submit anyway?`)) {
       return;
     }
 
@@ -280,6 +294,10 @@ export default function ManagerReviewPage() {
                         placeholder="Provide manager appraisal feedback for this goal..."
                         className="w-full text-xs px-3.5 py-2.5 border border-indigo-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:bg-slate-50"
                       />
+                      <FeedbackFlags
+                        text={managerRatingsState[goal.id]?.manager_comment || ""}
+                        rating={managerRatingsState[goal.id]?.manager_rating ?? null}
+                      />
                     </div>
                   </div>
                 </div>
@@ -326,7 +344,31 @@ export default function ManagerReviewPage() {
                 placeholder="Summarize key achievements, strengths, areas for development, and promotion readiness..."
                 className="w-full text-xs px-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:bg-slate-50"
               />
+              <div className="mt-2">
+                <FeedbackFlags text={managerSummary} rating={overallManagerRating} />
+              </div>
             </div>
+
+            {!isCompleted && (
+              <ReviewSummaryAssistant
+                employeeName={employee?.full_name || "Employee"}
+                cycleName={activeCycle?.name || "appraisal cycle"}
+                overallManagerRating={overallManagerRating}
+                hasExistingText={managerSummary.trim().length > 0}
+                onInsert={(text) => setManagerSummary(text)}
+                goals={goals.map((g) => {
+                  const rating = goalRatings.find((r) => r.goal_id === g.id);
+                  return {
+                    id: g.id,
+                    title: g.title,
+                    weightage: Number(g.weightage),
+                    managerRating: managerRatingsState[g.id]?.manager_rating ?? null,
+                    managerComment: managerRatingsState[g.id]?.manager_comment || "",
+                    selfRating: rating?.self_rating ? Number(rating.self_rating) : null,
+                  };
+                })}
+              />
+            )}
 
             {!isCompleted && (
               <div className="flex justify-end pt-2">

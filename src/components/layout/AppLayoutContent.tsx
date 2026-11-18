@@ -5,9 +5,10 @@ import { useAuth } from "@/lib/auth/user-context";
 import { AppNavbar } from "@/components/layout/AppNavbar";
 import { useUser, SignOutButton } from "@clerk/nextjs";
 import { UserX, HelpCircle, LogOut } from "lucide-react";
+import { AskPmsPanel } from "@/components/ai/AskPmsPanel";
 
 export const AppLayoutContent = ({ children }: { children: React.ReactNode }) => {
-  const { isAccountNotSetUp } = useAuth();
+  const { isAccountNotSetUp, user } = useAuth();
   const { user: clerkUser } = useUser();
 
   return (
@@ -61,6 +62,7 @@ export const AppLayoutContent = ({ children }: { children: React.ReactNode }) =>
           children
         )}
       </main>
+      {user && !isAccountNotSetUp && <AskPmsPanel />}
       <footer className="border-t border-slate-200 bg-white py-6 text-center text-xs text-slate-500">
         <p>Performance Management System | Built with Next.js, Supabase, Clerk & Resend</p>
       </footer>

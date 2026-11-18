@@ -100,6 +100,24 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ---
 
+## 🤖 AI Assistants & Daily Reminders
+
+| Feature | Where | What it does |
+| :--- | :--- | :--- |
+| **SMART Goal Coach** | `/goals` (Add / Edit goal) | Flags vague goals and possible duplicates instantly. The employee can request a SMART rewrite and then accepts or ignores it. Nothing is saved automatically. |
+| **Review Summary Assistant** | Manager review screen | Drafts the certificate summary. Each point is linked to the goal it is based on, and the manager chooses which points to insert. |
+| **Feedback Bias & Quality Checker** | Manager review screen | Flags gender-coded wording, vague praise, personal or appearance remarks, and comments that contradict the rating. Flags are advisory and the manager is asked to confirm before submitting. |
+| **Calibration Analyst** | `/admin/calibration` (HR only) | Read-only comparison of managers' ratings, with a calibration agenda. Only anonymised figures (M1, M2...) are sent to the model. |
+| **Ask PMS** | Floating button on every page | Answers process questions from the FAQ (`src/lib/faq.ts`) and shows the signed-in user's own status. |
+| **Cycle Reminder Agent** | Daily cron at 09:00 IST (`vercel.json`) | Drafts and sends deadline reminders to employees and managers through `/api/notify-manager`. |
+
+**Setup**
+- Set `ANTHROPIC_API_KEY` (optional) to let Claude draft text. Without it the features use rule-based output.
+- Set `CRON_SECRET` and `NEXT_PUBLIC_USE_REAL_SUPABASE=true` for reminders. Without the real database the job sends nothing, so it can never email the demo roster.
+- Preview the reminder plan without sending: `GET /api/cron/reminders?dry_run=1` with `Authorization: Bearer <CRON_SECRET>`.
+
+---
+
 ## 👥 Demo Personas (Preloaded Credentials)
 
 Use the one-click persona switcher on the top navigation bar to test all user roles:

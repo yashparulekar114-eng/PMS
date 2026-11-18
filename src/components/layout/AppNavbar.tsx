@@ -25,6 +25,7 @@ import {
   ChevronRight,
   Clock,
   ExternalLink,
+  Scale,
 } from "lucide-react";
 
 export const AppNavbar = () => {
@@ -119,6 +120,12 @@ export const AppNavbar = () => {
       label: "Analytics",
       href: "/admin/dashboard",
       icon: BarChart3,
+      roles: ["hr_admin"],
+    },
+    {
+      label: "Calibration",
+      href: "/admin/calibration",
+      icon: Scale,
       roles: ["hr_admin"],
     },
   ];
